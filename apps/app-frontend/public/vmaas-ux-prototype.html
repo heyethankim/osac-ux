@@ -15413,7 +15413,7 @@
 
       return `
         <section class="vm-access-section" aria-labelledby="vm-access-eip-title">
-          <h4 class="ethan-detail-col__subtitle vm-access-section__title" id="vm-access-eip-title">External IP${autoAttached ? ' <span class="pf-v6-c-label pf-m-blue pf-m-compact">Auto attached</span>' : ''}</h4>
+          <h4 class="ethan-detail-col__subtitle vm-access-section__title" id="vm-access-eip-title">External IP${autoAttached ? ' <span class="pf-v6-c-label pf-m-outline pf-m-grey pf-m-compact"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Auto attached</span></span></span>' : ''}</h4>
           ${itField('Host', hostHtml)}
         </section>`;
     }

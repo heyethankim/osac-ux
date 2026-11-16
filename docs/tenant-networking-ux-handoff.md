@@ -9,3 +9,7 @@ The Virtual networks list uses compact PatternFly pagination above and below the
 ![Virtual networks list with compact pagination](screenshots/latest-ux/network-list.png)
 
 Follow the [Google UX handoff](https://docs.google.com/document/d/1Bb-TzaXkhdASe6btymwRk2u0wXycwyqS-I8h637hDGY/edit) for network and external IP attachment behavior, including loading and failure states.
+
+On VM Overview, an auto-attached external IP shows **Auto attached** beside the External IP heading as a neutral, outlined PatternFly 6 felt glass status label. The address remains managed with the VM and cannot be detached separately.
+
+![Auto attached external IP status label](screenshots/latest-ux/tenant-networking-auto-ip-badge.png)
