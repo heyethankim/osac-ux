@@ -15361,19 +15361,17 @@
       const attachedIp = status === 'attached' && vm.externalIp ? String(vm.externalIp) : '';
       const safeIp = attachedIp.replace(/</g, '&lt;');
 
-      let hostValue = '—';
-      let hostMeta = '';
+      let addressHtml = '';
+      let statusHtml = '';
       if (status === 'attached' && attachedIp) {
-        hostValue = `<code>${safeIp}</code>`;
+        addressHtml = `<code>${safeIp}</code>`;
       } else if (status === 'attaching') {
-        hostValue = '<span class="muted">—</span>';
-        hostMeta = `<p class="vm-access-section__meta"><span class="vm-access-section__spinner" aria-hidden="true"></span>Attaching external IP…</p>`;
+        statusHtml = `<p class="vm-access-section__meta"><span class="vm-access-section__spinner" aria-hidden="true"></span>Attaching external IP…</p>`;
       } else if (status === 'failed') {
-        hostValue = '<span class="muted">—</span>';
         const err = vm.externalIpError
           ? String(vm.externalIpError).replace(/</g, '&lt;')
           : 'Failed to attach external IP.';
-        hostMeta = `<p class="vm-access-section__meta vm-access-section__meta--danger" role="alert">${err}</p>`;
+        statusHtml = `<p class="vm-access-section__meta vm-access-section__meta--danger" role="alert">${err}</p>`;
       }
 
       let actions = '';
@@ -15389,19 +15387,15 @@
         actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Attach external IP</button>`;
       }
 
-      const hostHtml = `
-        <div class="vm-access-section__host-row">
-          <span>${hostValue}</span>
-          ${status === 'failed' ? '' : actions}
-        </div>
-        ${hostMeta}
-        ${status === 'failed' && actions ? `<div class="vm-access-section__host-row pf-v6-u-mt-sm">${actions}</div>` : ''}
+      const contentHtml = `
+        ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml}${actions}</div>` : ''}
+        ${statusHtml}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
       return `
         <section class="vm-access-section" aria-labelledby="vm-access-eip-title">
           <h4 class="ethan-detail-col__subtitle vm-access-section__title" id="vm-access-eip-title">External IP${autoAttached ? ' <span class="pf-v6-c-label pf-m-outline pf-m-grey pf-m-compact"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Auto attached</span></span></span>' : ''}</h4>
-          ${itField('Host', hostHtml)}
+          ${contentHtml}
         </section>`;
     }
 
