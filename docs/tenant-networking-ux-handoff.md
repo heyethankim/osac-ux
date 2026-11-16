@@ -12,4 +12,10 @@ Follow the [Google UX handoff](https://docs.google.com/document/d/1Bb-TzaXkhdASe
 
 On VM Overview, an auto-attached external IP shows **Auto attached** beside the External IP heading as a neutral, outlined PatternFly 6 felt glass status label. The address remains managed with the VM and cannot be detached separately.
 
+During manual attachment, keep **Host** as “—” and show inline progress. Show the address under Host only after attachment succeeds. If attachment fails, keep Host as “—” and show “Failed to attach external IP.” without Retry, Choose another, or Detach. Detach is available only when an IP is confirmed attached. The failed state does not show the attempted address as though it were attached.
+
 ![Auto attached external IP status label](screenshots/latest-ux/tenant-networking-auto-ip-badge.png)
+
+![External IP attachment in progress](screenshots/latest-ux/tenant-networking-attach-loading.png)
+
+![External IP attachment failed with no attached host](screenshots/latest-ux/tenant-networking-attach-failed.png)
