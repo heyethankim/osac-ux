@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "paths": {
+      "@osac/types": ["../../libs/types/src/index.ts"],
+      "@osac/types/*": ["../../libs/types/src/*"],
+      "@osac/ui-components/*": ["../../libs/ui-components/src/*"]
+    }
+  },
+  "include": [".storybook/**/*.ts", ".storybook/**/*.tsx", "stories"]
+}

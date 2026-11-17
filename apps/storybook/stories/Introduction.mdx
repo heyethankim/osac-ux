@@ -1,0 +1,122 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introduction" />
+
+# OSAC UX — golden patterns
+
+A **golden pattern** is this product's canonical answer to a recurring UI problem: the one
+way we build a list page, a card, a delete flow, a status label. Each one binds three
+things together:
+
+1. **A rule** — a checkable statement taken from PatternFly 6, not an opinion.
+2. **A reference implementation** — the component in `libs/ui-components` that every
+   screen composes instead of re-implementing.
+3. **A content and accessibility contract** — how its copy is written, and what has to
+   hold for it to be usable by everyone.
+
+"Golden" means **build against this, don't fork it.** A new screen that re-implements a
+list page instead of composing `ListPage` + `ListPageBody` is a defect, not a style
+choice.
+
+## Why this exists
+
+`osac-ux` has no local mock server. Running the application needs `FULFILLMENT_API_URL`
+pointed at a live `fulfillment-service` and an `oc` login. That means the only ways to
+see what a failed VM card or an empty cluster list looks like were to read the JSX, or
+to get a cluster into that state.
+
+This Storybook removes that. Every story renders against
+`createMockConnectTransport` — the same in-memory Connect router the Vitest suite uses —
+so **no cluster, no proxy, and no network are involved.** It is also the only place the
+dark theme and high-contrast mode can be reviewed at all.
+
+## How stories are wired
+
+Stories are not replicas. They render the real page and card components, inside the real
+provider tree:
+
+```
+MockProviders
+  └── I18nextProvider        bundled en/translation.json, no HTTP backend
+      └── ApiProvider        in-memory Connect transport, fixture-backed
+          └── QueryClient    retries off, so an error story fails once and stays failed
+              └── ToastProvider
+                  └── RouterProvider (memory)
+                      └── SessionProvider   role from the toolbar
+```
+
+`MockProviders` lives in `libs/ui-components/src/test-utils/` and is the same component
+`renderWithProviders` uses. A story and a test therefore cannot drift apart.
+
+Per-story wiring goes in `parameters.osac`:
+
+| Field | Purpose |
+| --- | --- |
+| `apiFixtures` | Protobuf fixtures served by the mock router |
+| `transport` | A hand-built transport — used for loading and failure states |
+| `routerEntries` | Initial URL, for stories that read filter params |
+| `session` | Session defaults; the toolbar's Role global wins |
+| `canvas` | `page` for full-bleed screens, `component` for padded ones |
+
+## The toolbar
+
+| Control | What it changes |
+| --- | --- |
+| **Theme** | Light / dark, applied with the product's own `updateThemeClass` |
+| **Contrast** | Glass (default), traditional, high contrast |
+| **Role** | Tenant admin / tenant user / IdP manager / cloud provider admin |
+
+Theme and contrast call the same function the application shell calls, so a story is
+themed exactly the way a running page is — including the Felt brand tokens.
+
+## Three tiers of pattern
+
+- **Primitive** — one component, no data wiring. `Timestamp`, `ViewSwitcher`,
+  `ResourceStatusLabel`. The story is a props matrix.
+- **Composition** — a recognizable object with an anatomy contract. The instance card.
+  The story is an annotated anatomy plus its variants.
+- **Page pattern** — a whole screen, mocked at the transport boundary. The instance list
+  view. The story is the six mandatory states.
+
+A new pattern earns a story only once it has two or more call sites. This Storybook
+mirrors what is already golden; it is not a staging area for proposals.
+
+## Accessibility
+
+The a11y panel runs axe on every story. Treat a clean run as a floor, not a passing
+grade — most WCAG 2.2 AA criteria are manual. The checks axe cannot make for you:
+
+- Tab through the story. Every interactive element must be reachable and visibly focused.
+- Nothing may be hover-only.
+- No meaning carried by colour alone.
+- Switch the Contrast global to **High contrast** — shadows disappear there, so anything
+  whose structure depends on a shadow breaks.
+- Switch the Theme global to **Dark** and re-read every label.
+
+## Findings this Storybook makes visible
+
+These are real divergences in `osac-ux` today. The stories do not paper over them; each
+one should carry a ticket.
+
+| # | Finding | Where to see it |
+| --- | --- | --- |
+| **F1** | No `Pagination` exists anywhere in the product. Every list renders unbounded. | GP-1 → `UnpaginatedAtScale` |
+| **F2** | Cluster and bare metal cards end in a full-width `variant="primary"` button; PatternFly specifies secondary for a single inline card action. | GP-1b → `ThreeKinds` |
+| **F3** | `Timestamp` hard-codes `en-US` and mixes a 24-hour `Full` format with a 12-hour `Time` format. | Primitives → Timestamp → `AllFormats` |
+| **F4** | The app imports only `base.css`. The `pf-v6-u-*` utility classes used in `ResourceNameField` and elsewhere resolve to nothing, because they ship in `patternfly-addons.css`. | Any card story |
+| **F5** | `DEFAULT_VIEW_TYPE` is a single global `'cards'` rather than a per-page default, so text-heavy record lists open in card view. | Primitives → ViewSwitcher |
+| **F6** | The three instance cards are hand-built with their own BEM CSS files instead of composing a shared `InstanceCard`; the Project/Created footer is copied three times. | GP-1b → `ThreeKinds` |
+| **F7** | The three list pages hand-roll the same toolbar; `BareMetalListPage` uses a raw `SearchInput` where the others debounce. | GP-1 → switch `kind` |
+| **F8** | **The VM list's two empty states are indistinguishable.** `VmListPage.tsx:227` branches only on whether a *select* filter is active, so an empty product and a no-match search both render "Choose one or more filters above to filter virtual machines." The string "No virtual machines yet. Create one to get started." is unreachable. They are also `SubtleContent` paragraphs rather than a PatternFly `EmptyState`. | GP-1 → `EmptyNoData` vs `EmptyNoMatch` |
+| **F10** | **Three cards, two title sizes.** `ClusterCard.css` and `BareMetalCard.css` bump the resource name to `heading--lg` with the rule `.cluster-card__name .pf-v6-u-font-size-md { … }` — using a *PatternFly utility class* as a styling hook. `VmCard` has no such wrapper, so its title stays at body size. The hook only works because `patternfly-addons.css` is absent (F4): load it and the utility's own `font-size` competes; drop the class from `ResourceNameField` and both titles silently shrink. | GP-1b → `ThreeKinds` |
+| **F9** | **Plural translations render their own key suffix.** The bare metal card shows "128 cores_other" and "2048 GB_other", because `libs/i18n/locales/en/translation.json` stores `"{{count}} cores_other": "{{count}} cores_other"` — the generator wrote the suffixed key as the value. This is what the shipped application displays. | GP-1b → `BareMetalCards` |
+| **F11** | **Three create pages, three hand-rolled shells, two verbs.** `VmCreatePage`, `ClusterCreatePage` and `BareMetalCreatePage` each rebuild the same `PageSection` + `Breadcrumb` + `h1` + description, and the headings disagree: "Create virtual machine" against "Launch instance for cluster" / "…for bare metal". The adapter already exposes `wizardTitleKey`, `wizardDescriptionKey` and `breadcrumbCreateLabelKey`, so a shared shell has its data waiting. The breadcrumb ancestor is also a `Button variant="link"` rather than a link — defensible here, since it must run the unsaved-changes guard instead of navigating, but it costs middle-click, open-in-new-tab and the link role. | GP-3 → `PageShellComparison` |
+| **F12** | **Two wizard footers.** `OSACWizardFooter` (9 wizards: Volume, Secret, DiskImage, ExternalIp, IdentityProvider, …) and the bespoke footer inside `ProvisioningWizard` (the 3 instance wizards) each re-implement Back / Next / Cancel, step validation and the pending lockout. They disagree on where alerts go — footer vs. step body — on markup (`ActionList` vs. bare `Flex`) and on i18n convention (English-as-key vs. dotted `catalogProvision.actions.*`). In the cancel modal, the destructive choice "Discard and close" is `variant="primary"`. | GP-3 → `UnsavedChangesGuard`, `ValidationBlocksNext` |
+| **F13** | **A required field's error styling is dead code.** `VmInstanceTypeStep.tsx:224` passes `validated={error ? 'error' : 'default'}` to PatternFly 6's `FormGroup`, which no longer has that prop — it moved to `HelperTextItem` in PF 6. The instance-type field therefore never renders its invalid state. This is a pre-existing TypeScript error in `@osac/ui-components` (one of 42), and it is the one error this package's own `typecheck` inherits. | GP-3 → `ValidationBlocksNext` |
+
+## Running it
+
+```bash
+pnpm --filter @osac/storybook storybook        # dev server on :6006
+pnpm --filter @osac/storybook build-storybook  # static build into dist/
+```

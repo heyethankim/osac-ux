@@ -1,0 +1,35 @@
+/*
+ * Mirrors apps/app-frontend/src/index.css so a story sits on the same surface
+ * the application renders on. Tokens only -- never a literal colour.
+ */
+html,
+body,
+#storybook-root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--pf-t--global--background--color--primary--default);
+}
+
+/*
+ * Page-level patterns (GP-1, GP-2, GP-3) are full-bleed: PatternFly's own
+ * PageSection supplies their padding, so the canvas must not add any.
+ */
+.osac-sb-canvas--page {
+  padding: 0;
+}
+
+/* Component-level patterns get breathing room so shadows and focus rings show. */
+.osac-sb-canvas--component {
+  padding: var(--pf-t--global--spacer--lg);
+}
+
+/* Side-by-side comparison frames (for example the three instance cards). */
+.osac-sb-compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20.875rem, 20.875rem));
+  gap: var(--pf-t--global--spacer--md);
+  align-items: start;
+}
