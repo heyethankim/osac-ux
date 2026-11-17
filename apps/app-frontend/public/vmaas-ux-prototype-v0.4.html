@@ -23002,10 +23002,6 @@
                   desc: t.description || '',
                 })),
               })}
-              ${c.bootStorageTierId ? `
-                <div style="margin-top:8px;">
-                  <button type="button" class="pf-v6-c-button pf-m-link pf-m-inline" id="ci-boot-tier-clear">Clear selection</button>
-                </div>` : ''}
               ${providerFieldErrorHtml(state.fieldErrors.ciBootTier, 'err-ciBootTier')}
             </div>
             <hr class="form-section-divider" />
@@ -23055,12 +23051,6 @@
             renderCreateCatalogItemWizard();
           },
           rerender: renderCreateCatalogItemWizard,
-        });
-        panel.querySelector('#ci-boot-tier-clear')?.addEventListener('click', () => {
-          c.bootStorageTierId = '';
-          c.bootTierMenuOpen = false;
-          c.bootTierFilter = '';
-          renderCreateCatalogItemWizard();
         });
         panel.querySelector('#ci-add-disk')?.addEventListener('click', e => {
           e.preventDefault();
