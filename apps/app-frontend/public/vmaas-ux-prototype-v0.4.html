@@ -13365,6 +13365,10 @@
         'Configure access and the first-boot initialization for this virtual machine.',
       accessWindows:
         'Configure first-boot customization for this Windows virtual machine.',
+      accessCatalogLinux:
+        'Configure access and first-boot initialization.',
+      accessCatalogWindows:
+        'Configure first-boot customization.',
       cloudInit:
         'User data applied when the virtual machine starts.',
       cloudInitSupported:
@@ -23285,8 +23289,8 @@
         panel.innerHTML = `
           <h3>Access &amp; Initial run</h3>
           <p class="create-resource-wiz__help">${windowsCatalog
-            ? WIZARD_HELP.accessWindows
-            : WIZARD_HELP.accessLinux}</p>
+            ? WIZARD_HELP.accessCatalogWindows
+            : WIZARD_HELP.accessCatalogLinux}</p>
           ${initHtml}
         `;
         bindCatalogAccessSwitches(panel, c);
