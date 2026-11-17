@@ -15,6 +15,8 @@ The provider Catalog list supports publish-state and tenant filters, search, and
 
 The Create VM Catalog Item wizard runs **Details → Compute configuration → Storage → Access & Initial run → Review**. Details sets scope, name, description, and provisioning template. A provisioning template option shows its name above its description. The selected template name or ID appears in Review and catalog item details. The help popover says: “A provisioning template is the set of steps OSAC uses to create a VM. Choose the one for the platform where these VMs should run.”
 
+![Provisioning template options](screenshots/latest-ux/catalog-provisioning-template-menu.png)
+
 ![Provisioning template help popover](screenshots/latest-ux/catalog-provisioning-template-help.png)
 
 Compute configuration sets guest OS, disk image, and instance type. Instance type options show the **resource name first** and the CPU, memory, and any GPU count and readable model in a second-line description, followed by the rate. For example: **small-gpu** / `1 vCPU · 2 GiB memory · 1 GPU (NVIDIA A100 40 GB) · $1.90/hr`. Do not show PCI device IDs in this menu. Keep Deprecated selectable and labeled; omit Obsolete from new choices. Existing Obsolete values remain visible until replaced.
