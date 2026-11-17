@@ -24,6 +24,22 @@ import { RouterButton } from '../components/RouterButton'
 import { BMAAS_LANDING_LAST_UPDATED } from '../bmaasLandingLastUpdated'
 import redHatHatLogoUrl from '../assets/Logo-RedHat-Hat-Color-RGB.svg?url'
 
+/**
+ * The golden-pattern Storybook is a separate app, so it is reached differently
+ * depending on how this page is being served:
+ *
+ * - production (`build:mock` → GitHub Pages): the CI job builds Storybook into
+ *   `dist/storybook`, so it sits under this site's base path.
+ * - development (`vite dev`): nothing serves `/storybook/` from this dev
+ *   server, and it cannot be proxied — the Storybook preview iframe requests
+ *   `/@vite/client` at the origin root, which would collide with this app's
+ *   own Vite client. So point straight at the Storybook dev server, which
+ *   `pnpm dev` starts alongside this one.
+ */
+const STORYBOOK_URL = import.meta.env.DEV
+  ? 'http://localhost:6006/'
+  : `${import.meta.env.BASE_URL}storybook/`;
+
 type PrototypeLink = {
   label: string
   to: string
@@ -313,6 +329,16 @@ export function BmaasLandingPage() {
               href={`${import.meta.env.BASE_URL}vmaas-ux-prototype.html`}
             >
               Virtual Machines
+            </Button>
+            <Button
+              variant="link"
+              component="a"
+              isInline
+              href={STORYBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Golden patterns (Storybook)
             </Button>
             <div className="bmaas-role-landing__credits">
               <Content component="p">

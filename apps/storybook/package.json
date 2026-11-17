@@ -6,6 +6,7 @@
   "scripts": {
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build -o dist",
+    "build-storybook:pages": "storybook build -o ../app-frontend/dist/storybook",
     "lint": "eslint \"{.storybook,stories}/**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit"
   },

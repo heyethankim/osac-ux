@@ -32,8 +32,16 @@ jobs:
       - name: Build mock website
         run: pnpm --filter @osac/app-frontend run build:mock
 
+      # Must run after the site build: Vite empties dist/ before writing to it.
+      # The built Storybook references its assets relatively, so it needs no
+      # base-path configuration to be served from /osac-ux/storybook/.
+      - name: Build golden-pattern Storybook into the site
+        run: pnpm --filter @osac/storybook run build-storybook:pages
+
       - name: Verify website output
-        run: test -f apps/app-frontend/dist/index.html
+        run: |
+          test -f apps/app-frontend/dist/index.html
+          test -f apps/app-frontend/dist/storybook/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
