@@ -95,6 +95,10 @@
     .console__masthead-role .pf-v6-c-form-control {
       min-width: 220px;
     }
+    .console__masthead-role .version-select {
+      min-width: 100px;
+      width: 100px;
+    }
     /* PF6 FormSelect — match FormControl + FormSelect React markup */
     .pf-v6-c-form-control:has(> select) {
       align-items: center;
@@ -7196,6 +7200,16 @@
     <div class="console">
       <div class="console__masthead">
         <div class="console__masthead-role">
+          <label class="demo-bar__label" for="version-select">Version</label>
+          <span class="pf-v6-c-form-control version-select">
+            <select id="version-select" aria-label="Mockup version">
+              <option value="0.4" selected>0.4</option>
+              <option value="0.5" disabled>0.5 (not started)</option>
+            </select>
+            <span class="pf-v6-c-form-control__utilities">
+              <span class="pf-v6-c-form-control__toggle-icon"><svg viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"/></svg></span>
+            </span>
+          </span>
           <span class="demo-bar__label">Role</span>
           <span class="pf-v6-c-form-control" style="width:auto;min-width:260px;">
             <select id="role-select" aria-label="OSAC persona">
@@ -13337,7 +13351,7 @@
       { id: 'vsphere_vm', label: 'vsphere_vm', desc: 'Provision virtual machines on VMware vSphere.' },
     ];
     const CATALOG_PROVISIONING_TEMPLATE_HELP =
-      'Infrastructure automation that fulfills a VM request by resolving infrastructure dependencies, creating VM and storage resources, applying provider-specific integrations, and exposing the status.';
+      'Choose how VMs from this catalog item will be created. Each template provisions them on a specific platform, such as OpenShift Virtualization or VMware vSphere.';
 
     /** Shared Create VM / Create VM Catalog Item step and field help. Optional is signaled by no asterisk, not by copy. */
     const WIZARD_HELP = {
