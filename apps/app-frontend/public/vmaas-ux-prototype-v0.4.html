@@ -12785,7 +12785,9 @@
       state.listPagination[key] = current;
       for (const position of ['top', 'bottom']) {
         const host = document.getElementById(`${key}-pagination-${position}`);
-        if (host) host.innerHTML = listPaginationHtml(key, rows.length, position, current.page, current.perPage);
+        if (host) host.innerHTML = key === 'catalog' && position === 'bottom' && pages === 1
+          ? ''
+          : listPaginationHtml(key, rows.length, position, current.page, current.perPage);
       }
       return rows.slice((current.page - 1) * current.perPage, current.page * current.perPage);
     }
@@ -24748,7 +24750,8 @@
       const filterNote = hasFilters
         ? ' <button type="button" class="catalog-summary__clear" id="catalog-clear-filters">Clear all filters</button>'
         : '';
-      el.innerHTML = `<strong>${shown} of ${total}</strong> catalog items${filterNote}`;
+      const count = shown === total ? `${total}` : `${shown} of ${total}`;
+      el.innerHTML = `<strong>${count}</strong> catalog item${total === 1 ? '' : 's'}${filterNote}`;
       el.querySelector('#catalog-clear-filters')?.addEventListener('click', () => {
         state.catalogFilter = '';
         state.catalogTenantFilter = 'all';
@@ -24930,7 +24933,7 @@
       syncCatalogToolbarDisabled(catalogIsEmpty);
       updateCatalogSummary({
         shown: items.length,
-        total: catalogItemsSource().length,
+        total: scopedItems.length,
         hasFilters,
       });
       const pageItems = paginateList('catalog', items);

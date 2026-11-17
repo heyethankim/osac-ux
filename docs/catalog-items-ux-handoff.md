@@ -5,7 +5,7 @@ Jira: [HPUX-2175](https://redhat.atlassian.net/browse/HPUX-2175)
 Google Doc: [Catalog items](https://docs.google.com/document/d/1YTm2X4nUXWVI_Mjq_hXEY4Rj6i9BaOiXjzVeF3jcMA4/edit)  
 Interactive mock: [Catalog, Cloud provider admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7de83de&role=provider)
 
-The provider Catalog list supports publish-state and tenant filters, search, and card and table views. Both views use compact PatternFly pagination above and below the list: an item-range dropdown with Previous and Next.
+The provider Catalog list supports publish-state and tenant filters, search, and card and table views. Both views show compact PatternFly pagination above the list: an item-range dropdown with Previous and Next. Show a second pagination control below the list only when results span multiple pages. The item count reflects the selected project or other active scope.
 
 The Create VM Catalog Item wizard runs **Details → Compute configuration → Storage → Access & Initial run → Review**. Details sets scope, name, description, and provisioning template. A provisioning template option shows its name above its description. The selected template name or ID appears in Review and catalog item details.
 
