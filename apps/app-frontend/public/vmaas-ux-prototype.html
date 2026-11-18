@@ -5260,6 +5260,9 @@
       font-size: var(--pf-t--global--font--size--body--sm, 14px);
       line-height: 1.35;
     }
+    .tpl-card--catalog .catalog-card-specs__row {
+      grid-template-columns: 6.75rem minmax(0, 1fr);
+    }
     .catalog-card-specs__label {
       margin: 0;
       font-weight: 600;
@@ -24386,23 +24389,34 @@
 
     function catalogCardSpecsRowsHtml(item) {
       const compute = resolveCatalogItemCompute(item);
+      const computeAccess = catalogItemFieldAccess(item, 'computeAccess', 'computeLocked');
       const diskRaw = String(item.diskImage || 'Not set');
       const diskImage = diskRaw.replace(/</g, '&lt;');
-      const diskLocked = item.diskImageAccess
-        ? item.diskImageAccess === 'locked'
-        : (!!item.diskImage && !!item.diskLocked);
-      const govBadge = catalogGovBadge(diskLocked ? 'locked' : 'editable');
+      const diskAccess = catalogItemFieldAccess(item, 'diskImageAccess', 'diskLocked');
+      const cardBadge = (access, field) => {
+        const editable = access === 'editable';
+        const explanation = editable
+          ? 'Tenants can change this when creating a VM.'
+          : 'Tenants must use this value when creating a VM.';
+        return `<span class="catalog-gov-badge${editable ? ' catalog-gov-badge--editable' : ''}"
+          data-pf-tooltip="${explanation}" tabindex="0"
+          aria-label="${field} ${editable ? 'editable' : 'locked'}. ${explanation}">${editable ? 'Editable' : 'Locked'}</span>`;
+      };
+      const computeValueHtml = `<span class="catalog-spec-value-with-badge">${String(compute.instanceTypeName || 'Not set').replace(/</g, '&lt;')}${cardBadge(computeAccess, 'Instance type')}</span>`;
       const diskIcon = catalogDiskImageIconHtml(item.diskImage);
       const diskMatch = findDiskImageByCatalogLabel(item.diskImage);
       const diskValueHtml = diskMatch
-        ? `<button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskIcon}${diskImage}</button>${govBadge}`
-        : `<span class="catalog-disk-image-value">${diskIcon}${diskImage}${govBadge}</span>`;
+        ? `<span class="catalog-spec-value-with-badge"><button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskIcon}${diskImage}</button>${cardBadge(diskAccess, 'Disk image')}</span>`
+        : `<span class="catalog-disk-image-value">${diskIcon}${diskImage}${cardBadge(diskAccess, 'Disk image')}</span>`;
       const rows = [
         { label: 'vCPUs', value: compute.cpu },
         { label: 'Memory', value: compute.memory },
         { label: 'GPU', value: compute.gpu },
       ];
-      return `${rows.map(row => `
+      return `<div class="catalog-card-specs__row">
+          <dt class="catalog-card-specs__label">Instance type</dt>
+          <dd class="catalog-card-specs__value">${computeValueHtml}</dd>
+        </div>${rows.map(row => `
         <div class="catalog-card-specs__row">
           <dt class="catalog-card-specs__label">${row.label}</dt>
           <dd class="catalog-card-specs__value">${String(row.value).replace(/</g, '&lt;')}</dd>

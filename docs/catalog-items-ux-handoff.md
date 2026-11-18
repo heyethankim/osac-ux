@@ -5,9 +5,11 @@ Jira: [HPUX-2175](https://redhat.atlassian.net/browse/HPUX-2175)
 Google Doc: [Catalog items](https://docs.google.com/document/d/1YTm2X4nUXWVI_Mjq_hXEY4Rj6i9BaOiXjzVeF3jcMA4/edit)  
 Interactive mock: [Catalog, Cloud provider admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=provider)
 
-This is the **0.4** mockup. Version **0.5** remains unavailable until its work starts.
+This handoff describes the **0.4** mockup. Version **0.5** is available for subsequent work.
 
 The provider Catalog list supports publish-state and tenant filters, search, and card and table views. Both views show compact PatternFly pagination above the list: an item-range dropdown with Previous and Next. Show a second pagination control below the list only when results span multiple pages. The item count reflects the selected project or other active scope.
+
+On each Catalog card, show the **Instance type** name with its own Editable or Locked badge, followed by vCPUs, memory, and GPU as supporting specs. Show the **Disk image** with its separate badge. The badges describe whether tenants can change that specific value during VM creation; their tooltip and accessible label explain the effect. This follows the field-level pattern in Ethan's card design. Other editable settings remain on the catalog item details page rather than adding every field to the compact card. The card screenshot below predates this badge update; use the interactive mockup for the current card.
 
 ![Catalog card view with one pagination control](screenshots/latest-ux/catalog-single-page-cards.png)
 
