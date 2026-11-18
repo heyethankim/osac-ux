@@ -8485,7 +8485,7 @@
       { name: 'azure-baboon-27', ns: 'yifat', status: 'running', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-inference-standard', conditions: ['DataVolumesReady=True', 'LiveMigratable=True', 'RestartRequired=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '10.130.1.223', created: '11 Feb 2026, 8:38', computeResource: 'large', activeComputeId: 'small', restartRequired: { message: 'The VM is still using its current configuration. Restart it to apply the resize.', changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, bootDiskAccessMode: 'RWO' },
       { name: 'rhel9-black-gunnysack-58', ns: 'project-a', status: 'running', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-gpu-training-server', conditions: ['DataVolumesReady=True', 'Ready=True'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '10.130.1.224', created: '19 Jan 2026, 7:29', computeResource: 'large-gpu', gpuDevices: [{ name: 'NVIDIA A100 80 GB' }], hostDevices: [{ name: 'host-pci-1' }], sshSecretId: 'ssh-cluster-admin', cloudInitSource: 'inline', cloudInit: '#cloud-config\npackages:\n  - nginx\n', bootDiskAccessMode: 'RWO' },
       { name: 'windows-golden-eider-58', ns: 'project-a', status: 'stopped', os: 'Windows', osFull: 'Microsoft Windows Server 2022', imageLabel: 'Windows Server 2022', catalogItem: 'vm-windows-workstation', conditions: ['Ready=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '—', created: '11 Feb 2026, 9:48', sysprepConfigured: true, sysprepSecretId: 'sysprep-corp-std', bootDiskAccessMode: 'RWO' },
-      { name: 'fedora-aqua-barnacle-58', ns: 'yifat', status: 'running', os: 'Fedora', osFull: 'Fedora Linux 41', imageLabel: 'Fedora 41', catalogItem: 'vm-dev-workstation', conditions: ['DataVolumesReady=True', 'LiveMigratable=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.231', created: '11 Feb 2026, 8:49', computeResource: 'large', activeComputeId: 'small', resizeProgress: { phase: 'after-restart', startedAtMs: Date.now() - 8 * 60000, startedAt: new Date(Date.now() - 8 * 60000).toLocaleString('en-GB'), lastUpdatedAt: new Date(Date.now() - 5 * 60000).toLocaleString('en-GB'), changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, hostDevices: [{ name: 'host-usb-1' }], sshSecretId: 'ssh-yifat-dev', cloudInitSource: 'secret', cloudInitSecretId: 'ud-fedora-init' },
+      { name: 'fedora-aqua-barnacle-58', ns: 'yifat', status: 'running', os: 'Fedora', osFull: 'Fedora Linux 41', imageLabel: 'Fedora 41', catalogItem: 'vm-dev-workstation', conditions: ['DataVolumesReady=True', 'LiveMigratable=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.231', created: '11 Feb 2026, 8:49', computeResource: 'large', activeComputeId: 'small', resizeProgress: { phase: 'after-restart', startedAtMs: Date.now() - 8 * 60000, startedAt: new Date(Date.now() - 8 * 60000).toLocaleString('en-GB'), lastUpdatedAt: new Date(Date.now() - 5 * 60000).toLocaleString('en-GB'), changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.21', externalIpRetryAttempt: 2, hostDevices: [{ name: 'host-usb-1' }], sshSecretId: 'ssh-yifat-dev', cloudInitSource: 'secret', cloudInitSecretId: 'ud-fedora-init' },
       { name: 'debian-cobalt-heron-41', ns: 'yifat', status: 'running', os: 'Other', osFull: 'Debian 12', imageLabel: 'Debian 12', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.238', created: '10 Nov 2026, 16:05', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, bootDiskAccessMode: 'RWO' },
       { name: 'rhel8-mystic-eagle-22', ns: 'vmaas', status: 'ErrorPvcNotFound', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 8', imageLabel: 'RHEL 8.10', catalogItem: 'vm-legacy-app-server', conditions: ['Provisioning=False', 'Ready=False'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '—', created: '22 Jan 2026, 14:42', alerts: [{ severity: 'warning', message: 'Boot disk is unavailable' }, { severity: 'warning', message: 'Virtual machine is not Ready' }], bootDiskAccessMode: 'RWO' },
       { name: 'gpu-provisioning-failed', ns: 'project-a', status: 'starting', provisioningFailed: true, provisioningFailureReason: 'ProvisioningFailed', provisioningFailureMessage: 'AAP job failed', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', computeResource: 'small-gpu', conditions: ['PROVISIONED=False', 'ProvisioningFailed'], node: '—', ip: '—', created: '9 Nov 2026, 15:57' },
@@ -9127,10 +9127,14 @@
     /** OSAC-7158: configuration operations live above Overview; Overview shows active values. */
     function vmConfigurationOperationAlertsHtml(vm) {
       const alerts = [];
+      if (vm.restartRequired?.changes?.length) {
+        const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
+        alerts.push({ kind: 'info', title: 'Resize scheduled', description: `Restart the VM to apply instance type ${target}.` });
+      }
       if (vm.resizeProgress) {
         const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
-        const retry = vm.resizeProgress.retryAttempt && vm.resizeProgress.retryLimit
-          ? ` Retry ${vm.resizeProgress.retryAttempt} of ${vm.resizeProgress.retryLimit} is in progress.`
+        const retry = Number(vm.resizeProgress.retryAttempt) > 1
+          ? ` Attempt ${Number(vm.resizeProgress.retryAttempt)}.`
           : '';
         alerts.push({ kind: 'info', title: 'Resize in progress', description: `Applying instance type ${target}.${retry}` });
       } else if (vm.resizeFailure) {
@@ -9145,8 +9149,8 @@
       if (ipStatus === 'attaching' || ipStatus === 'failed') {
         const target = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
         if (ipStatus === 'attaching') {
-          const retry = vm.externalIpRetryAttempt && vm.externalIpRetryLimit
-            ? ` Retry ${vm.externalIpRetryAttempt} of ${vm.externalIpRetryLimit} is in progress.`
+          const retry = Number(vm.externalIpRetryAttempt) > 1
+            ? ` Attempt ${Number(vm.externalIpRetryAttempt)}.`
             : '';
           alerts.push({ kind: 'info', title: 'External IP attachment in progress', description: `Attaching external IP ${target}.${retry}` });
         } else {
@@ -9157,12 +9161,21 @@
           alerts.push({ kind: 'danger', title: 'External IP attachment failed', description: `${reason}${retry}` });
         }
       }
-      return alerts.map(({ kind, title, description }) => `
-        <div class="pf-v6-c-alert pf-m-inline pf-m-${kind} vm-restart-required" role="${kind === 'danger' ? 'alert' : 'status'}">
-          <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-${kind === 'danger' ? 'exclamation' : 'info'}" aria-hidden="true"></i></div>
+      if (alerts.length === 0 || (alerts.length === 1 && vm.restartRequired?.changes?.length)) return '';
+      const hasFailure = alerts.some(alert => alert.kind === 'danger');
+      const kind = hasFailure ? 'danger' : 'info';
+      const title = alerts.length === 1
+        ? alerts[0].title
+        : (hasFailure ? 'Configuration changes need attention' : 'Configuration changes in progress');
+      const description = alerts.length === 1
+        ? alerts[0].description
+        : `<ul class="pf-v6-c-list">${alerts.map(alert => `<li><strong>${alert.title}:</strong> ${alert.description}</li>`).join('')}</ul>`;
+      return `
+        <div class="pf-v6-c-alert pf-m-inline pf-m-${kind} vm-restart-required" role="${hasFailure ? 'alert' : 'status'}">
+          <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-${hasFailure ? 'exclamation' : 'info'}" aria-hidden="true"></i></div>
           <h4 class="pf-v6-c-alert__title">${title}</h4>
           <div class="pf-v6-c-alert__description">${description}</div>
-        </div>`).join('');
+        </div>`;
     }
 
     function editComputeResizeAlertHtml(path, selectionChanged) {
@@ -17137,8 +17150,8 @@
                 </div>
       `;
 
-      const resizeStatusHtml = vmResizeStatusAlertHtml(v);
       const operationAlertsHtml = vmConfigurationOperationAlertsHtml(v);
+      const resizeStatusHtml = operationAlertsHtml ? '' : vmResizeStatusAlertHtml(v);
       const provisioningFailureHtml = v.provisioningFailed ? `
         <div class="pf-v6-c-alert pf-m-inline pf-m-danger" role="alert">
           <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></div>
