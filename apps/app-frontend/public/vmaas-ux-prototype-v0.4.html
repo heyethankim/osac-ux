@@ -8834,7 +8834,7 @@
       if (lifecycle !== 'Deprecated' && lifecycle !== 'Obsolete') return '';
       const diskDeprecated = lifecycle === 'Deprecated' && resource === 'disk image';
       const color = lifecycle === 'Deprecated' && !diskDeprecated ? 'pf-m-gold' : 'pf-m-grey';
-      return `<span class="pf-v6-c-label ${diskDeprecated ? '' : 'pf-m-outline'} pf-m-compact ${color}" data-pf-tooltip="${richSelectEsc(instanceTypeLifecycleTooltip(lifecycle, resource))}" ${diskDeprecated ? 'tabindex="0"' : ''}><span class="pf-v6-c-label__content">${diskDeprecated ? '<span class="pf-v6-c-label__icon" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></span>' : ''}<span class="pf-v6-c-label__text">${lifecycle}</span></span></span>`;
+      return `<span class="pf-v6-c-label ${diskDeprecated ? '' : 'pf-m-outline'} pf-m-compact ${color}" data-pf-tooltip="${richSelectEsc(instanceTypeLifecycleTooltip(lifecycle, resource))}" ${diskDeprecated ? 'tabindex="0"' : ''}><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">${lifecycle}</span></span></span>`;
     }
 
     function instanceTypeLifecycleTooltip(lifecycle, resource = 'instance type') {
@@ -21403,7 +21403,7 @@
     function lifecycleLabelHtml(state, resource = 'instance type') {
       const key = String(state || '').toLowerCase();
       if (key === 'deprecated' && resource === 'disk image') {
-        return `<span class="pf-v6-c-label pf-m-compact pf-m-grey" data-pf-tooltip="${richSelectEsc(instanceTypeLifecycleTooltip(state, resource))}" tabindex="0"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__icon" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></span><span class="pf-v6-c-label__text">Deprecated</span></span></span>`;
+        return `<span class="pf-v6-c-label pf-m-compact pf-m-grey" data-pf-tooltip="${richSelectEsc(instanceTypeLifecycleTooltip(state, resource))}" tabindex="0"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Deprecated</span></span></span>`;
       }
       const mod = (key === 'active' || key === 'available') ? 'pf-m-active'
         : key === 'obsolete' ? 'pf-m-obsolete'
