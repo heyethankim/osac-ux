@@ -20,7 +20,7 @@ The VM list uses compact PatternFly pagination in card and table views: an item-
 
 ![Version 0.5 VM table with configuration labels in the Status column](screenshots/latest-ux/vm-config-label-table-0.5.jpg)
 
-![Version 0.5 configuration label tooltip naming concurrent operations](screenshots/latest-ux/vm-config-label-tooltip-0.5.jpg)
+![Version 0.5 configuration label tooltip naming concurrent operations](screenshots/latest-ux/vm-config-label-tooltip-crop-0.5.jpg)
 
 The screenshots below document the earlier 0.4 list and resize layout. The 0.5 screenshots above show the current operation alert and list labels.
 

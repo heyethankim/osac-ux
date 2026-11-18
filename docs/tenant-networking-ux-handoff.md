@@ -18,7 +18,7 @@ In version **0.5** (OSAC-7158), show attachment progress or failure in a top-of-
 
 In the VM list, external-IP work contributes to the same single configuration label in the **Status** column as resize. Use **Changes in progress** while attaching or **Changes need attention** if attachment failed; the tooltip names the operation and selected address. Keep the VM power state separate.
 
-![Version 0.5 configuration label tooltip with resize and external-IP attachment](screenshots/latest-ux/vm-config-label-tooltip-0.5.jpg)
+![Version 0.5 configuration label tooltip with resize and external-IP attachment](screenshots/latest-ux/vm-config-label-tooltip-crop-0.5.jpg)
 
 ![Version 0.5 External IP attachment in the shared configuration alert](screenshots/latest-ux/vm-config-operations-0.5.jpg)
 
