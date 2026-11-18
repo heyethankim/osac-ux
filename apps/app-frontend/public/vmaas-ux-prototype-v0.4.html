@@ -8493,7 +8493,6 @@
     ];
 
     const FILTER_CATALOG = {
-      project: ['project-a', 'openshift', 'testuser', 'vmaas', 'yifat'],
       os: ['CentOS', 'Fedora', 'Other', 'RHEL', 'Windows'],
     };
 
@@ -10232,6 +10231,7 @@
       'project-a', 'yifat', 'vmaas', 'default', 'openshift-virt',
       'team-platform', 'team-ml', 'team-edge', 'sandbox', 'ci-cd',
       'production', 'staging', 'shared-services', 'demo-lab', 'customer-engineering',
+      'openshift', 'testuser',
     ];
     const GROUPS = [
       'production', 'staging', 'workloads', 'batch', 'interactive',
@@ -10869,7 +10869,11 @@
     }
 
     function initVmFilterDropdowns() {
-      buildMultiSelectMenu('projectFilterMenu', 'project', FILTER_CATALOG.project, {
+      const projectOptions = [...new Set([
+        ...PROJECTS,
+        ...VMS.map(vm => vm.project || vm.ns).filter(Boolean),
+      ])];
+      buildMultiSelectMenu('projectFilterMenu', 'project', projectOptions, {
         labelFor: projectDisplayName,
       });
       buildStatusMenu();
