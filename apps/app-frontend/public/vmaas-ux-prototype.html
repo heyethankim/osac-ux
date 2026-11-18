@@ -1315,6 +1315,11 @@
     .vm-restart-required {
       margin: 0 0 20px;
     }
+    .vm-config-operation__retry {
+      display: block;
+      margin-top: 4px;
+      color: var(--pf-t--global--text--color--subtle, #6a6e73);
+    }
     .vm-resize-scheduled {
       margin-inline-start: 8px;
       width: max-content;
@@ -9144,9 +9149,9 @@
       if (vm.resizeProgress) {
         const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
         const retry = Number(vm.resizeProgress.retryAttempt) > 1
-          ? ` Attempt ${Number(vm.resizeProgress.retryAttempt)}.`
+          ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.resizeProgress.retryAttempt)}</span>`
           : '';
-        alerts.push({ kind: 'info', title: 'Resize in progress', description: `Applying instance type ${target}.${retry}` });
+        alerts.push({ kind: 'info', title: 'Resize in progress', description: `Changing instance type to <strong>${target}</strong>.${retry}` });
       } else if (vm.resizeFailure) {
         const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
         const reason = escAttr(vm.resizeFailure.reason || 'The requested instance type could not be applied.');
@@ -9160,9 +9165,9 @@
         const target = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
         if (ipStatus === 'attaching') {
           const retry = Number(vm.externalIpRetryAttempt) > 1
-            ? ` Attempt ${Number(vm.externalIpRetryAttempt)}.`
+            ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.externalIpRetryAttempt)}</span>`
             : '';
-          alerts.push({ kind: 'info', title: 'External IP attachment in progress', description: `Attaching external IP ${target}.${retry}` });
+          alerts.push({ kind: 'info', title: 'External IP attachment in progress', description: `Attaching external IP <strong>${target}</strong>.${retry}` });
         } else {
           const reason = escAttr(vm.externalIpError || `Couldn’t attach external IP ${target}.`);
           const retry = vm.externalIpNextRetryAt
