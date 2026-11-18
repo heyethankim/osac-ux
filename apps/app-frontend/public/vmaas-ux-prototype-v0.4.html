@@ -5292,6 +5292,12 @@
     .catalog-card-specs__value .catalog-gov-badge {
       flex: 0 0 auto;
     }
+    .catalog-card-disk-name {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--pf-t--global--spacer--xs, 4px);
+      white-space: nowrap;
+    }
     .vm-table .catalog-spec-value-with-badge {
       display: inline-flex;
       align-items: center;
@@ -24362,7 +24368,7 @@
         ? `<span class="catalog-card-disk-lifecycle">${instanceTypeLifecycleLabel('Deprecated', 'disk image')}</span>`
         : '';
       const diskValueHtml = diskMatch
-        ? `<span class="catalog-spec-value-with-badge"><button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskIcon}${diskImage}</button>${diskLifecycleHtml}${catalogAccessBadgeHtml(diskAccess, 'Disk image')}</span>`
+        ? `<span class="catalog-spec-value-with-badge"><span class="catalog-card-disk-name"><button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskIcon}${diskImage}</button>${diskLifecycleHtml}</span>${catalogAccessBadgeHtml(diskAccess, 'Disk image')}</span>`
         : `<span class="catalog-disk-image-value">${diskIcon}${diskImage}${catalogAccessBadgeHtml(diskAccess, 'Disk image')}</span>`;
       const rows = [
         { label: 'vCPUs', value: compute.cpu },
