@@ -24358,8 +24358,11 @@
       const computeValueHtml = `<span class="catalog-spec-value-with-badge">${String(compute.instanceTypeName || 'Not set').replace(/</g, '&lt;')}${catalogAccessBadgeHtml(computeAccess, 'Instance type')}</span>`;
       const diskIcon = catalogDiskImageIconHtml(item.diskImage);
       const diskMatch = findDiskImageByCatalogLabel(item.diskImage);
+      const diskLifecycleHtml = diskMatch?.lifecycle === 'Deprecated'
+        ? `<span class="catalog-card-disk-lifecycle">${instanceTypeLifecycleLabel('Deprecated', 'disk image')}</span>`
+        : '';
       const diskValueHtml = diskMatch
-        ? `<span class="catalog-spec-value-with-badge"><button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskIcon}${diskImage}</button>${catalogAccessBadgeHtml(diskAccess, 'Disk image')}</span>`
+        ? `<span class="catalog-spec-value-with-badge"><button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskIcon}${diskImage}</button>${diskLifecycleHtml}${catalogAccessBadgeHtml(diskAccess, 'Disk image')}</span>`
         : `<span class="catalog-disk-image-value">${diskIcon}${diskImage}${catalogAccessBadgeHtml(diskAccess, 'Disk image')}</span>`;
       const rows = [
         { label: 'vCPUs', value: compute.cpu },
@@ -24860,12 +24863,12 @@
     function wireCatalogCards(root) {
       root.querySelectorAll('[data-catalog-card]').forEach(card => {
         card.addEventListener('click', e => {
-          if (e.target.closest('[data-ci-kebab]') || e.target.closest('.kebab') || e.target.closest('[data-open-disk-image]')) return;
+          if (e.target.closest('[data-ci-kebab]') || e.target.closest('.kebab') || e.target.closest('[data-open-disk-image]') || e.target.closest('.catalog-card-disk-lifecycle')) return;
           openCatalogItemDetail(card.dataset.catalogCard);
         });
         card.addEventListener('keydown', e => {
           if (e.key !== 'Enter' && e.key !== ' ') return;
-          if (e.target.closest('[data-ci-kebab]') || e.target.closest('[data-open-disk-image]')) return;
+          if (e.target.closest('[data-ci-kebab]') || e.target.closest('[data-open-disk-image]') || e.target.closest('.catalog-card-disk-lifecycle')) return;
           e.preventDefault();
           openCatalogItemDetail(card.dataset.catalogCard);
         });
