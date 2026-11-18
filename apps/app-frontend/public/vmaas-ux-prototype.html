@@ -8831,7 +8831,8 @@
 
     function instanceTypeLifecycleLabel(lifecycle, resource = 'instance type') {
       if (lifecycle !== 'Deprecated' && lifecycle !== 'Obsolete') return '';
-      return `<span class="pf-v6-c-label pf-m-outline pf-m-compact ${lifecycle === 'Deprecated' ? 'pf-m-gold' : 'pf-m-grey'}" data-pf-tooltip="${richSelectEsc(instanceTypeLifecycleTooltip(lifecycle, resource))}"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">${lifecycle}</span></span></span>`;
+      const color = lifecycle === 'Deprecated' ? (resource === 'disk image' ? 'pf-m-orange' : 'pf-m-gold') : 'pf-m-grey';
+      return `<span class="pf-v6-c-label pf-m-outline pf-m-compact ${color}" data-pf-tooltip="${richSelectEsc(instanceTypeLifecycleTooltip(lifecycle, resource))}"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">${lifecycle}</span></span></span>`;
     }
 
     function instanceTypeLifecycleTooltip(lifecycle, resource = 'instance type') {
@@ -21442,6 +21443,9 @@
 
     function lifecycleLabelHtml(state, resource = 'instance type') {
       const key = String(state || '').toLowerCase();
+      if (key === 'deprecated' && resource === 'disk image') {
+        return `<span class="pf-v6-c-label pf-m-compact pf-m-orange" data-pf-tooltip="${richSelectEsc(instanceTypeLifecycleTooltip(state, resource))}" tabindex="0"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Deprecated</span></span></span>`;
+      }
       const mod = (key === 'active' || key === 'available') ? 'pf-m-active'
         : key === 'obsolete' ? 'pf-m-obsolete'
         : key === 'deprecated' ? 'pf-m-deprecated'
