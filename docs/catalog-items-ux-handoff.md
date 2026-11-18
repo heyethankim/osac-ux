@@ -11,7 +11,7 @@ The provider Catalog list supports publish-state and tenant filters, search, and
 
 On each Catalog card, show the **Instance type** name with its own Editable or Locked badge, followed by vCPUs, memory, and GPU as supporting specs. Show the **Disk image** with its separate badge. The badges describe whether tenants can change that specific value during VM creation; their tooltip and accessible label explain the effect. This follows the field-level pattern in Ethan's card design. Other editable settings remain on the catalog item details page rather than adding every field to the compact card. The card screenshot below predates this badge update; use the interactive mockup for the current card.
 
-The table view shows the same two badges. Its Instance type cell puts the name and badge first, with CPU, memory, and GPU details underneath. In the wizard, the first Editable/Locked control on each step always shows this explanation: “Editable: tenants can change this value when creating a VM. Locked: tenants must use the value you set.” Each control's accessible name states its field, current setting, and effect.
+The table view shows the same two badges. Its Instance type cell puts the name and badge first, with CPU, memory, and GPU details underneath. In the wizard, each Editable/Locked control keeps a short visible label; its accessible name states the field, current setting, and effect.
 
 ![Catalog card view with one pagination control](screenshots/latest-ux/catalog-single-page-cards.png)
 

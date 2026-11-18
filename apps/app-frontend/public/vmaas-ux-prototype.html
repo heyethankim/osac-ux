@@ -4708,10 +4708,6 @@
     .ci-field-label-row .pf-v6-c-switch__input:not(:checked) ~ .pf-v6-c-switch__label .ci-switch-on {
       display: none;
     }
-    .ci-access-help {
-      margin: 0 0 8px;
-      max-width: 40rem;
-    }
 
     .name-row { display: flex; gap: 12px; align-items: center; max-width: 560px; }
     .name-row input { flex: 1; }
@@ -13699,21 +13695,6 @@
       return 'Configured';
     }
 
-    const CATALOG_ACCESS_HELP_TEXT =
-      'Editable: tenants can change this value when creating a VM. Locked: tenants must use the value you set.';
-
-    /** Reset per catalog-create panel render so help attaches to the first switch only. */
-    let _ciAccessHelpSlotOpen = false;
-    function beginCatalogAccessSwitchRender() {
-      _ciAccessHelpSlotOpen = true;
-    }
-
-    function takeCatalogAccessHelpHtml() {
-      if (!_ciAccessHelpSlotOpen) return '';
-      _ciAccessHelpSlotOpen = false;
-      return `<p class="form-helper ci-access-help" id="ci-access-help">${CATALOG_ACCESS_HELP_TEXT}</p>`;
-    }
-
     /** PF6 Switch: keep the visible state short and name the field for screen readers. */
     function renderCatalogAccessSwitch({ stateKey, value }) {
       const editable = value !== 'locked';
@@ -13750,12 +13731,11 @@
       const cls = labelClass ? ` class="${labelClass}"` : '';
       const idAttr = labelId ? ` id="${labelId}"` : '';
       const forAttr = (forId && tag === 'label') ? ` for="${forId}"` : '';
-      const helpHtml = takeCatalogAccessHelpHtml();
       return `
         <div class="ci-field-label-row">
           <${tag}${cls}${idAttr}${forAttr}>${labelHtml}</${tag}>
           ${renderCatalogAccessSwitch({ stateKey, value })}
-        </div>${helpHtml}`;
+        </div>`;
     }
 
     function bindCatalogAccessSwitches(panel, c) {
@@ -22762,7 +22742,6 @@
       }
 
       if (key === 'ci-access') {
-        beginCatalogAccessSwitchRender();
         if (!c.diskImageAccess) c.diskImageAccess = 'editable';
         if (!c.guestOsFamily) c.guestOsFamily = 'Linux';
         if (c.diskImageMenuOpen == null) c.diskImageMenuOpen = false;
@@ -22936,7 +22915,6 @@
 
 
       if (key === 'ci-storage') {
-        beginCatalogAccessSwitchRender();
         const diskMin = 1;
         const diskMax = 16384;
         if (!c.bootDiskAccess) c.bootDiskAccess = 'editable';
@@ -23160,7 +23138,6 @@
 
 
       if (key === 'ci-access-init') {
-        beginCatalogAccessSwitchRender();
         if (c.cloudInit == null) c.cloudInit = '';
         if (c.sysprep == null) c.sysprep = '';
         if (!c.initAccess) c.initAccess = 'editable';
