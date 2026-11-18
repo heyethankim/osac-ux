@@ -5,9 +5,7 @@ Jira: [HPUX-2175](https://redhat.atlassian.net/browse/HPUX-2175)
 Google Doc: [Catalog items](https://docs.google.com/document/d/1YTm2X4nUXWVI_Mjq_hXEY4Rj6i9BaOiXjzVeF3jcMA4/edit)  
 Interactive mock: [Catalog, Cloud provider admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=38d7305&role=provider)
 
-This handoff describes the **0.4** mockup. Version **0.5** is available for subsequent work.
-
-In **0.5**, Catalog cards group vCPUs, memory, and GPU beneath **Instance type** with an indented vertical rule, matching the BMaaS card hierarchy. The GPU row says **None** when the selected instance type has no GPU; a dash remains reserved for unavailable data.
+This handoff describes the **0.4** mockup. Version **0.5** is available for subsequent work. In both versions, Catalog cards group vCPUs, memory, and GPU beneath **Instance type** with an indented vertical rule, matching the BMaaS card hierarchy. The GPU row says **None** when the selected instance type has no GPU; a dash remains reserved for unavailable data.
 
 The provider Catalog list supports publish-state and tenant filters, search, and card and table views. Both views show compact PatternFly pagination above the list: an item-range dropdown with Previous and Next. Show a second pagination control below the list only when results span multiple pages. The item count reflects the selected project or other active scope.
 
@@ -15,7 +13,7 @@ On each Catalog card, show the **Instance type** name with its own Editable or L
 
 The table view shows the same two badges. Its Instance type cell puts the name and badge first, with CPU, memory, and GPU details underneath. In the wizard, each Editable/Locked control keeps a short visible label; its accessible name states the field, current setting, and effect.
 
-![Current Catalog card view with field badges](screenshots/latest-ux/catalog-single-page-cards.jpg)
+![Earlier Catalog card view showing field badges; the current card groups compute specs beneath Instance type](screenshots/latest-ux/catalog-single-page-cards.jpg)
 
 ![Current Catalog list view with field badges](screenshots/latest-ux/catalog-single-page-list.jpg)
 
