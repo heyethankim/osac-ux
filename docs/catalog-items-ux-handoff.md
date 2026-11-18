@@ -7,6 +7,8 @@ Interactive mock: [Catalog, Cloud provider admin](https://osac-project.github.io
 
 This handoff describes the **0.4** mockup. Version **0.5** is available for subsequent work.
 
+In **0.5**, Catalog cards group vCPUs, memory, and GPU beneath **Instance type** with an indented vertical rule, matching the BMaaS card hierarchy. The GPU row says **None** when the selected instance type has no GPU; a dash remains reserved for unavailable data.
+
 The provider Catalog list supports publish-state and tenant filters, search, and card and table views. Both views show compact PatternFly pagination above the list: an item-range dropdown with Previous and Next. Show a second pagination control below the list only when results span multiple pages. The item count reflects the selected project or other active scope.
 
 On each Catalog card, show the **Instance type** name with its own Editable or Locked badge, followed by vCPUs, memory, and GPU as supporting specs. Show the **Disk image** with its separate badge. The badges describe whether tenants can change that specific value during VM creation; their tooltip and accessible label explain the effect. This follows the field-level pattern in Ethan's card design. Other editable settings remain on the catalog item details page rather than adding every field to the compact card.

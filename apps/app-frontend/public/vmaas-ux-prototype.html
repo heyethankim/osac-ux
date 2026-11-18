@@ -5264,6 +5264,17 @@
     .tpl-card--catalog .catalog-card-specs__row {
       grid-template-columns: 6.75rem minmax(0, 1fr);
     }
+    .tpl-card--catalog .catalog-card-specs__compute-children {
+      display: grid;
+      grid-template-columns: 6.75rem minmax(0, 1fr);
+      column-gap: var(--pf-t--global--spacer--sm, 8px);
+      row-gap: var(--pf-t--global--spacer--sm, 8px);
+      margin-inline-start: var(--pf-t--global--spacer--sm, 8px);
+      padding-inline-start: var(--pf-t--global--spacer--sm, 8px);
+      border-inline-start: 1px solid var(--pf-t--global--border--color--default, #d2d2d2);
+      font-size: var(--pf-t--global--font--size--body--sm, 14px);
+      line-height: 1.35;
+    }
     .catalog-card-specs__label {
       margin: 0;
       font-weight: 600;
@@ -24382,6 +24393,7 @@
 
     function catalogCardSpecsRowsHtml(item) {
       const compute = resolveCatalogItemCompute(item);
+      const instanceType = getCatalogInstanceType(item.instanceTypeId || item.computeResourceId || '');
       const computeAccess = catalogItemFieldAccess(item, 'computeAccess', 'computeLocked');
       const diskRaw = String(item.diskImage || 'Not set');
       const diskImage = diskRaw.replace(/</g, '&lt;');
@@ -24395,16 +24407,17 @@
       const rows = [
         { label: 'vCPUs', value: compute.cpu },
         { label: 'Memory', value: compute.memory },
-        { label: 'GPU', value: compute.gpu },
+        { label: 'GPU', value: instanceType && !instanceType.gpus ? 'None' : compute.gpu },
       ];
       return `<div class="catalog-card-specs__row">
           <dt class="catalog-card-specs__label">Instance type</dt>
           <dd class="catalog-card-specs__value">${computeValueHtml}</dd>
-        </div>${rows.map(row => `
-        <div class="catalog-card-specs__row">
-          <dt class="catalog-card-specs__label">${row.label}</dt>
-          <dd class="catalog-card-specs__value">${String(row.value).replace(/</g, '&lt;')}</dd>
-        </div>`).join('')}
+        </div>
+        <div class="catalog-card-specs__compute-children">
+          ${rows.map(row => `
+            <dt class="catalog-card-specs__label">${row.label}</dt>
+            <dd class="catalog-card-specs__value">${String(row.value).replace(/</g, '&lt;')}</dd>`).join('')}
+        </div>
         <div class="catalog-card-specs__row">
           <dt class="catalog-card-specs__label">Disk image</dt>
           <dd class="catalog-card-specs__value">${diskValueHtml}</dd>
