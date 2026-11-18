@@ -3,7 +3,7 @@
 Contact: Yifat Friman Menchik, UXD  
 Jira: [HPUX-2175](https://redhat.atlassian.net/browse/HPUX-2175)  
 Google Doc: [Catalog items](https://docs.google.com/document/d/1YTm2X4nUXWVI_Mjq_hXEY4Rj6i9BaOiXjzVeF3jcMA4/edit)  
-Interactive mock: [Catalog, Cloud provider admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=provider)
+Interactive mock: [Catalog, Cloud provider admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=38d7305&role=provider)
 
 This handoff describes the **0.4** mockup. Version **0.5** is available for subsequent work.
 
