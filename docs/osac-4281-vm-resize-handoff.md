@@ -84,6 +84,8 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![VM table with resize status labels and compact pagination](screenshots/latest-ux/vm-table.png)
 
+![Version 0.5 VM table with one configuration label per VM](screenshots/latest-ux/vm-config-label-table-0.5.jpg)
+
 **Resize failure.** Current resources stay visible; the reason appears in a danger notification.
 
 ![Resize failure on VM Overview](screenshots/vm-resize/resize-failed.png)

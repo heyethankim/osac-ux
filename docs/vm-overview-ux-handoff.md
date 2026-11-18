@@ -16,7 +16,13 @@ When a resize requires a restart, a persistent **info** notification at the top 
 
 The VM list uses compact PatternFly pagination in card and table views: an item-range dropdown plus Previous and Next above and below the results.
 
-The screenshots below document the 0.4 list and resize layout. The 0.5 alert screenshot above shows the current operation copy; use the 0.5 mockup for the current list label.
+![Version 0.5 VM cards with one configuration label per VM](screenshots/latest-ux/vm-config-label-cards-0.5.jpg)
+
+![Version 0.5 VM table with configuration labels in the Status column](screenshots/latest-ux/vm-config-label-table-0.5.jpg)
+
+![Version 0.5 configuration label tooltip naming concurrent operations](screenshots/latest-ux/vm-config-label-tooltip-0.5.jpg)
+
+The screenshots below document the earlier 0.4 list and resize layout. The 0.5 screenshots above show the current operation alert and list labels.
 
 ![VM list and compact pagination](screenshots/latest-ux/vm-list.png)
 
