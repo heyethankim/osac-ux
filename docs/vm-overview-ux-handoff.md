@@ -2,11 +2,15 @@
 
 Contact: Yifat Friman Menchik, UXD  
 Google Doc: [VM Overview](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit)  
-Interactive mock: [VM Overview, Tenant Admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=admin&vm=indigo-quokka-89)
+Interactive mock: [VM Overview 0.5, Tenant Admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=0.5&role=admin&vm=indigo-quokka-89)
 
 VM Overview shows the active instance type, CPU, and memory. Editing the instance type opens the name-first, two-line picker: each option has the resource name above CPU, memory, GPU count and readable model when present, and rate. Omit PCI hardware IDs from visible labels. The GPU specification still determines which resize targets are compatible. See the [resize handoff](osac-4281-vm-resize-handoff.md).
 
-When a resize requires a restart, a persistent **info** notification at the top says “Restart required to apply resize.” It is collapsed by default and expands to show current and requested values. The VM list retains its power status and adds a neutral **Resize scheduled** label with a restart tooltip. During application, show **Resize in progress** as a compact status label. Keep active values visible until completion.
+## Version 0.5 — configuration operations (OSAC-7158)
+
+The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Place configuration-operation alerts above Overview: an info alert while a resize or external-IP attachment is applying, and a danger alert if it fails. Name the requested instance type or the specific IP. Show retry attempt or next-attempt time only when available; say no further retry is scheduled only when explicitly known. Do not expose raw errors or imply that a manual Retry action exists.
+
+When a resize requires a restart, a persistent **info** notification at the top says “Restart required to apply resize.” It is collapsed by default and expands to show current and requested values. The VM list retains its power status and adds a neutral **Resize scheduled** label with a restart tooltip. During application, show **Resize in progress** as a compact list label. Keep active values visible until completion.
 
 The VM list uses compact PatternFly pagination in card and table views: an item-range dropdown plus Previous and Next above and below the results.
 

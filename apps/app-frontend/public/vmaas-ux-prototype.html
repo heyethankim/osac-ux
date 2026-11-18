@@ -7203,8 +7203,8 @@
           <label class="demo-bar__label" for="version-select">Version</label>
           <span class="pf-v6-c-form-control version-select">
             <select id="version-select" aria-label="Mockup version">
-              <option value="0.4" selected>0.4</option>
-              <option value="0.5" disabled>0.5 (not started)</option>
+              <option value="0.4">0.4</option>
+              <option value="0.5" selected>0.5</option>
             </select>
             <span class="pf-v6-c-form-control__utilities">
               <span class="pf-v6-c-form-control__toggle-icon"><svg viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"/></svg></span>
@@ -8452,7 +8452,7 @@
         computeResource: 'large',
         activeComputeId: 'small',
         resizeProgress: {
-          phase: 'hot', startedAtMs: Date.now() - 2 * 60000,
+          phase: 'hot', retryAttempt: 2, retryLimit: 3, startedAtMs: Date.now() - 2 * 60000,
           startedAt: new Date(Date.now() - 2 * 60000).toLocaleString('en-GB'),
           lastUpdatedAt: new Date(Date.now() - 60000).toLocaleString('en-GB'),
           changes: [
@@ -8486,7 +8486,7 @@
       { name: 'rhel9-black-gunnysack-58', ns: 'project-a', status: 'running', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-gpu-training-server', conditions: ['DataVolumesReady=True', 'Ready=True'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '10.130.1.224', created: '19 Jan 2026, 7:29', computeResource: 'large-gpu', gpuDevices: [{ name: 'NVIDIA A100 80 GB' }], hostDevices: [{ name: 'host-pci-1' }], sshSecretId: 'ssh-cluster-admin', cloudInitSource: 'inline', cloudInit: '#cloud-config\npackages:\n  - nginx\n', bootDiskAccessMode: 'RWO' },
       { name: 'windows-golden-eider-58', ns: 'project-a', status: 'stopped', os: 'Windows', osFull: 'Microsoft Windows Server 2022', imageLabel: 'Windows Server 2022', catalogItem: 'vm-windows-workstation', conditions: ['Ready=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '—', created: '11 Feb 2026, 9:48', sysprepConfigured: true, sysprepSecretId: 'sysprep-corp-std', bootDiskAccessMode: 'RWO' },
       { name: 'fedora-aqua-barnacle-58', ns: 'yifat', status: 'running', os: 'Fedora', osFull: 'Fedora Linux 41', imageLabel: 'Fedora 41', catalogItem: 'vm-dev-workstation', conditions: ['DataVolumesReady=True', 'LiveMigratable=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.231', created: '11 Feb 2026, 8:49', computeResource: 'large', activeComputeId: 'small', resizeProgress: { phase: 'after-restart', startedAtMs: Date.now() - 8 * 60000, startedAt: new Date(Date.now() - 8 * 60000).toLocaleString('en-GB'), lastUpdatedAt: new Date(Date.now() - 5 * 60000).toLocaleString('en-GB'), changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, hostDevices: [{ name: 'host-usb-1' }], sshSecretId: 'ssh-yifat-dev', cloudInitSource: 'secret', cloudInitSecretId: 'ud-fedora-init' },
-      { name: 'debian-cobalt-heron-41', ns: 'yifat', status: 'running', os: 'Other', osFull: 'Debian 12', imageLabel: 'Debian 12', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.238', created: '10 Nov 2026, 16:05', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.' }, bootDiskAccessMode: 'RWO' },
+      { name: 'debian-cobalt-heron-41', ns: 'yifat', status: 'running', os: 'Other', osFull: 'Debian 12', imageLabel: 'Debian 12', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.238', created: '10 Nov 2026, 16:05', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, bootDiskAccessMode: 'RWO' },
       { name: 'rhel8-mystic-eagle-22', ns: 'vmaas', status: 'ErrorPvcNotFound', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 8', imageLabel: 'RHEL 8.10', catalogItem: 'vm-legacy-app-server', conditions: ['Provisioning=False', 'Ready=False'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '—', created: '22 Jan 2026, 14:42', alerts: [{ severity: 'warning', message: 'Boot disk is unavailable' }, { severity: 'warning', message: 'Virtual machine is not Ready' }], bootDiskAccessMode: 'RWO' },
       { name: 'gpu-provisioning-failed', ns: 'project-a', status: 'starting', provisioningFailed: true, provisioningFailureReason: 'ProvisioningFailed', provisioningFailureMessage: 'AAP job failed', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', computeResource: 'small-gpu', conditions: ['PROVISIONED=False', 'ProvisioningFailed'], node: '—', ip: '—', created: '9 Nov 2026, 15:57' },
       { name: 'legacy-obsolete-vm', ns: 'project-a', status: 'stopped', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', computeResource: '8xlarge', conditions: ['Ready=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '—', created: '8 Nov 2026, 10:21', bootDiskAccessMode: 'RWO' },
@@ -9122,6 +9122,47 @@
             </div>
           </div>
         </div>`;
+    }
+
+    /** OSAC-7158: configuration operations live above Overview; Overview shows active values. */
+    function vmConfigurationOperationAlertsHtml(vm) {
+      const alerts = [];
+      if (vm.resizeProgress) {
+        const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
+        const retry = vm.resizeProgress.retryAttempt && vm.resizeProgress.retryLimit
+          ? ` Retry ${vm.resizeProgress.retryAttempt} of ${vm.resizeProgress.retryLimit} is in progress.`
+          : '';
+        alerts.push({ kind: 'info', title: 'Resize in progress', description: `Applying instance type ${target}.${retry}` });
+      } else if (vm.resizeFailure) {
+        const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
+        const reason = escAttr(vm.resizeFailure.reason || 'The requested instance type could not be applied.');
+        const retry = vm.resizeFailure.nextRetryAt
+          ? ` Another attempt is scheduled for ${escAttr(vm.resizeFailure.nextRetryAt)}.`
+          : (vm.resizeFailure.retryPlanned === false ? ' No further retry is scheduled.' : '');
+        alerts.push({ kind: 'danger', title: 'Resize failed', description: `Could not apply instance type ${target}. ${reason}${retry}` });
+      }
+      const ipStatus = vmExternalIpStatus(vm);
+      if (ipStatus === 'attaching' || ipStatus === 'failed') {
+        const target = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
+        if (ipStatus === 'attaching') {
+          const retry = vm.externalIpRetryAttempt && vm.externalIpRetryLimit
+            ? ` Retry ${vm.externalIpRetryAttempt} of ${vm.externalIpRetryLimit} is in progress.`
+            : '';
+          alerts.push({ kind: 'info', title: 'External IP attachment in progress', description: `Attaching external IP ${target}.${retry}` });
+        } else {
+          const reason = escAttr(vm.externalIpError || `Couldn’t attach external IP ${target}.`);
+          const retry = vm.externalIpNextRetryAt
+            ? ` Another attempt is scheduled for ${escAttr(vm.externalIpNextRetryAt)}.`
+            : (vm.externalIpRetryPlanned === false ? ' No further retry is scheduled.' : '');
+          alerts.push({ kind: 'danger', title: 'External IP attachment failed', description: `${reason}${retry}` });
+        }
+      }
+      return alerts.map(({ kind, title, description }) => `
+        <div class="pf-v6-c-alert pf-m-inline pf-m-${kind} vm-restart-required" role="${kind === 'danger' ? 'alert' : 'status'}">
+          <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-${kind === 'danger' ? 'exclamation' : 'info'}" aria-hidden="true"></i></div>
+          <h4 class="pf-v6-c-alert__title">${title}</h4>
+          <div class="pf-v6-c-alert__description">${description}</div>
+        </div>`).join('');
     }
 
     function editComputeResizeAlertHtml(path, selectionChanged) {
@@ -15348,20 +15389,24 @@
         vm._extIpAttachTimer = null;
         if (simulateFail) {
           vm.externalIpStatus = 'failed';
+          vm.externalIpAttempted = address;
           vm.externalIpPending = '';
           vm.externalIp = '';
           vm.externalIpAttached = false;
           vm.externalIpError = `Couldn’t attach external IP ${address}.`;
+          vm.externalIpRetryPlanned = false;
           renderVmDetail();
           return;
         }
         const allocated = allocateExternalIp(address, vm.name);
         if (!allocated) {
           vm.externalIpStatus = 'failed';
+          vm.externalIpAttempted = address;
           vm.externalIpPending = '';
           vm.externalIp = '';
           vm.externalIpAttached = false;
           vm.externalIpError = `Couldn’t attach external IP ${address}.`;
+          vm.externalIpRetryPlanned = false;
           renderVmDetail();
           return;
         }
@@ -15382,16 +15427,8 @@
       const safeIp = attachedIp.replace(/</g, '&lt;');
 
       let addressHtml = '';
-      let statusHtml = '';
       if (status === 'attached' && attachedIp) {
         addressHtml = `<code>${safeIp}</code>`;
-      } else if (status === 'attaching') {
-        statusHtml = `<p class="vm-access-section__meta"><span class="vm-access-section__spinner" aria-hidden="true"></span>Attaching external IP…</p>`;
-      } else if (status === 'failed') {
-        const err = vm.externalIpError
-          ? String(vm.externalIpError).replace(/</g, '&lt;')
-          : 'Failed to attach external IP.';
-        statusHtml = `<p class="vm-access-section__meta vm-access-section__meta--danger" role="alert">${err}</p>`;
       }
 
       let actions = '';
@@ -15409,7 +15446,6 @@
 
       const contentHtml = `
         ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml}${actions}</div>` : ''}
-        ${statusHtml}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
       return `
@@ -17102,12 +17138,7 @@
       `;
 
       const resizeStatusHtml = vmResizeStatusAlertHtml(v);
-      const resizeFailureHtml = v.resizeFailure ? `
-        <div class="pf-v6-c-alert pf-m-inline pf-m-danger vm-restart-required" role="alert">
-          <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></div>
-          <h4 class="pf-v6-c-alert__title">Resize failed</h4>
-          <div class="pf-v6-c-alert__description">${String(v.resizeFailure.reason || 'The requested instance type could not be applied.').replace(/</g, '&lt;')}</div>
-        </div>` : '';
+      const operationAlertsHtml = vmConfigurationOperationAlertsHtml(v);
       const provisioningFailureHtml = v.provisioningFailed ? `
         <div class="pf-v6-c-alert pf-m-inline pf-m-danger" role="alert">
           <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></div>
@@ -17118,16 +17149,14 @@
         <div class="vm-overview-v2">
           <div class="vm-overview-v2__main">
             ${resizeStatusHtml}
-            ${resizeFailureHtml}
+            ${operationAlertsHtml}
             ${provisioningFailureHtml}
             <section class="vm-overview-v2__details" aria-label="Details">
               <div class="vm-overview-v2__detail-cols">
                 <section class="ethan-detail-col" aria-labelledby="vm-overview-title">
                   <h3 class="ethan-detail-col__title" id="vm-overview-title">Overview</h3>
                   ${itField('Project', projectDisplay)}
-                  ${itField('Status', v.resizeProgress || v.resizeFailure
-                    ? `<span class="vm-status-with-resize">${statusCell(v.status, v.name)}${vmResizeScheduledLabelHtml(v)}</span>`
-                    : statusCell(v.status, v.name))}
+                  ${itField('Status', statusCell(v.status, v.name))}
                   ${itField('Created', v.created || '—')}
                   ${itField('Catalog item', catalogItemDisplay)}
                 </section>
@@ -25547,6 +25576,12 @@
       }
     });
     document.getElementById('role-select').addEventListener('change', applyRole);
+    document.getElementById('version-select')?.addEventListener('change', e => {
+      const url = new URL(window.location.href);
+      url.pathname = url.pathname.replace(/vmaas-ux-prototype(?:-v0\.4)?\.html$/, e.target.value === '0.4' ? 'vmaas-ux-prototype-v0.4.html' : 'vmaas-ux-prototype.html');
+      url.searchParams.set('v', e.target.value);
+      window.location.assign(url.href);
+    });
 
     document.getElementById('vm-bulk-menu-btn')?.addEventListener('click', e => {
       e.stopPropagation();
