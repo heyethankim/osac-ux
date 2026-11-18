@@ -25708,7 +25708,7 @@
         openVmDetail(openBtn.dataset.openVm, 'overview');
         return;
       }
-      if (e.target.closest('.vm-row-check, .pf-v6-c-check, .status-link, .kebab, button, a, label, input')) {
+      if (e.target.closest('.vm-row-check, .pf-v6-c-check, .status-link, .vm-configuration-label, .kebab, button, a, label, input')) {
         return;
       }
       const card = e.target.closest('[data-vm-card]');
