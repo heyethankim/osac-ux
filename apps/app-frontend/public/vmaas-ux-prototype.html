@@ -1324,6 +1324,10 @@
       width: max-content;
       max-width: 100%;
     }
+    .vm-configuration-label:focus-visible {
+      outline: 2px solid var(--vmaas-blue);
+      outline-offset: 2px;
+    }
     .vm-status-with-configuration {
       display: flex;
       align-items: center;
@@ -8920,12 +8924,12 @@
       if (ipStatus === 'failed') details.push(`External IP attachment for ${ipTarget} failed`);
       else if (ipStatus === 'attaching') details.push(`Attaching external IP ${ipTarget}`);
       const tooltip = `${details.join('; ')}.`;
-      return `<button type="button" class="pf-v6-c-label pf-m-outline pf-m-${failed ? 'red' : 'grey'} pf-m-compact vm-configuration-label"
-        data-pf-tooltip="${escAttr(tooltip)}" aria-label="${escAttr(`${label}. ${tooltip}`)}">
+      return `<span class="pf-v6-c-label pf-m-outline pf-m-${failed ? 'red' : 'grey'} pf-m-compact vm-configuration-label"
+        data-pf-tooltip="${escAttr(tooltip)}" aria-label="${escAttr(`${label}. ${tooltip}`)}" tabindex="0">
         <span class="pf-v6-c-label__content">
           <span class="pf-v6-c-label__text">${label}</span>
         </span>
-      </button>`;
+      </span>`;
     }
 
     function vmRequiresGpu(vm) {
