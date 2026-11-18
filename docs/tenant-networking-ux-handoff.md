@@ -16,6 +16,8 @@ The **External IP** heading is sufficient; do not add a Host label or empty plac
 
 In version **0.5** (OSAC-7158), show attachment progress or failure in a top-of-page alert above Overview instead of inline under External IP. Name the selected address, for example “Attaching external IP **198.51.100.99**” or “Couldn’t attach external IP 198.51.100.99.” If another configuration operation is active, put both operations in one alert as separate bullets. Show “Retry attempt: 2” on a separate subdued line only when a later attempt is known; do not imply a fixed total. The failed address must not appear as an attached IP, and there is no manual Retry, Choose another, or Detach action in the failure state.
 
+![Version 0.5 External IP attachment in the shared configuration alert](screenshots/latest-ux/vm-config-operations-0.5.jpg)
+
 ![Auto attached external IP status label](screenshots/latest-ux/tenant-networking-auto-ip-badge.png)
 
 ![No external IP attached](screenshots/latest-ux/tenant-networking-no-ip.png)
