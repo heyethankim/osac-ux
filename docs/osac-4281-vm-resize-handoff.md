@@ -4,7 +4,9 @@ Contact: Yifat Friman Menchik, UXD
 Updated: 12 November 2026
 
 UX Google Doc: https://docs.google.com/document/d/1kgln_LzTA3-VSP0SUM0jLce2Nvw0pix3oTYkwZuX-wE/edit  
-Interactive mockup: https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=admin&vm=windows-golden-eider-58
+Interactive mockup, 0.4: https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=admin&vm=windows-golden-eider-58
+
+Interactive mockup, 0.5: https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=0.5&role=admin&vm=fedora-aqua-barnacle-58
 Feature: [OSAC-4277](https://redhat.atlassian.net/browse/OSAC-4277)  
 Resize: [OSAC-4281](https://redhat.atlassian.net/browse/OSAC-4281)  
 Related work: [OSAC-7576](https://redhat.atlassian.net/browse/OSAC-7576), [OSAC-7463](https://redhat.atlassian.net/browse/OSAC-7463), [OSAC-7582](https://redhat.atlassian.net/browse/OSAC-7582), [OSAC-6578](https://redhat.atlassian.net/browse/OSAC-6578)
@@ -25,15 +27,15 @@ Show Deprecated instance types as selectable options with a **Deprecated** label
 
 A success toast confirms the saved request. For a Running or Paused VM that requires restart, show a persistent PF6 info notification at the top of VM Overview: **Restart required to apply resize**. Keep the VM's **active** instance type, vCPUs, and memory as the main configuration values, including the CPU and memory totals in Utilization. Under **Scheduled changes**, show current → requested values for instance type, vCPUs, and memory without repeating “Configuration” before each field. Use the expandable alert, collapsed by default to save vertical space. The title stays visible; expanding reveals the description and change list. New scheduled changes reset it to collapsed so the default layout remains compact. A Restart action in the notification is optional and depends on the supported VM action.
 
-On the VM list, retain the normal power status (for example, Running). Add a separate, neutral, outlined PatternFly 6 **Resize scheduled** label beside the VM name. Its tooltip says, “Restart the VM to apply the new CPU and memory.” A Stopped VM's new size applies on its next start.
+On the VM list, retain the normal power status (for example, Running). In 0.5, show one neutral, outlined **Changes pending** label in the Status column while restart is required; its tooltip names the resize target and explains that a restart is needed. The card view shows the same label with its power status. A Stopped VM's new size applies on its next start. The 0.4 screenshots below show the earlier **Resize scheduled** label beside the name.
 
 ## Resize in progress
 
-When the API reports that a resize is applying without a restart, keep **Running** as the VM power state and show a separate **Resize in progress** label in card and table views. In version 0.5, the VM Overview Status row shows only Running; a top-of-page info alert names the requested instance type and any known retry attempt. Keep the active instance type, CPU, and memory as the main values until the API confirms the new configuration is active. The mockup uses `indigo-quokka-89` for this state.
+When the API reports that a resize is applying without a restart, keep **Running** as the VM power state. In 0.5, show one **Changes in progress** label with the power status in card and table views; its tooltip names the resize target and any other active configuration operation. The VM Overview Status row shows only Running; a top-of-page info alert names the requested instance type and any known retry attempt. Keep the active instance type, CPU, and memory as the main values until the API confirms the new configuration is active. The mockup uses `indigo-quokka-89` for this state.
 
-After the user restarts a VM with a scheduled resize, remove **Restart required** and show the same compact **Resize in progress** label in lists while the resize is still applying, even if the VM power state has returned to **Running**. In version 0.5, the details page uses the top-of-page operation alert and keeps Overview Status as Running. The mockup uses `fedora-aqua-barnacle-58` for this state; restarting `azure-baboon-27` also demonstrates the transition.
+After the user restarts a VM with a scheduled resize, remove **Restart required** and show **Changes in progress** in lists while the resize is still applying, even if the VM power state has returned to **Running**. In version 0.5, the details page uses the top-of-page operation alert and keeps Overview Status as Running. The mockup uses `fedora-aqua-barnacle-58` for this state; restarting `azure-baboon-27` also demonstrates the transition.
 
-Do not show a persistent progress notification, timing details, or a Recent activity entry for this brief operation. Remove the progress label only when the API confirms completion, then show the new instance type, CPU, and memory as active values and a brief success toast. Keep configuration progress separate from the VM power state, as required by OSAC-6578. These states require operation phase and active versus requested values from the API; the mockup timer only demonstrates completion and must not be used as production logic. If the operation stalls or fails, keep the current resources visible and show **Resize failed** in the list and VM detail, with a danger notification containing the reason. Do not offer an unsupported recovery action.
+Do not show a persistent progress notification, timing details, or a Recent activity entry for this brief operation. Remove the configuration label only when the API confirms completion, then show the new instance type, CPU, and memory as active values and a brief success toast. Keep configuration progress separate from the VM power state, as required by OSAC-6578. These states require operation phase and active versus requested values from the API; the mockup timer only demonstrates completion and must not be used as production logic. If the operation stalls or fails, keep the current resources visible and show **Changes need attention** in the 0.5 list and a danger notification with the reason on VM details. Do not offer an unsupported recovery action.
 
 The API must expose or allow derivation of both active and requested configuration values, the restart-required condition, the resize operation phase, and a failure reason. Backend acceptance of the update depends on OSAC-5328.
 
@@ -78,7 +80,7 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![Resize in progress after restart](screenshots/vm-resize/resize-in-progress-after-restart.jpg)
 
-**VM table.** Resize scheduled and Resize in progress appear alongside power status.
+**VM table.** This 0.4 screenshot shows the older resize-specific labels. In 0.5, the Status column uses one configuration label per VM.
 
 ![VM table with resize status labels and compact pagination](screenshots/latest-ux/vm-table.png)
 

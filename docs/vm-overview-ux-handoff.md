@@ -12,11 +12,11 @@ The Overview **Status** row shows the VM power state only. Keep active instance 
 
 ![Version 0.5 configuration operations with target values and retry metadata](screenshots/latest-ux/vm-config-operations-0.5.jpg)
 
-When a resize requires a restart, a persistent **info** notification at the top says “Restart required to apply resize.” It is collapsed by default and expands to show current and requested values. The VM list retains its power status and adds a neutral **Resize scheduled** label with a restart tooltip. During application, show **Resize in progress** as a compact list label. Keep active values visible until completion.
+When a resize requires a restart, a persistent **info** notification at the top says “Restart required to apply resize.” It is collapsed by default and expands to show current and requested values. In the 0.5 VM list, keep the power state and show one configuration label in the **Status** column: **Changes pending** while restart is required, **Changes in progress** while work is applying, or **Changes need attention** if any operation failed. The card view places the same label with its power status. Its tooltip names each relevant operation and target, including external-IP attachment when applicable. Remove the label once no work is outstanding. Keep active values visible until completion.
 
 The VM list uses compact PatternFly pagination in card and table views: an item-range dropdown plus Previous and Next above and below the results.
 
-The screenshots below document the 0.4 list and resize layout. The 0.5 alert screenshot above shows the current operation copy.
+The screenshots below document the 0.4 list and resize layout. The 0.5 alert screenshot above shows the current operation copy; use the 0.5 mockup for the current list label.
 
 ![VM list and compact pagination](screenshots/latest-ux/vm-list.png)
 
