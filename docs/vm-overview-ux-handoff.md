@@ -2,7 +2,7 @@
 
 Contact: Yifat Friman Menchik, UXD  
 Google Doc: [VM Overview](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit)  
-Interactive mock: [VM Overview 0.5, Tenant Admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=0.5&role=admin&vm=indigo-quokka-89)
+Interactive mock: [VM Overview 0.5, Tenant Admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=2c28469&role=admin&vm=fedora-aqua-barnacle-58)
 
 VM Overview shows the active instance type, CPU, and memory. Editing the instance type opens the name-first, two-line picker: each option has the resource name above CPU, memory, GPU count and readable model when present, and rate. Omit PCI hardware IDs from visible labels. The GPU specification still determines which resize targets are compatible. See the [resize handoff](osac-4281-vm-resize-handoff.md).
 
@@ -16,7 +16,7 @@ When a resize requires a restart, a persistent **info** notification at the top 
 
 The VM list uses compact PatternFly pagination in card and table views: an item-range dropdown plus Previous and Next above and below the results.
 
-The screenshots below document the 0.4 layout. Use the 0.5 interactive mockup for the new operation alerts; refreshed 0.5 captures are pending.
+The screenshots below document the 0.4 list and resize layout. The 0.5 alert screenshot above shows the current operation copy.
 
 ![VM list and compact pagination](screenshots/latest-ux/vm-list.png)
 
