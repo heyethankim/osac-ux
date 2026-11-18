@@ -5285,6 +5285,18 @@
     .catalog-card-specs__value .catalog-gov-badge {
       flex: 0 0 auto;
     }
+    .vm-table .catalog-spec-value-with-badge {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--pf-t--global--spacer--sm, 8px);
+    }
+    .catalog-table-instance-type__details {
+      display: block;
+      color: var(--pf-t--global--text--color--subtle, #6a6e73);
+      font-size: var(--pf-t--global--font--size--sm, .875rem);
+      margin-top: .25rem;
+    }
     .catalog-disk-image-value__icon {
       flex: 0 0 auto;
       color: var(--pf-t--global--icon--color--regular, #6a6e73);
@@ -13633,30 +13645,18 @@
       return 'Configured';
     }
 
-    const CATALOG_ACCESS_HELP_LS = 'vmaas.prototype.catalogAccessHelpSeen';
     const CATALOG_ACCESS_HELP_TEXT =
-      'Editable lets tenants change this when creating a VM; Locked keeps your default.';
-
-    function catalogAccessHelpSeen() {
-      try { return localStorage.getItem(CATALOG_ACCESS_HELP_LS) === '1'; }
-      catch (_) { return false; }
-    }
-
-    function markCatalogAccessHelpSeen() {
-      try { localStorage.setItem(CATALOG_ACCESS_HELP_LS, '1'); }
-      catch (_) { /* ignore */ }
-    }
+      'Editable: tenants can change this value when creating a VM. Locked: tenants must use the value you set.';
 
     /** Reset per catalog-create panel render so help attaches to the first switch only. */
     let _ciAccessHelpSlotOpen = false;
     function beginCatalogAccessSwitchRender() {
-      _ciAccessHelpSlotOpen = !catalogAccessHelpSeen();
+      _ciAccessHelpSlotOpen = true;
     }
 
     function takeCatalogAccessHelpHtml() {
       if (!_ciAccessHelpSlotOpen) return '';
       _ciAccessHelpSlotOpen = false;
-      markCatalogAccessHelpSeen();
       return `<p class="form-helper ci-access-help" id="ci-access-help">${CATALOG_ACCESS_HELP_TEXT}</p>`;
     }
 
@@ -13672,7 +13672,7 @@
         extraDisksAccess: 'additional disks',
         initAccess: 'initial run configuration',
       };
-      const accessibleName = `Editable: ${fieldNames[stateKey] || 'field'}`;
+      const accessibleName = `${fieldNames[stateKey] || 'field'}: ${editable ? 'Editable. Tenants can change this when creating a VM.' : 'Locked. Tenants must use the value you set.'}`;
       return `
         <label class="pf-v6-c-switch" for="${id}">
           <input class="pf-v6-c-switch__input" type="checkbox" role="switch" id="${id}"
@@ -24345,27 +24345,28 @@
         ${gpuFields}`;
     }
 
+    function catalogAccessBadgeHtml(access, field) {
+      const editable = access === 'editable';
+      const explanation = editable
+        ? 'Tenants can change this when creating a VM.'
+        : 'Tenants must use this value when creating a VM.';
+      return `<span class="catalog-gov-badge${editable ? ' catalog-gov-badge--editable' : ''}"
+        data-pf-tooltip="${explanation}" tabindex="0"
+        aria-label="${field} ${editable ? 'editable' : 'locked'}. ${explanation}">${editable ? 'Editable' : 'Locked'}</span>`;
+    }
+
     function catalogCardSpecsRowsHtml(item) {
       const compute = resolveCatalogItemCompute(item);
       const computeAccess = catalogItemFieldAccess(item, 'computeAccess', 'computeLocked');
       const diskRaw = String(item.diskImage || 'Not set');
       const diskImage = diskRaw.replace(/</g, '&lt;');
       const diskAccess = catalogItemFieldAccess(item, 'diskImageAccess', 'diskLocked');
-      const cardBadge = (access, field) => {
-        const editable = access === 'editable';
-        const explanation = editable
-          ? 'Tenants can change this when creating a VM.'
-          : 'Tenants must use this value when creating a VM.';
-        return `<span class="catalog-gov-badge${editable ? ' catalog-gov-badge--editable' : ''}"
-          data-pf-tooltip="${explanation}" tabindex="0"
-          aria-label="${field} ${editable ? 'editable' : 'locked'}. ${explanation}">${editable ? 'Editable' : 'Locked'}</span>`;
-      };
-      const computeValueHtml = `<span class="catalog-spec-value-with-badge">${String(compute.instanceTypeName || 'Not set').replace(/</g, '&lt;')}${cardBadge(computeAccess, 'Instance type')}</span>`;
+      const computeValueHtml = `<span class="catalog-spec-value-with-badge">${String(compute.instanceTypeName || 'Not set').replace(/</g, '&lt;')}${catalogAccessBadgeHtml(computeAccess, 'Instance type')}</span>`;
       const diskIcon = catalogDiskImageIconHtml(item.diskImage);
       const diskMatch = findDiskImageByCatalogLabel(item.diskImage);
       const diskValueHtml = diskMatch
-        ? `<span class="catalog-spec-value-with-badge"><button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskIcon}${diskImage}</button>${cardBadge(diskAccess, 'Disk image')}</span>`
-        : `<span class="catalog-disk-image-value">${diskIcon}${diskImage}${cardBadge(diskAccess, 'Disk image')}</span>`;
+        ? `<span class="catalog-spec-value-with-badge"><button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskIcon}${diskImage}</button>${catalogAccessBadgeHtml(diskAccess, 'Disk image')}</span>`
+        : `<span class="catalog-disk-image-value">${diskIcon}${diskImage}${catalogAccessBadgeHtml(diskAccess, 'Disk image')}</span>`;
       const rows = [
         { label: 'vCPUs', value: compute.cpu },
         { label: 'Memory', value: compute.memory },
@@ -24982,15 +24983,18 @@
                     ? `<button type="button" class="name-link" data-open-disk-image="${String(diskMatch.name).replace(/"/g, '&quot;')}">${diskLabel}</button>`
                     : diskLabel;
                   const visibility = catalogPublishScopeLabel(item).replace(/</g, '&lt;');
-                  const compute = resolveCatalogItemCompute(item).summary.replace(/</g, '&lt;');
+                  const compute = resolveCatalogItemCompute(item);
+                  const computeName = String(compute.label).replace(/</g, '&lt;');
+                  const computeDetails = [compute.cpu, compute.memory, compute.gpu].filter(value => value !== '—').join(' · ').replace(/</g, '&lt;');
                   const rate = catalogRateLine(item);
-                  const lockSuffix = item.diskLocked ? ' · Locked' : '';
+                  const computeBadge = catalogAccessBadgeHtml(catalogItemFieldAccess(item, 'computeAccess', 'computeLocked'), 'Instance type');
+                  const diskBadge = catalogAccessBadgeHtml(catalogItemFieldAccess(item, 'diskImageAccess', 'diskLocked'), 'Disk image');
                   const publish = isProvider ? publishLabelHtml(item.publishState) : '';
                   return `
                   <tr class="pf-v6-c-table__tr" data-catalog-row="${item.id}" style="cursor:pointer;">
                     <td class="pf-v6-c-table__td"><a href="#" class="pf-v6-c-button pf-m-link pf-m-inline" data-catalog-open="${item.id}">${name}</a></td>
-                    <td class="pf-v6-c-table__td">${compute}</td>
-                    <td class="pf-v6-c-table__td">${diskImage}${lockSuffix}</td>
+                    <td class="pf-v6-c-table__td"><span class="catalog-spec-value-with-badge">${computeName}${computeBadge}</span><span class="catalog-table-instance-type__details">${computeDetails}</span></td>
+                    <td class="pf-v6-c-table__td"><span class="catalog-spec-value-with-badge">${diskImage}${diskBadge}</span></td>
                     <td class="pf-v6-c-table__td">${rate}</td>
                     ${isProvider ? `<td class="pf-v6-c-table__td">${publish}</td><td class="pf-v6-c-table__td">${visibility}</td>` : ''}
                     <td class="pf-v6-c-table__td"><button type="button" class="kebab" data-ci-kebab="${item.id}" aria-label="Actions for ${name}" aria-haspopup="menu" aria-expanded="false" aria-controls="ci-actions-menu"><i class="fa-solid fa-ellipsis-v" aria-hidden="true"></i></button></td>
