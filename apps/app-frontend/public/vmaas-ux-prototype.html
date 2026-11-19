@@ -1320,10 +1320,28 @@
       margin-top: 4px;
       color: var(--pf-t--global--text--color--subtle, #6a6e73);
     }
-    .vm-configuration-label {
-      width: max-content;
-      max-width: 100%;
+    .vm-config-inline {
+      margin: 6px 0 16px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--vmaas-text);
     }
+    .vm-config-inline__status { display: block; }
+    .vm-config-inline__status i { color: var(--pf-t--global--icon--color--status--info--default, #0066cc); margin-right: 6px; }
+    .vm-config-inline__details { margin-top: 6px; }
+    .vm-config-inline__details summary { cursor: pointer; color: var(--vmaas-blue); }
+    .vm-config-inline__details ul { margin: 6px 0 0 20px; }
+    .vm-config-inline__action { margin-top: 8px; }
+    .vm-configuration-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--vmaas-text);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .vm-configuration-label__icon { color: var(--pf-t--global--icon--color--status--info--default, #0066cc); }
+    .vm-configuration-label--failed .vm-configuration-label__icon { color: var(--pf-t--global--icon--color--status--danger--default, #c9190b); }
     .vm-configuration-label:focus-visible {
       outline: 2px solid var(--vmaas-blue);
       outline-offset: 2px;
@@ -1337,6 +1355,13 @@
     .vm-list-card__header-right {
       flex-wrap: wrap;
       justify-content: flex-end;
+    }
+    .vm-list-card__status-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin: 8px 0 12px;
     }
     .vm-restart-required__body {
       margin-top: 4px;
@@ -6348,14 +6373,14 @@
     .vm-list-card__status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0;
+      gap: 6px;
       margin: 0;
-      padding: 0 8px;
+      padding: 0;
       min-height: 18px;
       border: none;
-      border-radius: 999px;
+      border-radius: 0;
       font: inherit;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 400;
       line-height: 1.35;
       cursor: pointer;
@@ -6366,24 +6391,24 @@
       outline-offset: 2px;
     }
     .vm-list-card__status-pill--running {
-      background: var(--pf-t--global--color--nonstatus--green--default, #d1f1bb);
-      color: #151515;
+      background: none;
+      color: var(--vmaas-text);
     }
     .vm-list-card__status-pill--stopped {
-      background: #f2f2f2;
-      color: #151515;
+      background: none;
+      color: var(--vmaas-text);
     }
     .vm-list-card__status-pill--paused {
-      background: var(--pf-t--global--color--nonstatus--yellow--default, #f9e0a2);
-      color: #151515;
+      background: none;
+      color: var(--vmaas-text);
     }
     .vm-list-card__status-pill--error {
-      background: var(--pf-t--global--color--nonstatus--red--default, #f9a8a8);
-      color: #151515;
+      background: none;
+      color: var(--vmaas-text);
     }
     .vm-list-card__status-pill--starting {
-      background: var(--pf-t--global--color--nonstatus--blue--default, #c5e0f8);
-      color: #151515;
+      background: none;
+      color: var(--vmaas-text);
     }
     .vm-list-card__title-block {
       display: flex;
@@ -8980,11 +9005,10 @@
       if (ipStatus === 'failed') details.push(`External IP attachment for ${ipTarget} failed`);
       else if (ipStatus === 'attaching') details.push(`Attaching external IP ${ipTarget}`);
       const tooltip = `${details.join('; ')}.`;
-      return `<span class="pf-v6-c-label pf-m-outline pf-m-${failed ? 'red' : 'grey'} pf-m-compact vm-configuration-label"
+      return `<span class="vm-configuration-label${failed ? ' vm-configuration-label--failed' : ''}"
         data-pf-tooltip="${escAttr(tooltip)}" aria-label="${escAttr(`${label}. ${tooltip}`)}" tabindex="0">
-        <span class="pf-v6-c-label__content">
-          <span class="pf-v6-c-label__text">${label}</span>
-        </span>
+        <i class="fa-solid fa-circle-${failed ? 'exclamation' : 'info'} vm-configuration-label__icon" aria-hidden="true"></i>
+        <span>${label}</span>
       </span>`;
     }
 
@@ -9023,13 +9047,12 @@
     /** Enabled when RUNNING, PAUSED, or STOPPED; disabled STARTING / STOPPING / DELETING. */
     function canResizeVmInstanceType(vm) {
       const kind = vmPowerKind(vm?.status);
-      return !vm?.resizeProgress && !vm?.resizeFailure && !vm?.restartRequired?.changes?.some(c => c.label === 'Instance type')
+      return !vm?.resizeProgress && !vm?.restartRequired?.changes?.some(c => c.label === 'Instance type')
         && (kind === 'running' || kind === 'paused' || kind === 'stopped');
     }
 
     function resizeVmInstanceTypeDisabledReason(vm) {
       if (vm?.resizeProgress) return 'Resize is unavailable while a resize is in progress.';
-      if (vm?.resizeFailure) return 'Resize is unavailable while the failed resize is being resolved.';
       if (vm?.restartRequired?.changes?.some(c => c.label === 'Instance type')) {
         return 'Restart the VM to apply the scheduled resize before choosing another instance type.';
       }
@@ -9196,58 +9219,61 @@
         </div>`;
     }
 
-    /** OSAC-7158: configuration operations live above Overview; Overview shows active values. */
+    /** OSAC-7158: only failed configuration operations need a top alert. */
     function vmConfigurationOperationAlertsHtml(vm) {
       const alerts = [];
-      if (vm.restartRequired?.changes?.length) {
-        const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
-        alerts.push({ kind: 'info', title: 'Resize scheduled', description: `Restart the VM to apply instance type ${target}.` });
-      }
-      if (vm.resizeProgress) {
-        const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
-        const retry = Number(vm.resizeProgress.retryAttempt) > 1
-          ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.resizeProgress.retryAttempt)}</span>`
-          : '';
-        alerts.push({ kind: 'info', title: 'Resize in progress', description: `Changing instance type to <strong>${target}</strong>.${retry}` });
-      } else if (vm.resizeFailure) {
+      if (vm.resizeFailure) {
         const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
         const reason = escAttr(vm.resizeFailure.reason || 'The requested instance type could not be applied.');
         const retry = vm.resizeFailure.nextRetryAt
           ? ` Another attempt is scheduled for ${escAttr(vm.resizeFailure.nextRetryAt)}.`
           : (vm.resizeFailure.retryPlanned === false ? ' No further retry is scheduled.' : '');
-        alerts.push({ kind: 'danger', title: 'Resize failed', description: `Could not apply instance type ${target}. ${reason}${retry}` });
+        alerts.push({ title: 'Resize failed', description: `Could not apply instance type <strong>${target}</strong>. ${reason}${retry}` });
       }
       const ipStatus = vmExternalIpStatus(vm);
-      if (ipStatus === 'attaching' || ipStatus === 'failed') {
+      if (ipStatus === 'failed') {
         const target = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
-        if (ipStatus === 'attaching') {
-          const retry = Number(vm.externalIpRetryAttempt) > 1
-            ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.externalIpRetryAttempt)}</span>`
-            : '';
-          alerts.push({ kind: 'info', title: 'External IP attachment in progress', description: `Attaching external IP <strong>${target}</strong>.${retry}` });
-        } else {
-          const reason = escAttr(vm.externalIpError || `We couldn’t attach external IP ${target} to this VM.`);
-          const retry = vm.externalIpNextRetryAt
-            ? ` Another attempt is scheduled for ${escAttr(vm.externalIpNextRetryAt)}.`
-            : (vm.externalIpRetryPlanned === false ? ' No further retry is scheduled.' : '');
-          alerts.push({ kind: 'danger', title: 'External IP attachment failed', description: `${reason}${retry}` });
-        }
+        const reason = escAttr(vm.externalIpError || `We couldn’t attach external IP ${target} to this VM.`);
+        const retry = vm.externalIpNextRetryAt
+          ? ` Another attempt is scheduled for ${escAttr(vm.externalIpNextRetryAt)}.`
+          : (vm.externalIpRetryPlanned === false ? ' No further retry is scheduled.' : '');
+        alerts.push({ title: 'External IP attachment failed', description: `${reason}${retry}` });
       }
-      if (alerts.length === 0 || (alerts.length === 1 && vm.restartRequired?.changes?.length)) return '';
-      const hasFailure = alerts.some(alert => alert.kind === 'danger');
-      const kind = hasFailure ? 'danger' : 'info';
+      if (alerts.length === 0) return '';
       const title = alerts.length === 1
         ? alerts[0].title
-        : (hasFailure ? 'Configuration changes need attention' : 'Configuration changes in progress');
+        : 'Configuration changes need attention';
       const description = alerts.length === 1
         ? alerts[0].description
         : `<ul class="pf-v6-c-list">${alerts.map(alert => `<li><strong>${alert.title}:</strong> ${alert.description}</li>`).join('')}</ul>`;
       return `
-        <div class="pf-v6-c-alert pf-m-inline pf-m-${kind} vm-restart-required" role="${hasFailure ? 'alert' : 'status'}">
-          <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-${hasFailure ? 'exclamation' : 'info'}" aria-hidden="true"></i></div>
+        <div class="pf-v6-c-alert pf-m-inline pf-m-danger vm-restart-required" role="alert">
+          <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></div>
           <h4 class="pf-v6-c-alert__title">${title}</h4>
           <div class="pf-v6-c-alert__description">${description}</div>
         </div>`;
+    }
+
+    function vmResizeInlineHtml(vm, canResize) {
+      const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
+      if (vm.resizeFailure) {
+        return `<div class="vm-config-inline" role="status">
+          <div>Resize to <strong>${target}</strong> failed. The current configuration remains active.</div>
+          ${canResize ? '<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small vm-config-inline__action" data-resize-again>Resize again</button>' : ''}
+        </div>`;
+      }
+      if (vm.resizeProgress) {
+        const retry = Number(vm.resizeProgress.retryAttempt) > 1
+          ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.resizeProgress.retryAttempt)}</span>` : '';
+        return `<div class="vm-config-inline" role="status"><div class="vm-config-inline__status"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Changing instance type to <strong>${target}</strong>.</div>${retry}</div>`;
+      }
+      const changes = vm.restartRequired?.changes;
+      if (!Array.isArray(changes) || !changes.length) return '';
+      const items = changes.map(change => `<li>${escAttr(change.label || 'Change')}: ${escAttr(change.from || '—')} &rarr; ${escAttr(change.to || '—')}</li>`).join('');
+      return `<div class="vm-config-inline" role="status">
+        <div class="vm-config-inline__status"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Restart required to apply resize to <strong>${target}</strong>.</div>
+        <details class="vm-config-inline__details"><summary>Scheduled changes</summary><ul>${items}</ul></details>
+      </div>`;
     }
 
     function editComputeResizeAlertHtml(path, selectionChanged) {
@@ -9587,7 +9613,7 @@
       const vm = VMS.find(v => v.name === state.selectedVmName);
       if (!vm || !canResizeVmInstanceType(vm)) return;
       const requireGpu = vmRequiresGpu(vm);
-      const selectedId = resolveVmComputeId(vm);
+      const selectedId = vm.resizeFailure ? vmActiveComputeId(vm) : resolveVmComputeId(vm);
       const initialId = selectedId;
       state.editComputeModal = {
         selectedId: initialId,
@@ -9644,6 +9670,7 @@
       const path = state.editComputeModal?.resizePath || vmResizePath(vm);
       const changed = !!state.editComputeModal?.initialId && id !== state.editComputeModal.initialId;
       const activeId = vmActiveComputeId(vm);
+      if (changed) vm.resizeFailure = null;
       if (changed && (path === 'running' || path === 'paused')) vm.activeComputeId = activeId;
       applyComputeResourceToVm(vm, id);
       if (changed && (path === 'running' || path === 'paused')) {
@@ -12107,7 +12134,7 @@
 
     function statusCell(s, vmName = '') {
       const vm = VMS.find(v => v.name === vmName);
-      if (vm?.provisioningFailed) return `<span class="status-static" title="${escAttr(vm.provisioningFailureMessage || 'Provisioning failed')}">Failed to provision</span>`;
+      if (vm?.provisioningFailed) return `<span class="status-static" title="${escAttr(vm.provisioningFailureMessage || 'Provisioning failed')}">${statusIcon('error')} Failed to provision</span>`;
       const vmAttr = vmName ? ` data-status-vm="${vmName}"` : '';
       if (s === 'running') {
         return `<button type="button" class="status-link" data-status-popover="running"${vmAttr} aria-haspopup="dialog" aria-expanded="false">${statusIcon('running')}<span class="status-link__label">Running</span></button>`;
@@ -12805,15 +12832,15 @@
     }
 
     function vmCardStatusPill(v) {
-      if (v.provisioningFailed) return `<span class="vm-list-card__status-pill vm-list-card__status-pill--error" title="${escAttr(v.provisioningFailureMessage || 'Provisioning failed')}">Failed to provision</span>`;
+      if (v.provisioningFailed) return `<span class="vm-list-card__status-pill vm-list-card__status-pill--error" title="${escAttr(v.provisioningFailureMessage || 'Provisioning failed')}">${statusIcon('error')} Failed to provision</span>`;
       const meta = vmCardStatusMeta(v.status);
       const interactive = meta.key !== 'starting';
       if (!interactive) {
-        return `<span class="vm-list-card__status-pill vm-list-card__status-pill--${meta.mod}">${meta.label}</span>`;
+        return `<span class="vm-list-card__status-pill vm-list-card__status-pill--${meta.mod}">${statusIcon(meta.key)} ${meta.label}</span>`;
       }
       return `<button type="button" class="vm-list-card__status-pill vm-list-card__status-pill--${meta.mod} status-link"
         data-status-popover="${meta.key}" data-status-vm="${v.name}"
-        aria-haspopup="dialog" aria-expanded="false">${meta.label}</button>`;
+        aria-haspopup="dialog" aria-expanded="false">${statusIcon(meta.key)} ${meta.label}</button>`;
     }
 
     function renderVmListCard(v) {
@@ -12839,8 +12866,6 @@
               </span>
             </div>
             <div class="vm-list-card__header-right">
-              ${vmCardStatusPill(v)}
-              ${vmConfigurationLabelHtml(v)}
               <button type="button" class="kebab" data-vm-kebab="${v.name}"
                 aria-label="Actions for ${v.name}" aria-haspopup="menu" aria-expanded="false">
                 <i class="fa-solid fa-ellipsis-v" aria-hidden="true"></i>
@@ -12851,6 +12876,7 @@
             <button type="button" class="vm-list-card__name" data-open-vm="${v.name}">${v.name}</button>
             <p class="vm-list-card__subtitle">${subtitle}</p>
           </div>
+          <div class="vm-list-card__status-row">${vmCardStatusPill(v)}${vmConfigurationLabelHtml(v)}</div>
           <dl class="vm-list-card__specs">
             <div class="vm-list-card__spec-row">
               <dt>Instance type</dt>
@@ -15497,16 +15523,18 @@
       if (!canEdit || autoAttached) {
         actions = '';
       } else if (status === 'attaching') {
-        actions = '';
+        actions = '<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" disabled aria-describedby="vm-external-ip-progress">Attach external IP</button>';
       } else if (status === 'attached') {
         actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Detach external IP</button>`;
       } else if (status === 'failed') {
-        actions = '';
+        actions = '<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Attach external IP</button>';
       } else {
         actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Attach external IP</button>`;
       }
 
       const contentHtml = `
+        ${status === 'attaching' ? `<p class="vm-config-inline" id="vm-external-ip-progress" role="status"><span class="vm-access-section__spinner" aria-hidden="true"></span>Attaching external IP <strong>${escAttr(vm.externalIpPending || 'the selected address')}</strong>.${Number(vm.externalIpRetryAttempt) > 1 ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.externalIpRetryAttempt)}</span>` : ''}</p>` : ''}
+        ${status === 'failed' ? `<p class="vm-config-inline" role="status">External IP <strong>${escAttr(vm.externalIpAttempted || 'the selected address')}</strong> is not attached.</p>` : ''}
         ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml}${actions}</div>` : ''}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
@@ -17200,7 +17228,6 @@
       `;
 
       const operationAlertsHtml = vmConfigurationOperationAlertsHtml(v);
-      const resizeStatusHtml = operationAlertsHtml ? '' : vmResizeStatusAlertHtml(v);
       const provisioningFailureHtml = v.provisioningFailed ? `
         <div class="pf-v6-c-alert pf-m-inline pf-m-danger" role="alert">
           <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></div>
@@ -17210,7 +17237,6 @@
       const body = `
         <div class="vm-overview-v2">
           <div class="vm-overview-v2__main">
-            ${resizeStatusHtml}
             ${operationAlertsHtml}
             ${provisioningFailureHtml}
             <section class="vm-overview-v2__details" aria-label="Details">
@@ -17228,6 +17254,7 @@
                   ${itField('Disk image', diskImageDisplay)}
                   ${itSubtitleRow}
                   ${itField('Name', `${itNameSafe} ${instanceTypeLifecycleLabel(COMPUTE_RESOURCES.find(c => c.id === vmActiveComputeId(v))?.lifecycle)}`)}
+                  ${vmResizeInlineHtml(v, canResizeCompute)}
                   ${itField('vCPUs', String(computeFields.vcpu).replace(/</g, '&lt;'))}
                   ${itField('Memory', String(computeFields.memory).replace(/</g, '&lt;'))}
                   ${gpuFieldsHtml}
@@ -17485,6 +17512,7 @@
         if (!canResizeCompute) return;
         openEditComputeModal();
       });
+      root.querySelector('[data-resize-again]')?.addEventListener('click', openEditComputeModal);
       root.querySelectorAll('[data-overview-row-menu]').forEach(b => {
         b.addEventListener('click', e => {
           e.stopPropagation();

@@ -14,19 +14,19 @@ On VM Overview, an auto-attached external IP shows **Auto attached** beside the 
 
 The **External IP** heading is sufficient; do not add a Host label or empty placeholder below it. Show the address directly below the heading only after attachment succeeds. Detach is available only when an IP is confirmed attached.
 
-In version **0.5** (OSAC-7158), show attachment progress or failure in a top-of-page alert above Overview instead of inline under External IP. Name the selected address, for example “Attaching external IP **198.51.100.99**” or “We couldn’t attach external IP 198.51.100.99 to this VM.” If another configuration operation is active, put both operations in one alert as separate bullets. Show “Retry attempt: 2” on a separate subdued line only when a later attempt is known; do not imply a fixed total. The failed address must not appear as an attached IP, and there is no manual Retry, Choose another, or Detach action in the failure state.
+In version **0.5** (OSAC-7158), show attachment progress beside External IP and keep **Attach external IP** visible but disabled while it runs. Name the selected address and show a known later attempt on a separate subdued line. Reserve the top-of-page danger alert for failure. The failed address must not appear as an attached IP. After failure, offer **Attach external IP** so the user can select an address again; do not offer Detach because no address was attached.
 
-In the VM list, external-IP work contributes to the same single configuration label in the **Status** column as resize. Use **Changes in progress** while attaching or **Changes need attention** if attachment failed; the tooltip names the operation and selected address. Keep the VM power state separate.
+In the VM list and cards, external-IP work contributes to one icon-and-text configuration status alongside the power status. Use **Changes in progress** while attaching or **Changes need attention** if attachment failed; the tooltip names the operation and selected address.
 
 ## Version 0.5 screenshots
 
-![Version 0.5 configuration label tooltip with resize and external-IP attachment](screenshots/latest-ux/vm-config-label-tooltip-crop-0.5.jpg)
+![Version 0.5 configuration status tooltip with resize and external-IP attachment](screenshots/latest-ux/vm-config-status-tooltip-concurrent-0.5.png)
 
-![Version 0.5 External IP attachment in the shared configuration alert](screenshots/latest-ux/vm-config-operations-0.5.jpg)
+![Version 0.5 External IP attachment beside its setting](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
-![Version 0.5 external IP attachment in progress](screenshots/latest-ux/tenant-networking-attach-loading-0.5-crop.png)
+![Version 0.5 external IP attachment in progress with Attach disabled](screenshots/latest-ux/vm-external-ip-loading-0.5.png)
 
-![Version 0.5 failed external IP attachment](screenshots/latest-ux/tenant-networking-attach-failed-0.5-crop.png)
+![Version 0.5 failed external IP attachment with a new Attach action](screenshots/latest-ux/vm-external-ip-failed-0.5.png)
 
 ![Auto attached external IP status label](screenshots/latest-ux/tenant-networking-auto-ip-0.5-crop.png)
 

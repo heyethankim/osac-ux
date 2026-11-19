@@ -8,19 +8,23 @@ VM Overview shows the active instance type, CPU, and memory. Editing the instanc
 
 ## Version 0.5 — configuration operations (OSAC-7158)
 
-The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Place one configuration-operation alert above Overview. For a single operation, name the resize or external-IP attachment, its status, and its target instance type or IP. When operations overlap, use one alert with a bullet for each operation and its status; use danger styling if any operation failed. In progress copy says “Changing instance type to **large**” or “Attaching external IP **198.51.100.21**”; bold the target value without brackets. If a later attempt is known, put “Retry attempt: 2” on its own subdued line below that operation, without an assumed maximum. Show next-attempt time only when available; say no further retry is scheduled only when explicitly known. Do not expose raw errors or imply that a manual Retry action exists.
+The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Show resize progress or a scheduled resize beside the instance type, and attachment progress beside External IP. Name the requested instance type or address in context. A known later attempt appears on its own subdued line. The Attach external IP button remains visible but disabled while attachment runs. Reserve a top-of-page danger alert for failed operations; when two operations fail, list both in one alert. A failed resize has a **Resize again** button by the instance type. After an attachment failure, keep the attempted address out of the attached-IP value and offer **Attach external IP** to start another selection.
 
-![Version 0.5 configuration operations with target values and retry metadata](screenshots/latest-ux/vm-config-operations-0.5.jpg)
+![Version 0.5 progress beside instance type and External IP](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
-When a resize requires a restart, a persistent **info** notification at the top says “Restart required to apply resize.” It is collapsed by default and expands to show current and requested values. In the 0.5 VM list, keep the power state and show one configuration label in the **Status** column: **Changes pending** while restart is required, **Changes in progress** while work is applying, or **Changes need attention** if any operation failed. The card view places the same label with its power status. Its tooltip names each relevant operation and target, including external-IP attachment when applicable. Remove the label once no work is outstanding. Keep active values visible until completion.
+![Version 0.5 failure alert and Resize again action](screenshots/latest-ux/vm-config-failure-0.5.png)
+
+When a resize requires a restart, show “Restart required to apply resize” beside the instance type. **Scheduled changes** is collapsed by default and expands to show current and requested values. In VM lists and cards, use icon-and-text statuses, rather than pill labels, for both power state and configuration state: **Changes pending**, **Changes in progress**, or **Changes need attention**. The configuration status tooltip names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
+
+![Version 0.5 restart requirement beside Instance type](screenshots/latest-ux/vm-config-restart-0.5.png)
 
 The VM list uses compact PatternFly pagination in card and table views: an item-range dropdown plus Previous and Next above and below the results.
 
-![Version 0.5 VM cards with one configuration label per VM](screenshots/latest-ux/vm-config-label-cards-0.5.jpg)
+![Version 0.5 VM cards with icon-and-text statuses](screenshots/latest-ux/vm-config-status-cards-0.5.png)
 
-![Version 0.5 VM table with configuration labels in the Status column](screenshots/latest-ux/vm-config-label-table-0.5.jpg)
+![Version 0.5 VM table with icon-and-text statuses](screenshots/latest-ux/vm-config-status-table-0.5.png)
 
-![Version 0.5 configuration label tooltip naming concurrent operations](screenshots/latest-ux/vm-config-label-tooltip-crop-0.5.jpg)
+![Version 0.5 configuration status tooltip](screenshots/latest-ux/vm-config-status-tooltip-0.5.png)
 
 The screenshots below document the earlier 0.4 list and resize layout. The 0.5 screenshots above show the current operation alert and list labels.
 
