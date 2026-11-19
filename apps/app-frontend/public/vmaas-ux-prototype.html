@@ -1327,11 +1327,14 @@
       color: var(--vmaas-text);
     }
     .vm-config-inline__status { display: block; }
-    .vm-config-inline__status i { color: var(--pf-t--global--icon--color--status--info--default, #0066cc); margin-right: 6px; }
+    .vm-instance-progress-trigger {
+      color: var(--pf-t--global--icon--color--status--info--default, #0066cc);
+    }
     .vm-config-inline__details { margin-top: 6px; }
     .vm-config-inline__details summary { cursor: pointer; color: var(--vmaas-blue); }
     .vm-config-inline__details ul { margin: 6px 0 0 20px; }
     .vm-config-inline__action { margin-top: 8px; }
+    .vm-config-alert__action { margin-top: 12px; }
     .vm-configuration-label {
       display: inline-flex;
       align-items: center;
@@ -2237,6 +2240,7 @@
     }
     #disk-image-popover,
     #it-pci-popover,
+    #instance-progress-popover,
     #storage-tier-popover {
       display: none;
       position: fixed;
@@ -2245,6 +2249,7 @@
     }
     #disk-image-popover.pf-m-open,
     #it-pci-popover.pf-m-open,
+    #instance-progress-popover.pf-m-open,
     #storage-tier-popover.pf-m-open { display: block; }
     #disk-image-popover .nic-detail-dl,
     #it-pci-popover .nic-detail-dl,
@@ -9218,7 +9223,7 @@
     }
 
     /** OSAC-7158: only failed configuration operations need a top alert. */
-    function vmConfigurationOperationAlertsHtml(vm) {
+    function vmConfigurationOperationAlertsHtml(vm, canResize) {
       const alerts = [];
       if (vm.resizeFailure) {
         const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
@@ -9244,28 +9249,15 @@
       const description = alerts.length === 1
         ? alerts[0].description
         : `<ul class="pf-v6-c-list">${alerts.map(alert => `<li><strong>${alert.title}:</strong> ${alert.description}</li>`).join('')}</ul>`;
+      const resizeAction = vm.resizeFailure && canResize
+        ? '<div class="vm-config-alert__action"><button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-resize-again>Resize again</button></div>'
+        : '';
       return `
         <div class="pf-v6-c-alert pf-m-inline pf-m-danger vm-restart-required" role="alert">
           <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></div>
           <h4 class="pf-v6-c-alert__title">${title}</h4>
-          <div class="pf-v6-c-alert__description">${description}</div>
+          <div class="pf-v6-c-alert__description">${description}${resizeAction}</div>
         </div>`;
-    }
-
-    function vmResizeInlineHtml(vm, canResize) {
-      const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
-      if (vm.resizeFailure) {
-        return `<div class="vm-config-inline" role="status">
-          <div>Resize failed.</div>
-          ${canResize ? '<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small vm-config-inline__action" data-resize-again>Resize again</button>' : ''}
-        </div>`;
-      }
-      if (vm.resizeProgress) {
-        const retry = Number(vm.resizeProgress.retryAttempt) > 1
-          ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.resizeProgress.retryAttempt)}</span>` : '';
-        return `<div class="vm-config-inline" role="status"><div class="vm-config-inline__status"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Changing instance type to <strong>${target}</strong>.</div>${retry}</div>`;
-      }
-      return '';
     }
 
     function editComputeResizeAlertHtml(path, selectionChanged) {
@@ -14826,6 +14818,37 @@
       positionDetailPopover(pop, trigger, 'it-pci-popover-close');
     }
 
+    let instanceProgressPopoverTrigger = null;
+    function closeInstanceProgressPopover() {
+      const pop = document.getElementById('instance-progress-popover');
+      if (!pop) return;
+      pop.classList.remove('pf-m-open');
+      pop.hidden = true;
+      if (instanceProgressPopoverTrigger) {
+        instanceProgressPopoverTrigger.setAttribute('aria-expanded', 'false');
+        instanceProgressPopoverTrigger = null;
+      }
+    }
+
+    function openInstanceProgressPopover(trigger) {
+      const pop = document.getElementById('instance-progress-popover');
+      const body = document.getElementById('instance-progress-popover-body');
+      if (!pop || !body) return;
+      if (instanceProgressPopoverTrigger === trigger && pop.classList.contains('pf-m-open')) {
+        closeInstanceProgressPopover();
+        return;
+      }
+      closeDiskImagePopover();
+      closeItPciPopover();
+      closeStorageTierPopover();
+      const target = escAttr(trigger.dataset.target || 'the requested instance type');
+      const retry = Number(trigger.dataset.retry);
+      body.innerHTML = `<p>Changing instance type to <strong>${target}</strong>.</p>${retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}`;
+      instanceProgressPopoverTrigger = trigger;
+      trigger.setAttribute('aria-expanded', 'true');
+      positionDetailPopover(pop, trigger, 'instance-progress-popover-close');
+    }
+
     let storageTierPopoverTrigger = null;
     function closeStorageTierPopover() {
       const pop = document.getElementById('storage-tier-popover');
@@ -14889,6 +14912,14 @@
           closeItPciPopover();
           return;
         }
+        if (e.target.closest('#instance-progress-popover-close')) {
+          e.preventDefault();
+          e.stopPropagation();
+          const trigger = instanceProgressPopoverTrigger;
+          closeInstanceProgressPopover();
+          trigger?.focus();
+          return;
+        }
         if (e.target.closest('#storage-tier-popover-close')) {
           e.preventDefault();
           e.stopPropagation();
@@ -14909,6 +14940,13 @@
           openItPciPopover(pciTrigger);
           return;
         }
+        const progressTrigger = e.target.closest('[data-instance-progress]');
+        if (progressTrigger) {
+          e.preventDefault();
+          e.stopPropagation();
+          openInstanceProgressPopover(progressTrigger);
+          return;
+        }
         const tierTrigger = e.target.closest('[data-storage-tier-detail]');
         if (tierTrigger) {
           e.preventDefault();
@@ -14919,26 +14957,34 @@
         if (
           e.target.closest('#disk-image-popover')
           || e.target.closest('#it-pci-popover')
+          || e.target.closest('#instance-progress-popover')
           || e.target.closest('#storage-tier-popover')
         ) return;
         closeDiskImagePopover();
         closeItPciPopover();
+        closeInstanceProgressPopover();
         closeStorageTierPopover();
       });
       document.addEventListener('keydown', e => {
         if (e.key !== 'Escape') return;
+        const trigger = instanceProgressPopoverTrigger;
+        const returnFocus = !!trigger && document.getElementById('instance-progress-popover')?.contains(document.activeElement);
         closeDiskImagePopover();
         closeItPciPopover();
+        closeInstanceProgressPopover();
         closeStorageTierPopover();
+        if (returnFocus) trigger.focus();
       });
       window.addEventListener('resize', () => {
         closeDiskImagePopover();
         closeItPciPopover();
+        closeInstanceProgressPopover();
         closeStorageTierPopover();
       });
       window.addEventListener('scroll', () => {
         closeDiskImagePopover();
         closeItPciPopover();
+        closeInstanceProgressPopover();
         closeStorageTierPopover();
       }, true);
     }
@@ -17158,6 +17204,12 @@
       const itSubtitleRow = `
         <div class="ethan-detail-col__subtitle-row">
           <h4 class="ethan-detail-col__subtitle">Instance type</h4>
+          ${v.resizeProgress ? `<button type="button" class="pf-v6-c-button pf-m-plain vm-instance-progress-trigger" data-instance-progress
+            data-target="${escAttr(resolveVmComputeId(v) || 'the requested instance type')}"
+            data-retry="${Number(v.resizeProgress.retryAttempt) || 0}"
+            aria-label="Instance type change in progress" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+          </button>` : ''}
           <button type="button" class="vm-edit-inline" data-edit-compute aria-label="Edit instance type"${editComputeTitleAttr}${editComputeDisabledAttr}>
             <i class="fa-solid fa-pen" aria-hidden="true"></i>
           </button>
@@ -17219,7 +17271,7 @@
                 </div>
       `;
 
-      const operationAlertsHtml = vmConfigurationOperationAlertsHtml(v);
+      const operationAlertsHtml = vmConfigurationOperationAlertsHtml(v, canResizeCompute);
       const provisioningFailureHtml = v.provisioningFailed ? `
         <div class="pf-v6-c-alert pf-m-inline pf-m-danger" role="alert">
           <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></div>
@@ -17250,7 +17302,6 @@
                   ${itField('vCPUs', String(computeFields.vcpu).replace(/</g, '&lt;'))}
                   ${itField('Memory', String(computeFields.memory).replace(/</g, '&lt;'))}
                   ${gpuFieldsHtml}
-                  ${vmResizeInlineHtml(v, canResizeCompute)}
                 </section>
                 <section class="ethan-detail-col" aria-labelledby="vm-access-title">
                   <h3 class="ethan-detail-col__title" id="vm-access-title">Access &amp; Initial run</h3>
@@ -26301,6 +26352,16 @@
         </span>
       </button>
       <div class="pf-v6-c-popover__body" id="it-pci-popover-body"></div>
+    </div>
+  </div>
+
+  <div class="pf-v6-c-popover pf-m-left" id="instance-progress-popover" role="dialog" aria-label="Instance type change in progress" hidden>
+    <div class="pf-v6-c-popover__arrow"></div>
+    <div class="pf-v6-c-popover__content">
+      <button type="button" class="pf-v6-c-button pf-m-plain pf-v6-c-popover__close" id="instance-progress-popover-close" aria-label="Close instance type progress">
+        <span class="pf-v6-c-button__icon"><i class="fas fa-times" aria-hidden="true"></i></span>
+      </button>
+      <div class="pf-v6-c-popover__body" id="instance-progress-popover-body"></div>
     </div>
   </div>
 

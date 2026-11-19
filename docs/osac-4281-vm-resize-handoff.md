@@ -31,11 +31,11 @@ On the VM list, retain the normal power status (for example, Running). In 0.5, s
 
 ## Resize in progress
 
-When the API reports that a resize is applying without a restart, keep **Running** as the VM power state. In 0.5, show one subdued gray, text-only **Changes in progress** status on a second line below the power status in card and table views; its tooltip names the resize target and any other active configuration operation. VM Overview shows progress beside Instance type, including the requested type and any known retry attempt. Keep active values until the API confirms completion. The mockup uses `indigo-quokka-89` for this state.
+When the API reports that a resize is applying without a restart, keep **Running** as the VM power state. In 0.5, show one subdued gray, text-only **Changes in progress** status on a second line below the power status in card and table views; its tooltip names the resize target and any other active configuration operation. On VM Overview, an information icon beside the **Instance type** heading opens a keyboard-accessible popover with the requested type and any known retry attempt. Keep active values until the API confirms completion. The mockup uses `indigo-quokka-89` for this state.
 
-After a restart with a scheduled resize, remove **Restart required** and show **Changes in progress** in lists while the resize is applying, even if the power state has returned to **Running**. In version 0.5, details show the operation beside Instance type. The mockup uses `fedora-aqua-barnacle-58` for this state; restarting `azure-baboon-27` also demonstrates the transition.
+After a restart with a scheduled resize, remove **Restart required** and show **Changes in progress** in lists while the resize is applying, even if the power state has returned to **Running**. In version 0.5, details use the Instance type progress popover. The mockup uses `fedora-aqua-barnacle-58` for this state; restarting `azure-baboon-27` also demonstrates the transition.
 
-Do not show a persistent top progress notification, timing details, or a Recent activity entry for this brief operation. Keep the instance type name, CPU, memory, and GPU together; show progress after those specs. Remove the configuration status only when the API confirms completion, then show the new instance type, CPU, and memory as active values and a brief success toast. Keep configuration progress separate from the VM power state, as required by OSAC-6578. These states require operation phase and active versus requested values from the API; the mockup timer only demonstrates completion and must not be used as production logic. If resize fails, keep current resources visible, show **Changes need attention** in the 0.5 list, put the reason in a top danger alert, and show only a short **Resize failed** cue with **Resize again** beside Instance type. If known, say **No automatic retry is scheduled** in the alert; the user can still submit a new resize. `ubuntu-copper-ibis-31` demonstrates a failed resize while external-IP attachment continues.
+Do not show a persistent top progress notification, timing details, or a Recent activity entry for this brief operation. Keep the instance type name, CPU, memory, and GPU together; put progress details in the heading popover. Remove the configuration status only when the API confirms completion, then show the new instance type, CPU, and memory as active values and a brief success toast. Keep configuration progress separate from the VM power state, as required by OSAC-6578. These states require operation phase and active versus requested values from the API; the mockup timer only demonstrates completion and must not be used as production logic. If resize fails, keep current resources visible, show **Changes need attention** in the 0.5 list, and put the reason and **Resize again** button in the top danger alert. Do not repeat the failure beside Instance type. If known, say **No automatic retry is scheduled** in the alert; the user can still submit a new resize. `ubuntu-copper-ibis-31` demonstrates a failed resize while external-IP attachment continues.
 
 The API must expose or allow derivation of both active and requested configuration values, the restart-required condition, the resize operation phase, and a failure reason. Backend acceptance of the update depends on OSAC-5328.
 
@@ -80,7 +80,9 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![Resize in progress without restart](screenshots/vm-resize/resize-in-progress-no-restart.jpg)
 
-![Version 0.5 resize progress beside Instance type without restart](screenshots/latest-ux/vm-config-inline-hot-resize-0.5.png)
+![Version 0.5 Instance type progress icon without restart](screenshots/latest-ux/vm-config-inline-hot-resize-0.5.png)
+
+![Version 0.5 Instance type progress popover without restart](screenshots/latest-ux/vm-config-inline-hot-resize-0.5-popover.png)
 
 **Progress tooltip.** The requested instance type and phase are visible on focus or hover.
 
@@ -90,7 +92,9 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![Resize in progress after restart](screenshots/vm-resize/resize-in-progress-after-restart.jpg)
 
-![Version 0.5 resize progress beside Instance type after restart](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
+![Version 0.5 Instance type progress icon after restart](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
+
+![Version 0.5 Instance type progress popover after restart](screenshots/latest-ux/vm-config-inline-progress-0.5-popover.png)
 
 **VM table.** This 0.4 screenshot shows the older resize-specific labels. In 0.5, the Status column uses one text-only configuration status below the power status per VM.
 

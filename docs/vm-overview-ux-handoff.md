@@ -8,13 +8,15 @@ VM Overview shows the active instance type, CPU, and memory. Editing the instanc
 
 ## Version 0.5 — configuration operations (OSAC-7158)
 
-The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Keep the instance type name, CPU, memory, and GPU together; show applying resize status immediately after those specs. Attachment progress appears beside External IP. Name the requested type or address in context. A known later attempt appears on its own subdued line. The Attach external IP button remains visible but disabled while attachment runs. Use a top-of-page danger alert for failed operations; when two operations fail, list both in one alert. Put the failure reason in that alert and a short **Resize failed** cue with **Resize again** beside the instance type. Say **No automatic retry is scheduled** when that is known, so the manual action remains clear. After an attachment failure, keep the attempted address out of the attached-IP value and offer **Attach external IP** to start another selection.
+The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Keep the instance type name, CPU, memory, and GPU together. While resize applies, an information icon beside the **Instance type** heading opens a keyboard-accessible popover with the target and any known retry attempt. Attachment progress remains beside External IP. The Attach external IP button remains visible but disabled while attachment runs. Use a top-of-page danger alert for failed operations; when two operations fail, list both in one alert. Put the failure reason and **Resize again** action in that alert, without repeating the failure below Instance type. Say **No automatic retry is scheduled** when that is known, so the manual action remains clear. After an attachment failure, keep the attempted address out of the attached-IP value and offer **Attach external IP** to start another selection.
 
-![Version 0.5 progress beside instance type and External IP](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
+![Version 0.5 instance type progress icon and External IP progress](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
+
+![Version 0.5 instance type progress popover](screenshots/latest-ux/vm-config-inline-progress-0.5-popover.png)
 
 ![Version 0.5 failure alert and Resize again action](screenshots/latest-ux/vm-config-failure-0.5.png)
 
-The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=58cbd2c&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers only the resize failure; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the tooltip names both operations.
+The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=58cbd2c&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the tooltip names both operations.
 
 ![Version 0.5 failed resize and active external-IP attachment](screenshots/latest-ux/vm-config-mixed-0.5.png)
 
