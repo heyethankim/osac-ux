@@ -7195,6 +7195,38 @@
     html.vmaas-embed #overlay.pf-m-open {
       inset-inline-start: 0;
     }
+    /* PF6 description-list typography across detail pages, cards, popovers, and reviews. */
+    :is(.ethan-detail-field__label, .catalog-hw-specs__label, .review-nebius__label,
+      .vm-ip-card__label, .vm-network-external__label,
+      .review-summary-dl dt, .vm-dl dt, .review-dl dt, .nic-detail-dl dt,
+      .catalog-card-specs__label, .net-list-card__spec-row dt, .vm-list-card__spec-row dt,
+      .net-list-card__footer-row dt, .vm-list-card__footer-row dt,
+      .catalog-card-rate__label, .tpl-fixed-panel__row dt, .tpl-drawer__field dt,
+      .tpl-drawer__cost-breakdown dt, .cost-estimate__breakdown dt,
+      .network-path-summary__term,
+      #disk-image-popover .nic-detail-dl dt, #it-pci-popover .nic-detail-dl dt,
+      #storage-tier-popover .nic-detail-dl dt) {
+      font-family: inherit;
+      font-size: var(--pf-t--global--font--size--body--default, 0.875rem);
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--pf-t--global--text--color--regular, #151515);
+    }
+    :is(.ethan-detail-field__value, .catalog-hw-specs__value, .review-nebius__value,
+      .vm-ip-card__value, .vm-network-external__value,
+      .review-summary-dl dd, .vm-dl dd, .review-dl dd, .nic-detail-dl dd,
+      .catalog-card-specs__value, .net-list-card__spec-row dd, .vm-list-card__spec-row dd,
+      .net-list-card__footer-row dd, .vm-list-card__footer-row dd,
+      .catalog-card-rate__value, .tpl-fixed-panel__row dd, .tpl-drawer__field dd,
+      .tpl-drawer__cost-breakdown dd, .cost-estimate__breakdown dd,
+      #disk-image-popover .nic-detail-dl dd, #it-pci-popover .nic-detail-dl dd,
+      #storage-tier-popover .nic-detail-dl dd) {
+      font-family: inherit;
+      font-size: var(--pf-t--global--font--size--body--default, 0.875rem);
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--pf-t--global--text--color--regular, #151515);
+    }
   </style>
 </head>
 <body>
