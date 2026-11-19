@@ -22,6 +22,16 @@ The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas
 
 ![Version 0.5 mixed-operation status tooltip](screenshots/latest-ux/vm-config-status-tooltip-mixed-0.5.png)
 
+### Simultaneous changes
+
+Each operation keeps its own state on VM Overview: resize progress is available from the Instance type icon, and external-IP attachment progress stays beside External IP. Only failures appear in the top alert. If several operations fail, use one alert with a bullet for each failure. Keep **Resize again** in the alert and offer the external-IP selection action beside External IP when available. Keep current values visible until each change succeeds.
+
+The VM list and cards still show one configuration line below the power status. Choose its text by priority: **Changes need attention** if any operation failed; otherwise **Changes in progress** if any is running; otherwise **Changes pending** if a change waits for restart. The tooltip lists every outstanding operation and target, so the summary does not hide concurrent work. Remove each operation from the tooltip when it completes, and remove the configuration line when none remain.
+
+For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7b7f0be&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the tooltip names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7b7f0be&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
+
+![Version 0.5 simultaneous changes in the list tooltip](screenshots/latest-ux/vm-config-status-tooltip-concurrent-0.5.png)
+
 When a resize requires a restart, show a **Restart required** warning above Overview. It is collapsed by default; expanding it explains the required action and shows the current and requested instance type, vCPUs, and memory. Keep the current resource values in Configuration without repeating the warning there. This actionable warning is the exception to failure-only top alerts. In VM lists and cards, show one text-only configuration status on a second line below the icon-and-text power status: subdued gray **Changes pending** or **Changes in progress**, or **Changes need attention** in the failure color. Do not add an icon to the configuration status. The tooltip names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
 
 ![Version 0.5 collapsed top restart warning](screenshots/latest-ux/vm-config-restart-0.5.png)
