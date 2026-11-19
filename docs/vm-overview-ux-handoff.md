@@ -2,7 +2,7 @@
 
 Contact: Yifat Friman Menchik, UXD  
 Google Doc: [VM Overview](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit)  
-Interactive mock: [VM Overview 0.5, Tenant Admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=48c1956&role=admin&vm=fedora-aqua-barnacle-58)
+Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=c6c0274&role=admin&vm=indigo-quokka-89)
 
 VM Overview shows the active instance type, CPU, and memory. Editing the instance type opens the name-first, two-line picker: each option has the resource name above CPU, memory, GPU count and readable model when present, and rate. Omit PCI hardware IDs from visible labels. The GPU specification still determines which resize targets are compatible. See the [resize handoff](osac-4281-vm-resize-handoff.md).
 
@@ -31,3 +31,11 @@ The screenshots below document the earlier 0.4 list and resize layout. The 0.5 s
 ![Resize instance type menu](screenshots/latest-ux/resize-instance-types.png)
 
 For access, networking, storage, utilization, failure states, and permissions, follow the [Google UX handoff](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit).
+
+## Storage table typography
+
+Networking and Additional disks column headings use the standard PatternFly 6 table heading typography in both versions: 14px semibold Red Hat Text in the regular text color. The same treatment applies to other custom table headers.
+
+![Version 0.4 Storage section](screenshots/latest-ux/vm-overview-storage-0.4.png)
+
+![Version 0.5 Storage section](screenshots/latest-ux/vm-overview-storage-0.5.png)
