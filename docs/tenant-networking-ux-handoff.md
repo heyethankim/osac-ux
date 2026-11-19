@@ -18,7 +18,7 @@ In version **0.5** (OSAC-7158), show attachment progress beside External IP and 
 
 In the VM list and cards, external-IP work contributes to one icon-and-text configuration status alongside the power status. Use **Changes in progress** while attaching or **Changes need attention** if attachment failed; the tooltip names the operation and selected address.
 
-If resize has failed while attachment continues, the top alert describes the resize failure, attachment progress stays beside External IP, and the list tooltip names both. The mixed-operation example is `ubuntu-copper-ibis-31`.
+If resize has failed while attachment continues, the top alert describes the resize failure, attachment progress stays beside External IP, and the list tooltip names both. See the [mixed-operation example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=20261119-osac7158-audit&role=admin&vm=ubuntu-copper-ibis-31).
 
 ## Version 0.5 screenshots
 
