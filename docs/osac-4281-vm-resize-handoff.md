@@ -72,6 +72,8 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![Resize in progress without restart](screenshots/vm-resize/resize-in-progress-no-restart.jpg)
 
+![Version 0.5 resize progress beside Instance type without restart](screenshots/latest-ux/vm-config-inline-hot-resize-0.5.png)
+
 **Progress tooltip.** The requested instance type and phase are visible on focus or hover.
 
 ![Resize progress tooltip](screenshots/vm-resize/resize-progress-tooltip.png)
@@ -79,6 +81,8 @@ The API must expose or allow derivation of both active and requested configurati
 **Resize still applying after restart.** The same label has a phase-specific tooltip.
 
 ![Resize in progress after restart](screenshots/vm-resize/resize-in-progress-after-restart.jpg)
+
+![Version 0.5 resize progress beside Instance type after restart](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
 **VM table.** This 0.4 screenshot shows the older resize-specific labels. In 0.5, the Status column uses one icon-and-text configuration status per VM.
 
@@ -89,6 +93,8 @@ The API must expose or allow derivation of both active and requested configurati
 **Resize failure.** Current resources stay visible; the reason appears in a danger notification.
 
 ![Resize failure on VM Overview](screenshots/vm-resize/resize-failed.png)
+
+![Version 0.5 failure alert with Resize again](screenshots/latest-ux/vm-config-failure-0.5.png)
 
 ## Provisioning failure (separate state)
 
