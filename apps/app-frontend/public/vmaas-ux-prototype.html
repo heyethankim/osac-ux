@@ -1335,22 +1335,20 @@
     .vm-configuration-label {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      color: var(--vmaas-text);
+      color: var(--pf-t--global--text--color--subtle, #6a6e73);
       font-size: 14px;
-      white-space: nowrap;
+      text-align: left;
     }
-    .vm-configuration-label__icon { color: var(--pf-t--global--icon--color--status--info--default, #0066cc); }
-    .vm-configuration-label--failed .vm-configuration-label__icon { color: var(--pf-t--global--icon--color--status--danger--default, #c9190b); }
+    .vm-configuration-label--failed { color: var(--pf-t--global--text--color--status--danger--default, #c9190b); }
     .vm-configuration-label:focus-visible {
       outline: 2px solid var(--vmaas-blue);
       outline-offset: 2px;
     }
     .vm-status-with-configuration {
       display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 2px;
     }
     .vm-list-card__header-right {
       flex-wrap: wrap;
@@ -1358,9 +1356,9 @@
     }
     .vm-list-card__status-row {
       display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px 12px;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 2px;
       margin: 8px 0 12px;
     }
     .vm-restart-required__body {
@@ -9008,7 +9006,6 @@
       const tooltip = `${details.join('; ')}.`;
       return `<span class="vm-configuration-label${failed ? ' vm-configuration-label--failed' : ''}"
         data-pf-tooltip="${escAttr(tooltip)}" aria-label="${escAttr(`${label}. ${tooltip}`)}" tabindex="0">
-        <i class="fa-solid fa-circle-${failed ? 'exclamation' : 'info'} vm-configuration-label__icon" aria-hidden="true"></i>
         <span>${label}</span>
       </span>`;
     }

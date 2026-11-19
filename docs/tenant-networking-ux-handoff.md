@@ -16,7 +16,7 @@ The **External IP** heading is sufficient; do not add a Host label or empty plac
 
 In version **0.5** (OSAC-7158), show attachment progress beside External IP and keep **Attach external IP** visible but disabled while it runs. Name the selected address and show a known later attempt on a separate subdued line. Reserve the top-of-page danger alert for failure. Say **No automatic retry is scheduled** only when that is known; it does not prevent the user from starting a new attachment. The failed address must not appear as an attached IP. After failure, offer **Attach external IP** so the user can select an address again; do not offer Detach because no address was attached.
 
-In the VM list and cards, external-IP work contributes to one icon-and-text configuration status alongside the power status. Use **Changes in progress** while attaching or **Changes need attention** if attachment failed; the tooltip names the operation and selected address.
+In the VM list and cards, external-IP work contributes to one configuration status on a second line below the power status. Use subdued gray **Changes in progress** while attaching, or **Changes need attention** if attachment failed. Do not add an icon to the configuration status. The tooltip names the operation and selected address.
 
 If resize has failed while attachment continues, the top alert describes the resize failure, attachment progress stays beside External IP, and the list tooltip names both. See the [mixed-operation example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=20261119-osac7158-audit&role=admin&vm=ubuntu-copper-ibis-31).
 

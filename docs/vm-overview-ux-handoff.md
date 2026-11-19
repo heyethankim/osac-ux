@@ -20,7 +20,7 @@ The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas
 
 ![Version 0.5 mixed-operation status tooltip](screenshots/latest-ux/vm-config-status-tooltip-mixed-0.5.png)
 
-When a resize requires a restart, show a **Restart required** warning above Overview. It is collapsed by default; expanding it explains the required action and shows the current and requested instance type, vCPUs, and memory. Keep the current resource values in Configuration without repeating the warning there. This actionable warning is the exception to failure-only top alerts. In VM lists and cards, use icon-and-text statuses, rather than pill labels, for both power state and configuration state: **Changes pending**, **Changes in progress**, or **Changes need attention**. The configuration status tooltip names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
+When a resize requires a restart, show a **Restart required** warning above Overview. It is collapsed by default; expanding it explains the required action and shows the current and requested instance type, vCPUs, and memory. Keep the current resource values in Configuration without repeating the warning there. This actionable warning is the exception to failure-only top alerts. In VM lists and cards, show one text-only configuration status on a second line below the icon-and-text power status: subdued gray **Changes pending** or **Changes in progress**, or **Changes need attention** in the failure color. Do not add an icon to the configuration status. The tooltip names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
 
 ![Version 0.5 collapsed top restart warning](screenshots/latest-ux/vm-config-restart-0.5.png)
 
@@ -28,9 +28,9 @@ When a resize requires a restart, show a **Restart required** warning above Over
 
 The VM list uses compact PatternFly pagination in card and table views: an item-range dropdown plus Previous and Next above and below the results.
 
-![Version 0.5 VM cards with icon-and-text statuses](screenshots/latest-ux/vm-config-status-cards-0.5.png)
+![Version 0.5 VM cards with configuration status below power status](screenshots/latest-ux/vm-config-status-cards-0.5.png)
 
-![Version 0.5 VM table with icon-and-text statuses](screenshots/latest-ux/vm-config-status-table-0.5.png)
+![Version 0.5 VM table with configuration status below power status](screenshots/latest-ux/vm-config-status-table-0.5.png)
 
 ![Version 0.5 configuration status tooltip](screenshots/latest-ux/vm-config-status-tooltip-0.5.png)
 

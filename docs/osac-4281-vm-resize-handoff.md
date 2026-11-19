@@ -27,11 +27,11 @@ Show Deprecated instance types as selectable options with a **Deprecated** label
 
 A success toast confirms the saved request. For a Running or Paused VM that requires restart, show a **Restart required** warning at the top of VM Overview in version 0.5. It is collapsed by default; expanding it explains that the VM must restart and shows the current → requested instance type, vCPUs, and memory. Do not repeat the restart message beside Instance type. Keep the VM's **active** instance type, vCPUs, and memory as the main configuration values, including the CPU and memory totals in Utilization. The 0.4 screenshots below retain the earlier layout for historical comparison.
 
-On the VM list, retain the normal power status (for example, Running). In 0.5, show one icon-and-text **Changes pending** status in the Status column while restart is required; its tooltip names the resize target and explains that a restart is needed. Cards show the same status near the power status. A Stopped VM's new size applies on its next start. The 0.4 screenshots below show the earlier **Resize scheduled** label beside the name.
+On the VM list, retain the normal power status (for example, Running). In 0.5, show one subdued gray, text-only **Changes pending** status on a second line in the Status column while restart is required; its tooltip names the resize target and explains that a restart is needed. Cards use the same placement below the power status. A Stopped VM's new size applies on its next start. The 0.4 screenshots below show the earlier **Resize scheduled** label beside the name.
 
 ## Resize in progress
 
-When the API reports that a resize is applying without a restart, keep **Running** as the VM power state. In 0.5, show one icon-and-text **Changes in progress** status with the power status in card and table views; its tooltip names the resize target and any other active configuration operation. VM Overview shows progress beside Instance type, including the requested type and any known retry attempt. Keep active values until the API confirms completion. The mockup uses `indigo-quokka-89` for this state.
+When the API reports that a resize is applying without a restart, keep **Running** as the VM power state. In 0.5, show one subdued gray, text-only **Changes in progress** status on a second line below the power status in card and table views; its tooltip names the resize target and any other active configuration operation. VM Overview shows progress beside Instance type, including the requested type and any known retry attempt. Keep active values until the API confirms completion. The mockup uses `indigo-quokka-89` for this state.
 
 After a restart with a scheduled resize, remove **Restart required** and show **Changes in progress** in lists while the resize is applying, even if the power state has returned to **Running**. In version 0.5, details show the operation beside Instance type. The mockup uses `fedora-aqua-barnacle-58` for this state; restarting `azure-baboon-27` also demonstrates the transition.
 
@@ -92,7 +92,7 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![Version 0.5 resize progress beside Instance type after restart](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
-**VM table.** This 0.4 screenshot shows the older resize-specific labels. In 0.5, the Status column uses one icon-and-text configuration status per VM.
+**VM table.** This 0.4 screenshot shows the older resize-specific labels. In 0.5, the Status column uses one text-only configuration status below the power status per VM.
 
 ![VM table with resize status labels and compact pagination](screenshots/latest-ux/vm-table.png)
 
