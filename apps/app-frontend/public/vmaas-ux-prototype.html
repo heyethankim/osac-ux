@@ -9003,7 +9003,10 @@
       const details = [];
       const resizeTarget = resolveVmComputeId(vm) || 'the requested instance type';
       if (vm.resizeFailure) details.push(`Resize to ${resizeTarget} failed`);
-      else if (vm.resizeProgress) details.push(`Resizing to ${resizeTarget}`);
+      else if (vm.resizeProgress) {
+        const attempt = Number(vm.resizeProgress.retryAttempt);
+        details.push(`Resizing to ${resizeTarget}${attempt > 1 ? ` (retry attempt ${attempt})` : ''}`);
+      }
       else if (pending) details.push(`Resize to ${resizeTarget} is waiting for restart`);
       const ipTarget = vm.externalIpPending || vm.externalIpAttempted || 'the selected address';
       if (ipStatus === 'failed') details.push(`External IP attachment for ${ipTarget} failed`);

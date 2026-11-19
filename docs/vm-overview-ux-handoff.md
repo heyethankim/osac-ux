@@ -28,6 +28,8 @@ Each operation keeps its own state on VM Overview: resize progress is available 
 
 The VM list and cards still show one configuration line below the power status. Choose its text by priority: **Changes need attention** if any operation failed; otherwise **Changes in progress** if any is running; otherwise **Changes pending** if a change waits for restart. The tooltip lists every outstanding operation and target, so the summary does not hide concurrent work. Remove each operation from the tooltip when it completes, and remove the configuration line when none remain.
 
+If the service reports a retry, name the attempt in the tooltip and the affected setting's progress detail. If it reports a known prerequisite that blocks a change, explain the prerequisite in plain language in both places. Do not invent a blocker, attempt count, or ETA when the service has not supplied one. Keep **Stopped** as a power state, not a configuration failure. After success, update the active value, remove the outstanding status, and show a brief success toast; do not retain a Completed line.
+
 For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7b7f0be&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the tooltip names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7b7f0be&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
 
 ![Version 0.5 simultaneous changes in the list tooltip](screenshots/latest-ux/vm-config-status-tooltip-concurrent-0.5.png)
@@ -47,6 +49,10 @@ In card and table views, the VM list shows one configuration status below the po
 ![Version 0.5 configuration status tooltip](screenshots/latest-ux/vm-config-status-tooltip-0.5.png)
 
 For access, networking, storage, utilization, failure states, and permissions, follow the [Google UX handoff](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit).
+
+### Implementation data needed for OSAC-7158
+
+The UI needs the operation type, phase (waiting, applying, retrying, failed, or complete), safe explanation, target value, and timestamps from the API or from documented derivation of its existing conditions. The list and Details must describe the same state after refresh or reconnect. API list/get and CLI table/json/yaml/describe need equivalent status semantics; the HTML mockup cannot verify those contracts. Never surface provider job IDs, raw logs, or raw error strings. Elapsed time is optional and should appear only when a reliable timestamp is available.
 
 ## Access and initial run examples
 
