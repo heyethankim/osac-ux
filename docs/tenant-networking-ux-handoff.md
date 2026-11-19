@@ -2,7 +2,7 @@
 
 Contact: Yifat Friman Menchik, UXD  
 Google Doc: [Tenant Networking](https://docs.google.com/document/d/1Bb-TzaXkhdASe6btymwRk2u0wXycwyqS-I8h637hDGY/edit)  
-Interactive mock: [Tenant Networking 0.5, Tenant Admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=48c1956&role=admin&vm=fedora-aqua-barnacle-58)
+Interactive mock: [Tenant Networking 0.5, Tenant Admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=91b8190&role=admin&vm=rhel9-black-gunnysack-58)
 
 The Virtual networks list uses compact PatternFly pagination above and below the results: an item-range dropdown plus Previous and Next. The dropdown changes items per page (10, 20, 50, or 100). Filtering resets to the first page.
 
@@ -21,6 +21,10 @@ In the VM list, external-IP work contributes to the same single configuration la
 ![Version 0.5 configuration label tooltip with resize and external-IP attachment](screenshots/latest-ux/vm-config-label-tooltip-crop-0.5.jpg)
 
 ![Version 0.5 External IP attachment in the shared configuration alert](screenshots/latest-ux/vm-config-operations-0.5.jpg)
+
+![Version 0.5 external IP attachment in progress](screenshots/latest-ux/tenant-networking-attach-loading-0.5-crop.png)
+
+![Version 0.5 failed external IP attachment](screenshots/latest-ux/tenant-networking-attach-failed-0.5-crop.png)
 
 ![Auto attached external IP status label](screenshots/latest-ux/tenant-networking-auto-ip-badge.png)
 
