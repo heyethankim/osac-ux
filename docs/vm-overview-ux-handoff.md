@@ -46,27 +46,19 @@ The VM list uses compact PatternFly pagination in card and table views: an item-
 
 ![Version 0.5 configuration status tooltip](screenshots/latest-ux/vm-config-status-tooltip-0.5.png)
 
-The screenshots below document the earlier 0.4 list and resize layout. The 0.5 screenshots above show the current failure alert and icon-and-text statuses.
-
-![VM list and compact pagination](screenshots/latest-ux/vm-list.png)
-
-![VM table with resize labels and compact pagination](screenshots/latest-ux/vm-table.png)
-
-![Resize instance type menu](screenshots/latest-ux/resize-instance-types.png)
-
 For access, networking, storage, utilization, failure states, and permissions, follow the [Google UX handoff](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit).
 
 ## Access and initial run examples
 
-These 0.4 captures show the current Overview typography and the distinct auto-attached, manually attached, inline Cloud-init, and Windows Sysprep states. The 0.5 Overview uses the same field typography.
+These 0.5 captures show the auto-attached, manually attached, inline Cloud-init, and Windows Sysprep states.
 
-![Auto-attached external IP and Cloud-init secret](screenshots/latest-ux/vm-overview-auto-0.4.png)
+![Auto-attached external IP and Cloud-init secret](screenshots/latest-ux/vm-overview-auto-0.5.png)
 
-![Manually attached external IP](screenshots/latest-ux/vm-overview-manual-0.4.png)
+![Manually attached external IP](screenshots/latest-ux/vm-overview-manual-0.5.png)
 
-![Inline Cloud-init value](screenshots/latest-ux/vm-overview-inline-0.4.png)
+![Inline Cloud-init value](screenshots/latest-ux/vm-overview-inline-0.5.png)
 
-![Windows Sysprep](screenshots/latest-ux/vm-overview-windows-0.4.png)
+![Windows Sysprep](screenshots/latest-ux/vm-overview-windows-0.5.png)
 
 ## Storage table typography
 
