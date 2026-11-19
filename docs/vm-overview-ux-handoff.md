@@ -8,7 +8,7 @@ VM Overview shows the active instance type, CPU, and memory. Editing the instanc
 
 ## Version 0.5 — configuration operations (OSAC-7158)
 
-The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Keep the instance type name, CPU, memory, and GPU together; show scheduled or applying resize status immediately after those specs. Attachment progress appears beside External IP. Name the requested type or address in context. A known later attempt appears on its own subdued line. The Attach external IP button remains visible but disabled while attachment runs. Reserve a top-of-page danger alert for failed operations; when two operations fail, list both in one alert. Put the failure reason in that alert and a short **Resize failed** cue with **Resize again** beside the instance type. Say **No automatic retry is scheduled** when that is known, so the manual action remains clear. After an attachment failure, keep the attempted address out of the attached-IP value and offer **Attach external IP** to start another selection.
+The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Keep the instance type name, CPU, memory, and GPU together; show applying resize status immediately after those specs. Attachment progress appears beside External IP. Name the requested type or address in context. A known later attempt appears on its own subdued line. The Attach external IP button remains visible but disabled while attachment runs. Use a top-of-page danger alert for failed operations; when two operations fail, list both in one alert. Put the failure reason in that alert and a short **Resize failed** cue with **Resize again** beside the instance type. Say **No automatic retry is scheduled** when that is known, so the manual action remains clear. After an attachment failure, keep the attempted address out of the attached-IP value and offer **Attach external IP** to start another selection.
 
 ![Version 0.5 progress beside instance type and External IP](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
@@ -20,9 +20,11 @@ The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas
 
 ![Version 0.5 mixed-operation status tooltip](screenshots/latest-ux/vm-config-status-tooltip-mixed-0.5.png)
 
-When a resize requires a restart, show “Restart required to apply resize” beside the instance type. **Scheduled changes** is collapsed by default and expands to show current and requested values. In VM lists and cards, use icon-and-text statuses, rather than pill labels, for both power state and configuration state: **Changes pending**, **Changes in progress**, or **Changes need attention**. The configuration status tooltip names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
+When a resize requires a restart, show a **Restart required** warning above Overview. It is collapsed by default; expanding it explains the required action and shows the current and requested instance type, vCPUs, and memory. Keep the current resource values in Configuration without repeating the warning there. This actionable warning is the exception to failure-only top alerts. In VM lists and cards, use icon-and-text statuses, rather than pill labels, for both power state and configuration state: **Changes pending**, **Changes in progress**, or **Changes need attention**. The configuration status tooltip names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
 
-![Version 0.5 restart requirement beside Instance type](screenshots/latest-ux/vm-config-restart-0.5.png)
+![Version 0.5 collapsed top restart warning](screenshots/latest-ux/vm-config-restart-0.5.png)
+
+![Version 0.5 expanded top restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5.png)
 
 The VM list uses compact PatternFly pagination in card and table views: an item-range dropdown plus Previous and Next above and below the results.
 

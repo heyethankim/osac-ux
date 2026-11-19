@@ -9182,8 +9182,8 @@
       const rr = vm?.restartRequired;
       if (!rr || !Array.isArray(rr.changes) || !rr.changes.length) return '';
       const expanded = rr.expanded === true;
-      const title = rr.changes.some(c => c.label === 'Instance type') ? 'Restart required to apply resize' : 'Restart required';
-      const message = rr.message || 'Changes apply after the virtual machine is restarted.';
+      const title = 'Restart required';
+      const message = 'Restart this VM to apply the scheduled changes.';
       const msg = String(message).replace(/</g, '&lt;');
       const changes = rr.changes.map(c => {
         const section = String(c.section || 'Details').replace(/</g, '&lt;');
@@ -9196,7 +9196,7 @@
       }).join('');
       return `
         <div class="vm-restart-required" id="vm-resize-status">
-          <div class="pf-v6-c-alert pf-m-inline pf-m-info pf-m-expandable ${expanded ? 'pf-m-expanded' : ''}" role="status">
+          <div class="pf-v6-c-alert pf-m-inline pf-m-warning pf-m-expandable ${expanded ? 'pf-m-expanded' : ''}" role="status">
             <div class="pf-v6-c-alert__toggle">
               <button class="pf-v6-c-button pf-m-plain" type="button" data-vm-resize-alert-toggle
                 aria-label="${title} details" aria-expanded="${expanded}" aria-controls="vm-resize-status-body">
@@ -9207,7 +9207,7 @@
                 </span></span>
               </button>
             </div>
-            <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></div>
+            <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
             <h4 class="pf-v6-c-alert__title">${title}</h4>
             <div class="pf-v6-c-alert__description" id="vm-resize-status-body" ${expanded ? '' : 'hidden'}>
               <div class="vm-restart-required__body">
@@ -9268,13 +9268,7 @@
           ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.resizeProgress.retryAttempt)}</span>` : '';
         return `<div class="vm-config-inline" role="status"><div class="vm-config-inline__status"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Changing instance type to <strong>${target}</strong>.</div>${retry}</div>`;
       }
-      const changes = vm.restartRequired?.changes;
-      if (!Array.isArray(changes) || !changes.length) return '';
-      const items = changes.map(change => `<li>${escAttr(change.label || 'Change')}: ${escAttr(change.from || '—')} &rarr; ${escAttr(change.to || '—')}</li>`).join('');
-      return `<div class="vm-config-inline" role="status">
-        <div class="vm-config-inline__status"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Restart required to apply resize to <strong>${target}</strong>.</div>
-        <details class="vm-config-inline__details"><summary>Scheduled changes</summary><ul>${items}</ul></details>
-      </div>`;
+      return '';
     }
 
     function editComputeResizeAlertHtml(path, selectionChanged) {
@@ -17240,6 +17234,7 @@
           <div class="vm-overview-v2__main">
             ${operationAlertsHtml}
             ${provisioningFailureHtml}
+            ${vmResizeStatusAlertHtml(v)}
             <section class="vm-overview-v2__details" aria-label="Details">
               <div class="vm-overview-v2__detail-cols">
                 <section class="ethan-detail-col" aria-labelledby="vm-overview-title">

@@ -25,7 +25,7 @@ Show Deprecated instance types as selectable options with a **Deprecated** label
 
 ## After Save
 
-A success toast confirms the saved request. For a Running or Paused VM that requires restart, show **Restart required to apply resize** beside Instance type in version 0.5. Keep the VM's **active** instance type, vCPUs, and memory as the main configuration values, including the CPU and memory totals in Utilization. **Scheduled changes** is collapsed by default; expanding shows current → requested values. The 0.4 screenshots below retain the earlier top notification for historical comparison.
+A success toast confirms the saved request. For a Running or Paused VM that requires restart, show a **Restart required** warning at the top of VM Overview in version 0.5. It is collapsed by default; expanding it explains that the VM must restart and shows the current → requested instance type, vCPUs, and memory. Do not repeat the restart message beside Instance type. Keep the VM's **active** instance type, vCPUs, and memory as the main configuration values, including the CPU and memory totals in Utilization. The 0.4 screenshots below retain the earlier layout for historical comparison.
 
 On the VM list, retain the normal power status (for example, Running). In 0.5, show one icon-and-text **Changes pending** status in the Status column while restart is required; its tooltip names the resize target and explains that a restart is needed. Cards show the same status near the power status. A Stopped VM's new size applies on its next start. The 0.4 screenshots below show the earlier **Resize scheduled** label beside the name.
 
@@ -60,7 +60,15 @@ The API must expose or allow derivation of both active and requested configurati
 ![Current Obsolete type remains visible but cannot be saved unchanged](screenshots/instance-type-lifecycle/legacy-obsolete-current.png)
 
 
-**Collapsed restart notice.** The title remains visible until the VM restarts.
+**Version 0.5 collapsed restart warning.** The title remains visible near the top until the VM restarts.
+
+![Version 0.5 collapsed restart warning](screenshots/latest-ux/vm-config-restart-0.5.png)
+
+**Version 0.5 expanded restart warning.** The requested values are available on demand.
+
+![Version 0.5 expanded restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5.png)
+
+**Version 0.4 collapsed restart notice.** Earlier design for comparison.
 
 ![Collapsed restart-required notification](screenshots/vm-resize/restart-required-collapsed-current.jpg)
 
