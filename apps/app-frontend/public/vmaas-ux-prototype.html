@@ -17284,8 +17284,8 @@
       const deletingAlertHtml = deleting ? `
         <div class="pf-v6-c-alert pf-m-inline pf-m-info vm-restart-required" role="status">
           <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></div>
-          <h3 class="pf-v6-c-alert__title">Deleting this virtual machine</h3>
-          <div class="pf-v6-c-alert__description">You can view its last known details while deletion is in progress. IP addresses and other connection details may no longer be current.</div>
+          <h3 class="pf-v6-c-alert__title">Deletion in progress</h3>
+          <div class="pf-v6-c-alert__description">This VM’s details remain available while it is being deleted. Its IP addresses may no longer be reachable.</div>
         </div>` : '';
       const provisioningFailureHtml = v.provisioningFailed ? `
         <div class="pf-v6-c-alert pf-m-inline pf-m-danger" role="alert">
