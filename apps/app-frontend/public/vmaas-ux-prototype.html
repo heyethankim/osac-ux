@@ -8581,6 +8581,7 @@
         },
       },
       { name: 'azure-baboon-27', ns: 'yifat', status: 'running', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-inference-standard', conditions: ['DataVolumesReady=True', 'LiveMigratable=True', 'RestartRequired=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '10.130.1.223', created: '11 Feb 2026, 8:38', computeResource: 'large', activeComputeId: 'small', restartRequired: { message: 'The VM is still using its current configuration. Restart it to apply the resize.', changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, bootDiskAccessMode: 'RWO' },
+      { name: 'rhel-deleting-cedar-42', ns: 'yifat', status: 'deleting', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-inference-standard', conditions: ['Deleting=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '10.130.1.242', internalIp: '10.130.1.242', externalIp: '198.51.100.24', externalIpAttached: true, externalIpStatus: 'attached', created: '19 Nov 2026, 15:40', computeResource: 'small', nics: [{ name: 'tenant-workload', virtualNetwork: 'tenant-workload', subnet: 'bm-compute-a', securityGroups: ['allow-ssh-https'], ip: '10.130.1.242' }] },
       { name: 'rhel9-black-gunnysack-58', ns: 'project-a', status: 'running', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-gpu-training-server', conditions: ['DataVolumesReady=True', 'Ready=True'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '10.130.1.224', created: '19 Jan 2026, 7:29', computeResource: 'large-gpu', gpuDevices: [{ name: 'NVIDIA A100 80 GB' }], hostDevices: [{ name: 'host-pci-1' }], sshSecretId: 'ssh-cluster-admin', cloudInitSource: 'inline', cloudInit: '#cloud-config\npackages:\n  - nginx\n', bootDiskAccessMode: 'RWO' },
       { name: 'windows-golden-eider-58', ns: 'project-a', status: 'stopped', os: 'Windows', osFull: 'Microsoft Windows Server 2022', imageLabel: 'Windows Server 2022', catalogItem: 'vm-windows-workstation', conditions: ['Ready=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '—', created: '11 Feb 2026, 9:48', sysprepConfigured: true, sysprepSecretId: 'sysprep-corp-std', bootDiskAccessMode: 'RWO' },
       { name: 'fedora-aqua-barnacle-58', ns: 'yifat', status: 'running', os: 'Fedora', osFull: 'Fedora Linux 41', imageLabel: 'Fedora 41', catalogItem: 'vm-dev-workstation', conditions: ['DataVolumesReady=True', 'LiveMigratable=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.231', created: '11 Feb 2026, 8:49', computeResource: 'large', activeComputeId: 'small', resizeProgress: { phase: 'after-restart', startedAtMs: Date.now() - 8 * 60000, startedAt: new Date(Date.now() - 8 * 60000).toLocaleString('en-GB'), lastUpdatedAt: new Date(Date.now() - 5 * 60000).toLocaleString('en-GB'), changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.21', externalIpRetryAttempt: 2, hostDevices: [{ name: 'host-usb-1' }], sshSecretId: 'ssh-yifat-dev', cloudInitSource: 'secret', cloudInitSecretId: 'ud-fedora-init' },
@@ -10631,7 +10632,7 @@
               <button type="button" class="name-link" title="${v.node || ''}">${truncateNode(v.node || '—')}</button>
             </span>`;
         case 'ip':
-          return v.ip === '—' || !v.ip ? '<span class="muted">—</span>' : v.ip;
+          return v.ip === '—' || !v.ip ? '<span class="muted">—</span>' : `${v.ip}${v.status === 'deleting' ? ' <span class="muted">(last known)</span>' : ''}`;
         case 'created':
           return enriched.created || v.created || '—';
         case 'memory':
@@ -12122,6 +12123,7 @@
     function statusCell(s, vmName = '') {
       const vm = VMS.find(v => v.name === vmName);
       if (vm?.provisioningFailed) return `<span class="status-static" title="${escAttr(vm.provisioningFailureMessage || 'Provisioning failed')}">${statusIcon('error')} Failed to provision</span>`;
+      if (s === 'deleting') return `<span class="status-static">${statusIcon('starting')} Deleting</span>`;
       const vmAttr = vmName ? ` data-status-vm="${vmName}"` : '';
       if (s === 'running') {
         return `<button type="button" class="status-link" data-status-popover="running"${vmAttr} aria-haspopup="dialog" aria-expanded="false">${statusIcon('running')}<span class="status-link__label">Running</span></button>`;
@@ -12398,7 +12400,7 @@
     }
 
     function selectedVmRows() {
-      return VMS.filter(v => state.selectedVms.has(v.name));
+      return VMS.filter(v => v.status !== 'deleting' && state.selectedVms.has(v.name));
     }
 
     function setActionItemState(itemId, btnId, descId, { disabled, description, hideDesc }) {
@@ -12551,10 +12553,10 @@
 
       const running = vm.status === 'running';
       const starting = vm.status === 'starting';
-      const canDelete = !running && !starting;
+      const canDelete = !running && !starting && vm.status !== 'deleting';
       const startingReason = 'The virtual machine is starting';
       const notRunningReason = 'The virtual machine is running';
-      const deleteTip = canDelete ? '' : (starting ? startingReason : notRunningReason);
+      const deleteTip = canDelete ? '' : (vm.status === 'deleting' ? 'The virtual machine is being deleted' : (starting ? startingReason : notRunningReason));
 
       const alreadyOpen = state.vmDetailActionsOpen && state.vmDetailActionsName === name;
       closeVmDetailActionsMenu();
@@ -12610,7 +12612,7 @@
       if (actionId === 'delete') {
         const running = vm.status === 'running';
         const starting = vm.status === 'starting';
-        if (running || starting) return;
+        if (running || starting || vm.status === 'deleting') return;
         openDeleteVmModal(name);
       }
     }
@@ -12671,7 +12673,7 @@
     function openVmKebabMenu(vmName, btn) {
       const menu = document.getElementById('vm-kebab-menu');
       const vm = VMS.find(v => v.name === vmName);
-      if (!menu || !vm || !btn) return;
+      if (!menu || !vm || !btn || vm.status === 'deleting') return;
 
       const alreadyOpen = state.kebabVmName === vmName && menu.classList.contains('pf-m-open');
       closeVmKebabMenu();
@@ -12721,7 +12723,7 @@
     function openDeleteVmModal(vmName) {
       const overlay = document.getElementById('delete-vm-overlay');
       const nameEl = document.getElementById('delete-vm-name');
-      if (!overlay) return;
+      if (!overlay || VMS.find(v => v.name === vmName)?.status === 'deleting') return;
       state.deleteVmName = vmName;
       if (nameEl) nameEl.textContent = vmName || 'this virtual machine';
       overlay.classList.add('pf-m-open');
@@ -12756,9 +12758,9 @@
     }
 
     function syncVmBulkSelect() {
-      const pageRows = filteredVms();
+      const pageRows = filteredVms().filter(v => v.status !== 'deleting');
       const pageNames = pageRows.map(v => v.name);
-      const allNames = VMS.map(v => v.name);
+      const allNames = VMS.filter(v => v.status !== 'deleting').map(v => v.name);
       const selected = [...state.selectedVms];
       const selectedCount = selected.length;
       const pageSelected = pageNames.length > 0 && pageNames.every(n => state.selectedVms.has(n));
@@ -12786,13 +12788,13 @@
     }
 
     function selectVmBulk(mode) {
-      const pageNames = filteredVms().map(v => v.name);
+      const pageNames = filteredVms().filter(v => v.status !== 'deleting').map(v => v.name);
       if (mode === 'none') {
         state.selectedVms.clear();
       } else if (mode === 'page') {
         pageNames.forEach(n => state.selectedVms.add(n));
       } else if (mode === 'all') {
-        VMS.forEach(v => state.selectedVms.add(v.name));
+        VMS.filter(v => v.status !== 'deleting').forEach(v => state.selectedVms.add(v.name));
       }
       renderVms(state.vmFilter);
       setVmBulkMenuOpen(false);
@@ -12814,6 +12816,7 @@
       if (s === 'running') return { key: 'running', label: 'Running', mod: 'running' };
       if (s === 'paused') return { key: 'paused', label: 'Paused', mod: 'paused' };
       if (s === 'starting') return { key: 'starting', label: 'Starting', mod: 'starting' };
+      if (s === 'deleting') return { key: 'starting', label: 'Deleting', mod: 'starting' };
       if (s === 'errorpvcnotfound' || s === 'error') return { key: 'error', label: 'Error', mod: 'error' };
       return { key: 'stopped', label: 'Stopped', mod: 'stopped' };
     }
@@ -12846,14 +12849,14 @@
             <div class="vm-list-card__header-left">
               <label class="pf-v6-c-check pf-m-standalone">
                 <input type="checkbox" class="pf-v6-c-check__input vm-row-check" data-vm="${v.name}"
-                  aria-label="Select ${v.name}" ${selected ? 'checked' : ''} />
+                  aria-label="Select ${v.name}" ${selected ? 'checked' : ''} ${v.status === 'deleting' ? 'disabled' : ''} />
               </label>
               <span class="vm-list-card__icon" aria-hidden="true">
                 <i class="fa-solid fa-server"></i>
               </span>
             </div>
             <div class="vm-list-card__header-right">
-              <button type="button" class="kebab" data-vm-kebab="${v.name}"
+              <button type="button" class="kebab" data-vm-kebab="${v.name}" ${v.status === 'deleting' ? 'disabled title="Actions are unavailable while this virtual machine is being deleted"' : ''}
                 aria-label="Actions for ${v.name}" aria-haspopup="menu" aria-expanded="false">
                 <i class="fa-solid fa-ellipsis-v" aria-hidden="true"></i>
               </button>
@@ -12871,7 +12874,7 @@
             </div>
             <div class="vm-list-card__spec-row">
               <dt>IP address</dt>
-              <dd>${ip === '—' ? '<span class="muted">—</span>' : String(ip).replace(/</g, '&lt;')}</dd>
+              <dd>${ip === '—' ? '<span class="muted">—</span>' : `${String(ip).replace(/</g, '&lt;')}${v.status === 'deleting' ? ' <span class="muted">(last known)</span>' : ''}`}</dd>
             </div>
           </dl>
           <dl class="vm-list-card__footer">
@@ -13021,11 +13024,11 @@
         <tr class="pf-v6-c-table__tr${state.selectedVms.has(v.name) ? ' pf-m-selected' : ''}">
           <td class="pf-v6-c-table__td">
             <label class="pf-v6-c-check pf-m-standalone">
-              <input type="checkbox" class="pf-v6-c-check__input vm-row-check" data-vm="${v.name}" aria-label="Select ${v.name}" ${state.selectedVms.has(v.name) ? 'checked' : ''} />
+              <input type="checkbox" class="pf-v6-c-check__input vm-row-check" data-vm="${v.name}" aria-label="Select ${v.name}" ${state.selectedVms.has(v.name) ? 'checked' : ''} ${v.status === 'deleting' ? 'disabled' : ''} />
             </label>
           </td>
           ${cols.map(id => `<td class="pf-v6-c-table__td">${vmColumnCell(id, v)}</td>`).join('')}
-          <td class="pf-v6-c-table__td"><button type="button" class="kebab" data-vm-kebab="${v.name}" aria-label="Actions for ${v.name}" aria-haspopup="menu" aria-expanded="false"><i class="fa-solid fa-ellipsis-v" aria-hidden="true"></i></button></td>
+          <td class="pf-v6-c-table__td"><button type="button" class="kebab" data-vm-kebab="${v.name}" aria-label="Actions for ${v.name}" aria-haspopup="menu" aria-expanded="false" ${v.status === 'deleting' ? 'disabled title="Actions are unavailable while this virtual machine is being deleted"' : ''}><i class="fa-solid fa-ellipsis-v" aria-hidden="true"></i></button></td>
         </tr>
       `).join('');
       syncVmBulkSelect();
@@ -15551,13 +15554,14 @@
 
     function vmExternalIpPanelHtml(vm, { canEdit = true } = {}) {
       const status = vmExternalIpStatus(vm);
+      const deleting = vm.status === 'deleting';
       const autoAttached = status === 'attached' && !!vm.autoAttachExternalIp;
       const attachedIp = status === 'attached' && vm.externalIp ? String(vm.externalIp) : '';
       const safeIp = attachedIp.replace(/</g, '&lt;');
 
       let addressHtml = '';
       if (status === 'attached' && attachedIp) {
-        addressHtml = `<code>${safeIp}</code>`;
+        addressHtml = `${deleting ? '<span class="muted">Last known: </span>' : ''}<code>${safeIp}</code>`;
       }
 
       let actions = '';
@@ -16723,7 +16727,7 @@
 
     function applyVmPowerAction(action, name = state.selectedVmName) {
       const vm = VMS.find(v => v.name === name);
-      if (!vm) return;
+      if (!vm || vm.status === 'deleting') return;
       if (vmPowerActionTimer) {
         clearTimeout(vmPowerActionTimer);
         vmPowerActionTimer = null;
@@ -17107,17 +17111,19 @@
       const running = v.status === 'running';
       const paused = v.status === 'paused';
       const starting = v.status === 'starting';
+      const deleting = v.status === 'deleting';
       const canStop = (running || paused) && !starting;
       const canRestart = (running || paused) && !starting;
       const canPause = running && !starting;
-      const canStart = !running && !starting;
+      const canStart = !running && !starting && !deleting;
       const startingReason = 'The virtual machine is starting';
       const notRunningReason = 'The virtual machine is not running';
       const runningReason = 'The virtual machine is running';
-      const stopTip = canStop ? 'Stop' : (starting ? startingReason : notRunningReason);
-      const restartTip = canRestart ? 'Restart' : (starting ? startingReason : notRunningReason);
-      const pauseTip = canPause ? 'Pause' : (starting ? startingReason : notRunningReason);
-      const startTip = canStart ? 'Start' : (starting ? startingReason : runningReason);
+      const deletingReason = 'The virtual machine is being deleted';
+      const stopTip = canStop ? 'Stop' : (deleting ? deletingReason : (starting ? startingReason : notRunningReason));
+      const restartTip = canRestart ? 'Restart' : (deleting ? deletingReason : (starting ? startingReason : notRunningReason));
+      const pauseTip = canPause ? 'Pause' : (deleting ? deletingReason : (starting ? startingReason : notRunningReason));
+      const startTip = canStart ? 'Start' : (deleting ? deletingReason : (starting ? startingReason : runningReason));
 
       const projectDisplay = detailNameLink(v.project || v.ns || 'project-a', 'data-open-project', v.project || v.ns || 'project-a');
       const guestOsFamilyDisplay = vmGuestOsFamilyDisplay(v);
@@ -17178,8 +17184,8 @@
       const alerts = (Array.isArray(v.alerts) ? v.alerts : [])
         .filter(a => !(v.restartRequired && /Restart required/i.test(a.message || a || '')));
       const role = getActiveRole();
-      const canEditConfig = !!role.canEditConfig;
-      const noEditReason = 'No configuration edits for this role';
+      const canEditConfig = !!role.canEditConfig && !deleting;
+      const noEditReason = deleting ? 'Changes are unavailable while this virtual machine is being deleted' : 'No configuration edits for this role';
       const editDisabledAttr = canEditConfig ? '' : ' disabled';
       const editTitleAttr = canEditConfig ? ' title="Edit"' : ` title="${noEditReason}"`;
       const addDisabledAttrs = canEditConfig ? '' : ` disabled title="${noEditReason}"`;
@@ -17188,7 +17194,7 @@
       const canResizeCompute = canResizeByRole && canResizeVmInstanceType(v);
       const resizeDisabledReason = !canResizeByRole
         ? 'No instance type resize for this role'
-        : (resizeVmInstanceTypeDisabledReason(v) || 'Resize is unavailable for this virtual machine.');
+        : (deleting ? noEditReason : (resizeVmInstanceTypeDisabledReason(v) || 'Resize is unavailable for this virtual machine.'));
       const editComputeDisabledAttr = canResizeCompute ? '' : ' disabled';
       const editComputeTitleAttr = canResizeCompute ? ' title="Edit"' : ` title="${resizeDisabledReason}"`;
       const itNameSafe = String(computeFields.name).replace(/</g, '&lt;');
@@ -17243,7 +17249,7 @@
                 </div>
               </div>
           <div class="ethan-detail-header__actions" role="group" aria-label="Virtual machine actions">
-            <button type="button" class="pf-v6-c-button pf-m-primary" id="vm-open-console">
+            <button type="button" class="pf-v6-c-button pf-m-primary" id="vm-open-console" ${deleting ? 'disabled title="Console is unavailable while this virtual machine is being deleted"' : ''}>
               <span class="pf-v6-c-button__icon"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
               <span class="pf-v6-c-button__text">Open console</span>
                         </button>
@@ -17261,7 +17267,7 @@
               <span class="pf-v6-c-button__text">Pause</span>
             </button>
             <span class="ethan-detail-header__actions-divider" aria-hidden="true"></span>
-            <button type="button" class="pf-v6-c-menu-toggle pf-m-secondary" id="vm-detail-actions-btn"
+            <button type="button" class="pf-v6-c-menu-toggle pf-m-secondary" id="vm-detail-actions-btn" ${deleting ? 'disabled title="Actions are unavailable while this virtual machine is being deleted"' : ''}
               aria-expanded="false" aria-haspopup="menu" aria-controls="vm-detail-actions-menu">
               <span class="pf-v6-c-menu-toggle__text">Actions</span>
               <span class="pf-v6-c-menu-toggle__controls">
@@ -17275,6 +17281,12 @@
       `;
 
       const operationAlertsHtml = vmConfigurationOperationAlertsHtml(v, canResizeCompute);
+      const deletingAlertHtml = deleting ? `
+        <div class="pf-v6-c-alert pf-m-inline pf-m-info vm-restart-required" role="status">
+          <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></div>
+          <h3 class="pf-v6-c-alert__title">Deleting this virtual machine</h3>
+          <div class="pf-v6-c-alert__description">You can view its last known details while deletion is in progress. IP addresses and other connection details may no longer be current.</div>
+        </div>` : '';
       const provisioningFailureHtml = v.provisioningFailed ? `
         <div class="pf-v6-c-alert pf-m-inline pf-m-danger" role="alert">
           <div class="pf-v6-c-alert__icon"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></div>
@@ -17284,6 +17296,7 @@
       const body = `
         <div class="vm-overview-v2">
           <div class="vm-overview-v2__main">
+            ${deletingAlertHtml}
             ${operationAlertsHtml}
             ${provisioningFailureHtml}
             ${vmResizeStatusAlertHtml(v)}
@@ -17361,7 +17374,7 @@
                         <td>${vnCell}</td>
                         <td>${subnetCell}</td>
                         <td>${sgCell}</td>
-                        <td>${internalIp}</td>
+                        <td>${deleting && internalIp !== '—' ? `<span class="muted">Last known: </span>${internalIp}` : internalIp}</td>
                         <td class="overview-table__actions">
                             <div class="nic-actions-wrap">
                             <button type="button" class="kebab${menuOpen ? ' pf-m-expanded' : ''}" data-overview-row-menu="${menuKey}"
