@@ -38,7 +38,7 @@ When a resize requires a restart, show a **Restart required** warning above Over
 
 ![Version 0.5 expanded top restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5.png)
 
-The VM list uses compact PatternFly pagination in card and table views: an item-range dropdown plus Previous and Next above and below the results.
+In card and table views, the VM list shows one configuration status below the power status. Its tooltip lists every outstanding operation and target.
 
 ![Version 0.5 VM cards with configuration status below power status](screenshots/latest-ux/vm-config-status-cards-0.5.png)
 
