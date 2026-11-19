@@ -7232,6 +7232,14 @@
       line-height: 1.5;
       color: var(--pf-t--global--text--color--regular, #151515);
     }
+    /* Match PF6 table headers in overview tables and other custom table layouts. */
+    :is(.overview-table, .tpl-list, .boot-table, .tpl-drawer__table) th {
+      font-family: inherit;
+      font-size: var(--pf-t--global--font--size--body--default, 0.875rem);
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--pf-t--global--text--color--regular, #151515);
+    }
   </style>
 </head>
 <body>
