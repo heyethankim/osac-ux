@@ -9189,7 +9189,7 @@
             : '';
           alerts.push({ kind: 'info', title: 'External IP attachment in progress', description: `Attaching external IP <strong>${target}</strong>.${retry}` });
         } else {
-          const reason = escAttr(vm.externalIpError || `Couldn’t attach external IP ${target}.`);
+          const reason = escAttr(vm.externalIpError || `We couldn’t attach external IP ${target} to this VM.`);
           const retry = vm.externalIpNextRetryAt
             ? ` Another attempt is scheduled for ${escAttr(vm.externalIpNextRetryAt)}.`
             : (vm.externalIpRetryPlanned === false ? ' No further retry is scheduled.' : '');
@@ -15418,7 +15418,7 @@
           vm.externalIpPending = '';
           vm.externalIp = '';
           vm.externalIpAttached = false;
-          vm.externalIpError = `Couldn’t attach external IP ${address}.`;
+          vm.externalIpError = `We couldn’t attach external IP ${address} to this VM.`;
           vm.externalIpRetryPlanned = false;
           renderVmDetail();
           return;
@@ -15430,7 +15430,7 @@
           vm.externalIpPending = '';
           vm.externalIp = '';
           vm.externalIpAttached = false;
-          vm.externalIpError = `Couldn’t attach external IP ${address}.`;
+          vm.externalIpError = `We couldn’t attach external IP ${address} to this VM.`;
           vm.externalIpRetryPlanned = false;
           renderVmDetail();
           return;
