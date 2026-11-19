@@ -26,8 +26,8 @@ In the VM list, external-IP work contributes to the same single configuration la
 
 ![Version 0.5 failed external IP attachment](screenshots/latest-ux/tenant-networking-attach-failed-0.5-crop.png)
 
-![Auto attached external IP status label](screenshots/latest-ux/tenant-networking-auto-ip-badge.png)
+![Auto attached external IP status label](screenshots/latest-ux/tenant-networking-auto-ip-0.5-crop.png)
 
-![No external IP attached](screenshots/latest-ux/tenant-networking-no-ip.png)
+![No external IP attached](screenshots/latest-ux/tenant-networking-no-ip-0.5-crop.png)
 
-![Manually attached external IP](screenshots/latest-ux/tenant-networking-manual-ip.png)
+![Manually attached external IP](screenshots/latest-ux/tenant-networking-manual-ip-0.5-crop.png)
