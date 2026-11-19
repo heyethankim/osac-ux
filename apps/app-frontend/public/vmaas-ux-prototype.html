@@ -12123,7 +12123,7 @@
     function statusCell(s, vmName = '') {
       const vm = VMS.find(v => v.name === vmName);
       if (vm?.provisioningFailed) return `<span class="status-static" title="${escAttr(vm.provisioningFailureMessage || 'Provisioning failed')}">${statusIcon('error')} Failed to provision</span>`;
-      if (s === 'deleting') return `<span class="status-static">${statusIcon('starting')} Deleting</span>`;
+      if (s === 'deleting') return '<span class="status-static">Deleting</span>';
       const vmAttr = vmName ? ` data-status-vm="${vmName}"` : '';
       if (s === 'running') {
         return `<button type="button" class="status-link" data-status-popover="running"${vmAttr} aria-haspopup="dialog" aria-expanded="false">${statusIcon('running')}<span class="status-link__label">Running</span></button>`;
@@ -12816,13 +12816,13 @@
       if (s === 'running') return { key: 'running', label: 'Running', mod: 'running' };
       if (s === 'paused') return { key: 'paused', label: 'Paused', mod: 'paused' };
       if (s === 'starting') return { key: 'starting', label: 'Starting', mod: 'starting' };
-      if (s === 'deleting') return { key: 'starting', label: 'Deleting', mod: 'starting' };
       if (s === 'errorpvcnotfound' || s === 'error') return { key: 'error', label: 'Error', mod: 'error' };
       return { key: 'stopped', label: 'Stopped', mod: 'stopped' };
     }
 
     function vmCardStatusPill(v) {
       if (v.provisioningFailed) return `<span class="vm-list-card__status-pill vm-list-card__status-pill--error" title="${escAttr(v.provisioningFailureMessage || 'Provisioning failed')}">${statusIcon('error')} Failed to provision</span>`;
+      if (v.status === 'deleting') return '<span class="vm-list-card__status-pill vm-list-card__status-pill--starting">Deleting</span>';
       const meta = vmCardStatusMeta(v.status);
       const interactive = meta.key !== 'starting';
       if (!interactive) {
