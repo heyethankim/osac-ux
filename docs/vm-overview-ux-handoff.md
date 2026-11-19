@@ -32,6 +32,18 @@ The screenshots below document the earlier 0.4 list and resize layout. The 0.5 s
 
 For access, networking, storage, utilization, failure states, and permissions, follow the [Google UX handoff](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit).
 
+## Access and initial run examples
+
+These 0.4 captures show the current Overview typography and the distinct auto-attached, manually attached, inline Cloud-init, and Windows Sysprep states. The 0.5 Overview uses the same field typography.
+
+![Auto-attached external IP and Cloud-init secret](screenshots/latest-ux/vm-overview-auto-0.4.png)
+
+![Manually attached external IP](screenshots/latest-ux/vm-overview-manual-0.4.png)
+
+![Inline Cloud-init value](screenshots/latest-ux/vm-overview-inline-0.4.png)
+
+![Windows Sysprep](screenshots/latest-ux/vm-overview-windows-0.4.png)
+
 ## Storage table typography
 
 Networking and Additional disks column headings use the standard PatternFly 6 table heading typography in both versions: 14px semibold Red Hat Text in the regular text color. The same treatment applies to other custom table headers.

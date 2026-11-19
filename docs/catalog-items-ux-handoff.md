@@ -3,9 +3,9 @@
 Contact: Yifat Friman Menchik, UXD  
 Jira: [HPUX-2175](https://redhat.atlassian.net/browse/HPUX-2175)  
 Google Doc: [Catalog items](https://docs.google.com/document/d/1YTm2X4nUXWVI_Mjq_hXEY4Rj6i9BaOiXjzVeF3jcMA4/edit)  
-Interactive mock: [Catalog, Cloud provider admin](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=38d7305&role=provider)
+Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=a4e914c&role=provider) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=a4e914c&role=provider)
 
-This handoff describes the **0.4** mockup. Version **0.5** is available for subsequent work. In both versions, Catalog cards group vCPUs, memory, and GPU beneath **Instance type** with an indented vertical rule, matching the BMaaS card hierarchy. The GPU row says **None** when the selected instance type has no GPU; a dash remains reserved for unavailable data.
+This handoff describes the **0.4** catalog flow and the **0.5** unpublished-card update. In both versions, Catalog cards group vCPUs, memory, and GPU beneath **Instance type** with an indented vertical rule, matching the BMaaS card hierarchy. The GPU row says **None** when the selected instance type has no GPU; a dash remains reserved for unavailable data.
 
 The provider Catalog list supports publish-state and tenant filters, search, and card and table views. Both views show compact PatternFly pagination above the list: an item-range dropdown with Previous and Next. Show a second pagination control below the list only when results span multiple pages. The item count reflects the selected project or other active scope.
 
@@ -13,9 +13,15 @@ On each Catalog card, show the **Instance type** name with its own Editable or L
 
 The table view shows the same two badges. Its Instance type cell puts the name and badge first, with CPU, memory, and GPU details underneath. In the wizard, each Editable/Locked control keeps a short visible label; its accessible name states the field, current setting, and effect.
 
-![Earlier Catalog card view showing field badges; the current card groups compute specs beneath Instance type](screenshots/latest-ux/catalog-single-page-cards.jpg)
+![Current 0.4 Catalog card view with grouped compute specs](screenshots/latest-ux/catalog-cards-0.4-current.png)
 
-![Current Catalog list view with field badges](screenshots/latest-ux/catalog-single-page-list.jpg)
+![Current 0.4 Catalog list view with field badges](screenshots/latest-ux/catalog-list-0.4-current.png)
+
+## Version 0.5 — Unpublished cards (OSAC-7905)
+
+Unpublished cards use the same white surface, border, opacity, and available actions as Live cards. A compact neutral gray **Unpublished** label identifies publication state. Publication state is included in the card's accessible name. Version 0.4 retains the earlier gray unpublished-card treatment for historical comparison.
+
+![Version 0.5 Live and Unpublished Catalog cards](screenshots/latest-ux/catalog-cards-0.5-current.png)
 
 The Create VM Catalog Item wizard runs **Details → Compute configuration → Storage → Access & Initial run → Review**. Details sets scope, name, description, and provisioning template. A provisioning template option shows its name above its description. The selected template name or ID appears in Review and catalog item details. The help popover says: “A provisioning template is the set of steps OSAC uses to create a VM. Choose the one for the platform where these VMs should run.”
 
