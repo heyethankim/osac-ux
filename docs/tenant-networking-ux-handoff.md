@@ -2,7 +2,7 @@
 
 Contact: Yifat Friman Menchik, UXD  
 Google Doc: [Tenant Networking](https://docs.google.com/document/d/1Bb-TzaXkhdASe6btymwRk2u0wXycwyqS-I8h637hDGY/edit)  
-Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=17d8bb5&role=admin&vm=rhel9-black-gunnysack-58) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=58cbd2c&role=admin&vm=windows-golden-eider-58)
+Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=17d8bb5&role=admin&vm=rhel9-black-gunnysack-58) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7b7f0be&role=admin&vm=windows-golden-eider-58)
 
 The Virtual networks list uses compact PatternFly pagination above and below the results: an item-range dropdown plus Previous and Next. The dropdown changes items per page (10, 20, 50, or 100). Filtering resets to the first page.
 
@@ -18,7 +18,7 @@ In version **0.5** (OSAC-7158), show attachment progress beside External IP and 
 
 In the VM list and cards, external-IP work contributes to one configuration status on a second line below the power status. Use subdued gray **Changes in progress** while attaching, or **Changes need attention** if attachment failed. Do not add an icon to the configuration status. The tooltip names the operation and selected address.
 
-If resize has failed while attachment continues, the top alert describes the resize failure, attachment progress stays beside External IP, and the list tooltip names both. See the [mixed-operation example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=58cbd2c&role=admin&vm=ubuntu-copper-ibis-31).
+If resize has failed while attachment continues, the top alert describes the resize failure, attachment progress stays beside External IP, and the list tooltip names both. See the [mixed-operation example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7b7f0be&role=admin&vm=ubuntu-copper-ibis-31).
 
 ## Version 0.5 screenshots
 
