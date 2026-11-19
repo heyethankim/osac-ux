@@ -5186,9 +5186,6 @@
       overflow: hidden;
     }
     .tpl-card--catalog:hover { border-color: #8a8d90; box-shadow: 0 4px 8px rgba(0, 0, 0, .08); }
-    .tpl-card--catalog.tpl-m-unpublished {
-      background: var(--pf-t--global--background--color--secondary--default, #f5f5f5);
-    }
     .tpl-card--catalog .tpl-card__body {
       padding: var(--pf-t--global--spacer--md, 16px) var(--pf-t--global--spacer--md, 16px) 0;
       flex: 1 1 auto;
@@ -24911,7 +24908,9 @@
 
     function renderCatalogCard(item, { showVisibility, showPublishState }) {
       const title = String(item.name).replace(/</g, '&lt;');
-      const unpublishedClass = item.publishState === 'unpublished' ? ' tpl-m-unpublished' : '';
+      const cardAriaLabel = showPublishState
+        ? `Open ${title}, ${item.publishState === 'live' ? 'Live' : 'Unpublished'}`
+        : `Open ${title}`;
       const visibilityFooter = showVisibility ? (() => {
         const scopeIcon = item.visibility === 'tenant' ? 'cubes' : 'globe';
         const scopeLabel = catalogPublishScopeLabel(item).replace(/</g, '&lt;');
@@ -24927,7 +24926,7 @@
           </div>` : '');
       const publishBadge = showPublishState ? publishLabelHtml(item.publishState) : '';
       return `
-        <article class="tpl-card tpl-card--catalog${unpublishedClass}" data-catalog-card="${item.id}" tabindex="0" role="link" aria-label="Open ${title}">
+        <article class="tpl-card tpl-card--catalog" data-catalog-card="${item.id}" tabindex="0" role="link" aria-label="${cardAriaLabel}">
           <div class="tpl-card__body">
             <div class="tpl-card__catalog-head">
               <span class="tpl-card__icon tpl-card__icon--catalog-vm" aria-hidden="true">
