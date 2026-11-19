@@ -2,17 +2,23 @@
 
 Contact: Yifat Friman Menchik, UXD  
 Google Doc: [VM Overview](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit)  
-Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=20261119-osac7158&role=admin&vm=indigo-quokka-89)
+Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=20261119-osac7158-audit&role=admin&vm=indigo-quokka-89)
 
 VM Overview shows the active instance type, CPU, and memory. Editing the instance type opens the name-first, two-line picker: each option has the resource name above CPU, memory, GPU count and readable model when present, and rate. Omit PCI hardware IDs from visible labels. The GPU specification still determines which resize targets are compatible. See the [resize handoff](osac-4281-vm-resize-handoff.md).
 
 ## Version 0.5 — configuration operations (OSAC-7158)
 
-The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Show resize progress or a scheduled resize beside the instance type, and attachment progress beside External IP. Name the requested instance type or address in context. A known later attempt appears on its own subdued line. The Attach external IP button remains visible but disabled while attachment runs. Reserve a top-of-page danger alert for failed operations; when two operations fail, list both in one alert. A failed resize has a **Resize again** button by the instance type. After an attachment failure, keep the attempted address out of the attached-IP value and offer **Attach external IP** to start another selection.
+The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Keep the instance type name, CPU, memory, and GPU together; show scheduled or applying resize status immediately after those specs. Attachment progress appears beside External IP. Name the requested type or address in context. A known later attempt appears on its own subdued line. The Attach external IP button remains visible but disabled while attachment runs. Reserve a top-of-page danger alert for failed operations; when two operations fail, list both in one alert. Put the failure reason in that alert and a short **Resize failed** cue with **Resize again** beside the instance type. Say **No automatic retry is scheduled** when that is known, so the manual action remains clear. After an attachment failure, keep the attempted address out of the attached-IP value and offer **Attach external IP** to start another selection.
 
 ![Version 0.5 progress beside instance type and External IP](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
 ![Version 0.5 failure alert and Resize again action](screenshots/latest-ux/vm-config-failure-0.5.png)
+
+The `ubuntu-copper-ibis-31` example combines a failed resize with external-IP attachment still running. The top alert covers only the resize failure; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the tooltip names both operations.
+
+![Version 0.5 failed resize and active external-IP attachment](screenshots/latest-ux/vm-config-mixed-0.5.png)
+
+![Version 0.5 mixed-operation status tooltip](screenshots/latest-ux/vm-config-status-tooltip-mixed-0.5.png)
 
 When a resize requires a restart, show “Restart required to apply resize” beside the instance type. **Scheduled changes** is collapsed by default and expands to show current and requested values. In VM lists and cards, use icon-and-text statuses, rather than pill labels, for both power state and configuration state: **Changes pending**, **Changes in progress**, or **Changes need attention**. The configuration status tooltip names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
 
@@ -26,7 +32,7 @@ The VM list uses compact PatternFly pagination in card and table views: an item-
 
 ![Version 0.5 configuration status tooltip](screenshots/latest-ux/vm-config-status-tooltip-0.5.png)
 
-The screenshots below document the earlier 0.4 list and resize layout. The 0.5 screenshots above show the current operation alert and list labels.
+The screenshots below document the earlier 0.4 list and resize layout. The 0.5 screenshots above show the current failure alert and icon-and-text statuses.
 
 ![VM list and compact pagination](screenshots/latest-ux/vm-list.png)
 

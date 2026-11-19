@@ -8582,6 +8582,7 @@
       { name: 'windows-golden-eider-58', ns: 'project-a', status: 'stopped', os: 'Windows', osFull: 'Microsoft Windows Server 2022', imageLabel: 'Windows Server 2022', catalogItem: 'vm-windows-workstation', conditions: ['Ready=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '—', created: '11 Feb 2026, 9:48', sysprepConfigured: true, sysprepSecretId: 'sysprep-corp-std', bootDiskAccessMode: 'RWO' },
       { name: 'fedora-aqua-barnacle-58', ns: 'yifat', status: 'running', os: 'Fedora', osFull: 'Fedora Linux 41', imageLabel: 'Fedora 41', catalogItem: 'vm-dev-workstation', conditions: ['DataVolumesReady=True', 'LiveMigratable=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.231', created: '11 Feb 2026, 8:49', computeResource: 'large', activeComputeId: 'small', resizeProgress: { phase: 'after-restart', startedAtMs: Date.now() - 8 * 60000, startedAt: new Date(Date.now() - 8 * 60000).toLocaleString('en-GB'), lastUpdatedAt: new Date(Date.now() - 5 * 60000).toLocaleString('en-GB'), changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.21', externalIpRetryAttempt: 2, hostDevices: [{ name: 'host-usb-1' }], sshSecretId: 'ssh-yifat-dev', cloudInitSource: 'secret', cloudInitSecretId: 'ud-fedora-init' },
       { name: 'debian-cobalt-heron-41', ns: 'yifat', status: 'running', os: 'Other', osFull: 'Debian 12', imageLabel: 'Debian 12', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.238', created: '10 Nov 2026, 16:05', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, bootDiskAccessMode: 'RWO' },
+      { name: 'ubuntu-copper-ibis-31', ns: 'project-a', status: 'running', os: 'Other', osFull: 'Ubuntu 24.04 LTS', imageLabel: 'Ubuntu 24.04 LTS', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.239', created: '18 Nov 2026, 11:40', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.22', externalIpRetryAttempt: 2, bootDiskAccessMode: 'RWO' },
       { name: 'rhel8-mystic-eagle-22', ns: 'vmaas', status: 'ErrorPvcNotFound', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 8', imageLabel: 'RHEL 8.10', catalogItem: 'vm-legacy-app-server', conditions: ['Provisioning=False', 'Ready=False'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '—', created: '22 Jan 2026, 14:42', alerts: [{ severity: 'warning', message: 'Boot disk is unavailable' }, { severity: 'warning', message: 'Virtual machine is not Ready' }], bootDiskAccessMode: 'RWO' },
       { name: 'gpu-provisioning-failed', ns: 'project-a', status: 'starting', provisioningFailed: true, provisioningFailureReason: 'ProvisioningFailed', provisioningFailureMessage: 'AAP job failed', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', computeResource: 'small-gpu', conditions: ['PROVISIONED=False', 'ProvisioningFailed'], node: '—', ip: '—', created: '9 Nov 2026, 15:57' },
       { name: 'legacy-obsolete-vm', ns: 'project-a', status: 'stopped', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', computeResource: '8xlarge', conditions: ['Ready=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '—', created: '8 Nov 2026, 10:21', bootDiskAccessMode: 'RWO' },
@@ -9227,7 +9228,7 @@
         const reason = escAttr(vm.resizeFailure.reason || 'The requested instance type could not be applied.');
         const retry = vm.resizeFailure.nextRetryAt
           ? ` Another attempt is scheduled for ${escAttr(vm.resizeFailure.nextRetryAt)}.`
-          : (vm.resizeFailure.retryPlanned === false ? ' No further retry is scheduled.' : '');
+          : (vm.resizeFailure.retryPlanned === false ? ' No automatic retry is scheduled.' : '');
         alerts.push({ title: 'Resize failed', description: `Could not apply instance type <strong>${target}</strong>. ${reason}${retry}` });
       }
       const ipStatus = vmExternalIpStatus(vm);
@@ -9236,7 +9237,7 @@
         const reason = escAttr(vm.externalIpError || `We couldn’t attach external IP ${target} to this VM.`);
         const retry = vm.externalIpNextRetryAt
           ? ` Another attempt is scheduled for ${escAttr(vm.externalIpNextRetryAt)}.`
-          : (vm.externalIpRetryPlanned === false ? ' No further retry is scheduled.' : '');
+          : (vm.externalIpRetryPlanned === false ? ' No automatic retry is scheduled.' : '');
         alerts.push({ title: 'External IP attachment failed', description: `${reason}${retry}` });
       }
       if (alerts.length === 0) return '';
@@ -9258,7 +9259,7 @@
       const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
       if (vm.resizeFailure) {
         return `<div class="vm-config-inline" role="status">
-          <div>Resize to <strong>${target}</strong> failed. The current configuration remains active.</div>
+          <div>Resize failed.</div>
           ${canResize ? '<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small vm-config-inline__action" data-resize-again>Resize again</button>' : ''}
         </div>`;
       }
@@ -17254,10 +17255,10 @@
                   ${itField('Disk image', diskImageDisplay)}
                   ${itSubtitleRow}
                   ${itField('Name', `${itNameSafe} ${instanceTypeLifecycleLabel(COMPUTE_RESOURCES.find(c => c.id === vmActiveComputeId(v))?.lifecycle)}`)}
-                  ${vmResizeInlineHtml(v, canResizeCompute)}
                   ${itField('vCPUs', String(computeFields.vcpu).replace(/</g, '&lt;'))}
                   ${itField('Memory', String(computeFields.memory).replace(/</g, '&lt;'))}
                   ${gpuFieldsHtml}
+                  ${vmResizeInlineHtml(v, canResizeCompute)}
                 </section>
                 <section class="ethan-detail-col" aria-labelledby="vm-access-title">
                   <h3 class="ethan-detail-col__title" id="vm-access-title">Access &amp; Initial run</h3>

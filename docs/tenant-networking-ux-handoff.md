@@ -2,7 +2,7 @@
 
 Contact: Yifat Friman Menchik, UXD  
 Google Doc: [Tenant Networking](https://docs.google.com/document/d/1Bb-TzaXkhdASe6btymwRk2u0wXycwyqS-I8h637hDGY/edit)  
-Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=17d8bb5&role=admin&vm=rhel9-black-gunnysack-58) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=20261119-osac7158&role=admin&vm=windows-golden-eider-58)
+Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=17d8bb5&role=admin&vm=rhel9-black-gunnysack-58) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=20261119-osac7158-audit&role=admin&vm=windows-golden-eider-58)
 
 The Virtual networks list uses compact PatternFly pagination above and below the results: an item-range dropdown plus Previous and Next. The dropdown changes items per page (10, 20, 50, or 100). Filtering resets to the first page.
 
@@ -14,13 +14,17 @@ On VM Overview, an auto-attached external IP shows **Auto attached** beside the 
 
 The **External IP** heading is sufficient; do not add a Host label or empty placeholder below it. Show the address directly below the heading only after attachment succeeds. Detach is available only when an IP is confirmed attached.
 
-In version **0.5** (OSAC-7158), show attachment progress beside External IP and keep **Attach external IP** visible but disabled while it runs. Name the selected address and show a known later attempt on a separate subdued line. Reserve the top-of-page danger alert for failure. The failed address must not appear as an attached IP. After failure, offer **Attach external IP** so the user can select an address again; do not offer Detach because no address was attached.
+In version **0.5** (OSAC-7158), show attachment progress beside External IP and keep **Attach external IP** visible but disabled while it runs. Name the selected address and show a known later attempt on a separate subdued line. Reserve the top-of-page danger alert for failure. Say **No automatic retry is scheduled** only when that is known; it does not prevent the user from starting a new attachment. The failed address must not appear as an attached IP. After failure, offer **Attach external IP** so the user can select an address again; do not offer Detach because no address was attached.
 
 In the VM list and cards, external-IP work contributes to one icon-and-text configuration status alongside the power status. Use **Changes in progress** while attaching or **Changes need attention** if attachment failed; the tooltip names the operation and selected address.
+
+If resize has failed while attachment continues, the top alert describes the resize failure, attachment progress stays beside External IP, and the list tooltip names both. The mixed-operation example is `ubuntu-copper-ibis-31`.
 
 ## Version 0.5 screenshots
 
 ![Version 0.5 configuration status tooltip with resize and external-IP attachment](screenshots/latest-ux/vm-config-status-tooltip-concurrent-0.5.png)
+
+![Version 0.5 failure and attachment progress on one VM](screenshots/latest-ux/vm-config-mixed-0.5.png)
 
 ![Version 0.5 External IP attachment beside its setting](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 

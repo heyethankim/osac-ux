@@ -6,7 +6,7 @@ Updated: 12 November 2026
 UX Google Doc: https://docs.google.com/document/d/1kgln_LzTA3-VSP0SUM0jLce2Nvw0pix3oTYkwZuX-wE/edit  
 Interactive mockup, 0.4: https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=admin&vm=windows-golden-eider-58
 
-Interactive mockup, 0.5: https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=20261119-osac7158&role=admin&vm=fedora-aqua-barnacle-58
+Interactive mockup, 0.5: https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=20261119-osac7158-audit&role=admin&vm=fedora-aqua-barnacle-58
 Feature: [OSAC-4277](https://redhat.atlassian.net/browse/OSAC-4277)  
 Resize: [OSAC-4281](https://redhat.atlassian.net/browse/OSAC-4281)  
 Related work: [OSAC-7576](https://redhat.atlassian.net/browse/OSAC-7576), [OSAC-7463](https://redhat.atlassian.net/browse/OSAC-7463), [OSAC-7582](https://redhat.atlassian.net/browse/OSAC-7582), [OSAC-6578](https://redhat.atlassian.net/browse/OSAC-6578)
@@ -35,7 +35,7 @@ When the API reports that a resize is applying without a restart, keep **Running
 
 After a restart with a scheduled resize, remove **Restart required** and show **Changes in progress** in lists while the resize is applying, even if the power state has returned to **Running**. In version 0.5, details show the operation beside Instance type. The mockup uses `fedora-aqua-barnacle-58` for this state; restarting `azure-baboon-27` also demonstrates the transition.
 
-Do not show a persistent top progress notification, timing details, or a Recent activity entry for this brief operation. Remove the configuration status only when the API confirms completion, then show the new instance type, CPU, and memory as active values and a brief success toast. Keep configuration progress separate from the VM power state, as required by OSAC-6578. These states require operation phase and active versus requested values from the API; the mockup timer only demonstrates completion and must not be used as production logic. If resize fails, keep current resources visible, show **Changes need attention** in the 0.5 list, put the reason in a top danger alert, and offer **Resize again** beside Instance type.
+Do not show a persistent top progress notification, timing details, or a Recent activity entry for this brief operation. Keep the instance type name, CPU, memory, and GPU together; show progress after those specs. Remove the configuration status only when the API confirms completion, then show the new instance type, CPU, and memory as active values and a brief success toast. Keep configuration progress separate from the VM power state, as required by OSAC-6578. These states require operation phase and active versus requested values from the API; the mockup timer only demonstrates completion and must not be used as production logic. If resize fails, keep current resources visible, show **Changes need attention** in the 0.5 list, put the reason in a top danger alert, and show only a short **Resize failed** cue with **Resize again** beside Instance type. If known, say **No automatic retry is scheduled** in the alert; the user can still submit a new resize. `ubuntu-copper-ibis-31` demonstrates a failed resize while external-IP attachment continues.
 
 The API must expose or allow derivation of both active and requested configuration values, the restart-required condition, the resize operation phase, and a failure reason. Backend acceptance of the update depends on OSAC-5328.
 
@@ -95,6 +95,8 @@ The API must expose or allow derivation of both active and requested configurati
 ![Resize failure on VM Overview](screenshots/vm-resize/resize-failed.png)
 
 ![Version 0.5 failure alert with Resize again](screenshots/latest-ux/vm-config-failure-0.5.png)
+
+![Version 0.5 failed resize with external-IP attachment still in progress](screenshots/latest-ux/vm-config-mixed-0.5.png)
 
 ## Provisioning failure (separate state)
 
