@@ -1338,10 +1338,16 @@
     .vm-configuration-label {
       display: inline-flex;
       align-items: center;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
       color: var(--pf-t--global--text--color--subtle, #6a6e73);
       font-size: 14px;
       text-align: left;
     }
+    .vm-configuration-label:hover { text-decoration: underline dotted; text-underline-offset: 3px; }
     .vm-configuration-label--failed { color: var(--pf-t--global--text--color--status--danger--default, #c9190b); }
     .vm-configuration-label:focus-visible {
       outline: 2px solid var(--vmaas-blue);
@@ -2283,14 +2289,14 @@
       width: min(100vw - 24px, 18.75rem);
     }
     #nic-detail-popover.pf-m-open { display: block; }
-    #status-popover {
+    #status-popover, #vm-configuration-popover {
       position: fixed;
       z-index: 10000;
       display: none;
       width: min(100vw - 24px, 18.75rem);
     }
-    #status-popover.pf-m-open { display: block; }
-    #status-popover[hidden] { display: none !important; }
+    #status-popover.pf-m-open, #vm-configuration-popover.pf-m-open { display: block; }
+    #status-popover[hidden], #vm-configuration-popover[hidden] { display: none !important; }
     #nic-detail-popover .nic-detail-dl {
       display: grid;
       grid-template-columns: max-content 1fr;
@@ -8550,7 +8556,7 @@
         computeResource: 'large',
         activeComputeId: 'small',
         resizeProgress: {
-          phase: 'hot', retryAttempt: 2, retryLimit: 3, startedAtMs: Date.now() - 2 * 60000,
+          phase: 'hot', retryAttempt: 2, retryLimit: 3, lastFailureReason: 'The instance type was temporarily unavailable.', startedAtMs: Date.now() - 2 * 60000,
           startedAt: new Date(Date.now() - 2 * 60000).toLocaleString('en-GB'),
           lastUpdatedAt: new Date(Date.now() - 60000).toLocaleString('en-GB'),
           changes: [
@@ -8584,8 +8590,8 @@
       { name: 'rhel-deleting-cedar-42', ns: 'yifat', status: 'deleting', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-inference-standard', conditions: ['Deleting=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '10.130.1.242', internalIp: '10.130.1.242', externalIp: '198.51.100.24', externalIpAttached: true, externalIpStatus: 'attached', created: '19 Nov 2026, 15:40', computeResource: 'small', nics: [{ name: 'tenant-workload', virtualNetwork: 'tenant-workload', subnet: 'bm-compute-a', securityGroups: ['allow-ssh-https'], ip: '10.130.1.242' }] },
       { name: 'rhel9-black-gunnysack-58', ns: 'project-a', status: 'running', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-gpu-training-server', conditions: ['DataVolumesReady=True', 'Ready=True'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '10.130.1.224', created: '19 Jan 2026, 7:29', computeResource: 'large-gpu', gpuDevices: [{ name: 'NVIDIA A100 80 GB' }], hostDevices: [{ name: 'host-pci-1' }], sshSecretId: 'ssh-cluster-admin', cloudInitSource: 'inline', cloudInit: '#cloud-config\npackages:\n  - nginx\n', bootDiskAccessMode: 'RWO' },
       { name: 'windows-golden-eider-58', ns: 'project-a', status: 'stopped', os: 'Windows', osFull: 'Microsoft Windows Server 2022', imageLabel: 'Windows Server 2022', catalogItem: 'vm-windows-workstation', conditions: ['Ready=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '—', created: '11 Feb 2026, 9:48', sysprepConfigured: true, sysprepSecretId: 'sysprep-corp-std', bootDiskAccessMode: 'RWO' },
-      { name: 'fedora-aqua-barnacle-58', ns: 'yifat', status: 'running', os: 'Fedora', osFull: 'Fedora Linux 41', imageLabel: 'Fedora 41', catalogItem: 'vm-dev-workstation', conditions: ['DataVolumesReady=True', 'LiveMigratable=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.231', created: '11 Feb 2026, 8:49', computeResource: 'large', activeComputeId: 'small', resizeProgress: { phase: 'after-restart', startedAtMs: Date.now() - 8 * 60000, startedAt: new Date(Date.now() - 8 * 60000).toLocaleString('en-GB'), lastUpdatedAt: new Date(Date.now() - 5 * 60000).toLocaleString('en-GB'), changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.21', externalIpRetryAttempt: 2, hostDevices: [{ name: 'host-usb-1' }], sshSecretId: 'ssh-yifat-dev', cloudInitSource: 'secret', cloudInitSecretId: 'ud-fedora-init' },
-      { name: 'debian-cobalt-heron-41', ns: 'yifat', status: 'running', os: 'Other', osFull: 'Debian 12', imageLabel: 'Debian 12', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.238', created: '10 Nov 2026, 16:05', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, bootDiskAccessMode: 'RWO' },
+      { name: 'fedora-aqua-barnacle-58', ns: 'yifat', status: 'running', os: 'Fedora', osFull: 'Fedora Linux 41', imageLabel: 'Fedora 41', catalogItem: 'vm-dev-workstation', conditions: ['DataVolumesReady=True', 'LiveMigratable=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.231', created: '11 Feb 2026, 8:49', computeResource: 'large', activeComputeId: 'small', resizeProgress: { phase: 'after-restart', startedAtMs: Date.now() - 8 * 60000, startedAt: new Date(Date.now() - 8 * 60000).toLocaleString('en-GB'), lastUpdatedAt: new Date(Date.now() - 5 * 60000).toLocaleString('en-GB'), changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.21', externalIpRetryAttempt: 2, externalIpLastFailureReason: 'The address was temporarily unavailable.', hostDevices: [{ name: 'host-usb-1' }], sshSecretId: 'ssh-yifat-dev', cloudInitSource: 'secret', cloudInitSecretId: 'ud-fedora-init' },
+      { name: 'debian-cobalt-heron-41', ns: 'yifat', status: 'running', os: 'Other', osFull: 'Debian 12', imageLabel: 'Debian 12', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.238', created: '10 Nov 2026, 16:05', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, externalIpStatus: 'failed', externalIpAttempted: '198.51.100.99', externalIpError: 'We couldn’t attach external IP 198.51.100.99 to this VM.', externalIpRetryPlanned: false, bootDiskAccessMode: 'RWO' },
       { name: 'ubuntu-copper-ibis-31', ns: 'project-a', status: 'running', os: 'Other', osFull: 'Ubuntu 24.04 LTS', imageLabel: 'Ubuntu 24.04 LTS', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.239', created: '18 Nov 2026, 11:40', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.22', externalIpRetryAttempt: 2, bootDiskAccessMode: 'RWO' },
       { name: 'rhel8-mystic-eagle-22', ns: 'vmaas', status: 'ErrorPvcNotFound', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 8', imageLabel: 'RHEL 8.10', catalogItem: 'vm-legacy-app-server', conditions: ['Provisioning=False', 'Ready=False'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '—', created: '22 Jan 2026, 14:42', alerts: [{ severity: 'warning', message: 'Boot disk is unavailable' }, { severity: 'warning', message: 'Virtual machine is not Ready' }], bootDiskAccessMode: 'RWO' },
       { name: 'gpu-provisioning-failed', ns: 'project-a', status: 'starting', provisioningFailed: true, provisioningFailureReason: 'ProvisioningFailed', provisioningFailureMessage: 'AAP job failed', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', computeResource: 'small-gpu', conditions: ['PROVISIONED=False', 'ProvisioningFailed'], node: '—', ip: '—', created: '9 Nov 2026, 15:57' },
@@ -9012,11 +9018,73 @@
       const ipTarget = vm.externalIpPending || vm.externalIpAttempted || 'the selected address';
       if (ipStatus === 'failed') details.push(`External IP attachment for ${ipTarget} failed`);
       else if (ipStatus === 'attaching') details.push(`Attaching external IP ${ipTarget}`);
-      const tooltip = `${details.join('; ')}.`;
-      return `<span class="vm-configuration-label${failed ? ' vm-configuration-label--failed' : ''}"
-        data-pf-tooltip="${escAttr(tooltip)}" aria-label="${escAttr(`${label}. ${tooltip}`)}" tabindex="0">
+      const summary = `${details.join('; ')}.`;
+      return `<button type="button" class="vm-configuration-label${failed ? ' vm-configuration-label--failed' : ''}"
+        data-vm-configuration="${escAttr(vm.name)}" aria-label="${escAttr(`${label}. ${summary}`)}"
+        aria-haspopup="dialog" aria-expanded="false" aria-controls="vm-configuration-popover">
         <span>${label}</span>
-      </span>`;
+      </button>`;
+    }
+
+    let vmConfigurationPopoverTrigger = null;
+    function closeVmConfigurationPopover() {
+      const pop = document.getElementById('vm-configuration-popover');
+      if (!pop) return;
+      pop.hidden = true;
+      pop.classList.remove('pf-m-open');
+      vmConfigurationPopoverTrigger?.setAttribute('aria-expanded', 'false');
+      vmConfigurationPopoverTrigger = null;
+    }
+
+    function wireVmConfigurationPopover() {
+      if (document.body.dataset.vmConfigurationPopoverWired) return;
+      document.body.dataset.vmConfigurationPopoverWired = '1';
+      document.addEventListener('click', e => {
+        if (e.target.closest('#vm-configuration-popover-close')) {
+          const trigger = vmConfigurationPopoverTrigger;
+          closeVmConfigurationPopover();
+          trigger?.focus();
+          return;
+        }
+        const trigger = e.target.closest('[data-vm-configuration]');
+        if (!trigger) {
+          if (!e.target.closest('#vm-configuration-popover')) closeVmConfigurationPopover();
+          return;
+        }
+        if (trigger === vmConfigurationPopoverTrigger) {
+          closeVmConfigurationPopover();
+          return;
+        }
+        const vm = VMS.find(v => v.name === trigger.dataset.vmConfiguration);
+        const pop = document.getElementById('vm-configuration-popover');
+        const body = document.getElementById('vm-configuration-popover-body');
+        if (!vm || !pop || !body) return;
+        closeVmConfigurationPopover();
+        const items = [];
+        const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
+        if (vm.resizeFailure) items.push(`Resize to <strong>${target}</strong> failed.`);
+        else if (vm.resizeProgress) {
+          const retry = Number(vm.resizeProgress.retryAttempt);
+          const reason = vm.resizeProgress.lastFailureReason;
+          items.push(`Resizing to <strong>${target}</strong>.${retry > 1 ? ` Retry attempt: ${retry}.${reason ? ` Previous attempt failed: ${escAttr(reason)}` : ''}` : ''}`);
+        } else if (vm.restartRequired?.changes?.length) items.push(`Resize to <strong>${target}</strong> is waiting for restart.`);
+        const ip = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
+        if (vmExternalIpStatus(vm) === 'failed') items.push(`External IP <strong>${ip}</strong> failed to attach.`);
+        else if (vmExternalIpStatus(vm) === 'attaching') {
+          const retry = Number(vm.externalIpRetryAttempt);
+          items.push(`Attaching external IP <strong>${ip}</strong>.${retry > 1 ? ` Retry attempt: ${retry}.${vm.externalIpLastFailureReason ? ` Previous attempt failed: ${escAttr(vm.externalIpLastFailureReason)}` : ''}` : ''}`);
+        }
+        body.innerHTML = `<ul class="pf-v6-c-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+        vmConfigurationPopoverTrigger = trigger;
+        trigger.setAttribute('aria-expanded', 'true');
+        positionDetailPopover(pop, trigger, 'vm-configuration-popover-close');
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key !== 'Escape' || !vmConfigurationPopoverTrigger) return;
+        const trigger = vmConfigurationPopoverTrigger;
+        closeVmConfigurationPopover();
+        trigger.focus();
+      });
     }
 
     function vmRequiresGpu(vm) {
@@ -9601,10 +9669,10 @@
       const vm = VMS.find(v => v.name === state.selectedVmName);
       if (!vm || !canResizeVmInstanceType(vm)) return;
       const requireGpu = vmRequiresGpu(vm);
-      const selectedId = vm.resizeFailure ? vmActiveComputeId(vm) : resolveVmComputeId(vm);
-      const initialId = selectedId;
+      const initialId = vm.resizeFailure ? vmActiveComputeId(vm) : resolveVmComputeId(vm);
+      const selectedId = vm.resizeFailure ? resolveVmComputeId(vm) : initialId;
       state.editComputeModal = {
-        selectedId: initialId,
+        selectedId,
         initialId,
         resizePath: vmResizePath(vm),
         menuOpen: false,
@@ -14849,7 +14917,9 @@
       closeStorageTierPopover();
       const target = escAttr(trigger.dataset.target || 'the requested instance type');
       const retry = Number(trigger.dataset.retry);
-      body.innerHTML = `<p>Changing instance type to <strong>${target}</strong>.</p>${retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}`;
+      const vm = VMS.find(v => v.name === state.selectedVmName);
+      const previousReason = vm?.resizeProgress?.lastFailureReason;
+      body.innerHTML = `<p>Changing instance type to <strong>${target}</strong>.</p>${retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}${previousReason ? `. Previous attempt failed: ${escAttr(previousReason)}` : ''}</p>` : ''}`;
       instanceProgressPopoverTrigger = trigger;
       trigger.setAttribute('aria-expanded', 'true');
       positionDetailPopover(pop, trigger, 'instance-progress-popover-close');
@@ -15578,9 +15648,9 @@
       }
 
       const contentHtml = `
-        ${status === 'attaching' ? `<p class="vm-config-inline" id="vm-external-ip-progress" role="status"><span class="vm-access-section__spinner" aria-hidden="true"></span>Attaching external IP <strong>${escAttr(vm.externalIpPending || 'the selected address')}</strong>.${Number(vm.externalIpRetryAttempt) > 1 ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.externalIpRetryAttempt)}</span>` : ''}</p>` : ''}
+        ${status === 'attaching' ? `<p class="vm-config-inline" id="vm-external-ip-progress" role="status"><span class="vm-access-section__spinner" aria-hidden="true"></span>Attaching requested external IP <strong>${escAttr(vm.externalIpPending || 'the selected address')}</strong>.${Number(vm.externalIpRetryAttempt) > 1 ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.externalIpRetryAttempt)}${vm.externalIpLastFailureReason ? `. Previous attempt failed: ${escAttr(vm.externalIpLastFailureReason)}` : ''}</span>` : ''}</p>` : ''}
         ${status === 'failed' ? `<p class="vm-config-inline" role="status">External IP <strong>${escAttr(vm.externalIpAttempted || 'the selected address')}</strong> is not attached.</p>` : ''}
-        ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml}${actions}</div>` : ''}
+        ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml ? `<span>Current external IP: ${addressHtml}</span>` : ''}${actions}</div>` : ''}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
       return `
@@ -17213,7 +17283,7 @@
       const itSubtitleRow = `
         <div class="ethan-detail-col__subtitle-row">
           <h4 class="ethan-detail-col__subtitle">Instance type</h4>
-          ${v.resizeProgress ? `<button type="button" class="pf-v6-c-button pf-m-plain vm-instance-progress-trigger" data-instance-progress
+          ${v.resizeProgress ? `<span class="vm-access-section__spinner" role="status" aria-label="Instance type change in progress"></span><button type="button" class="pf-v6-c-button pf-m-plain vm-instance-progress-trigger" data-instance-progress
             data-target="${escAttr(resolveVmComputeId(v) || 'the requested instance type')}"
             data-retry="${Number(v.resizeProgress.retryAttempt) || 0}"
             aria-label="Instance type change in progress" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">
@@ -26283,6 +26353,7 @@
     renderVms();
     renderInstanceTypes();
     wireStatusPopover();
+    wireVmConfigurationPopover();
     wireEditComputeModal();
     wireEditSshModal();
     wireNicDetailPopover();
@@ -26308,6 +26379,16 @@
     } catch (e) { /* ignore */ }
   </script>
 
+  <div class="pf-v6-c-popover pf-m-right" id="vm-configuration-popover" role="dialog" aria-modal="false" aria-labelledby="vm-configuration-popover-title" hidden>
+    <div class="pf-v6-c-popover__arrow"></div>
+    <div class="pf-v6-c-popover__content">
+      <button type="button" class="pf-v6-c-button pf-m-plain pf-v6-c-popover__close" id="vm-configuration-popover-close" aria-label="Close">
+        <span class="pf-v6-c-button__icon"><i class="fas fa-times" aria-hidden="true"></i></span>
+      </button>
+      <header class="pf-v6-c-popover__header"><div class="pf-v6-c-popover__title" id="vm-configuration-popover-title"><h1 class="pf-v6-c-title pf-m-md">Configuration changes</h1></div></header>
+      <div class="pf-v6-c-popover__body" id="vm-configuration-popover-body"></div>
+    </div>
+  </div>
   <div class="pf-v6-c-popover pf-m-right" id="status-popover" role="dialog" aria-modal="true" aria-labelledby="status-popover-title" aria-describedby="status-popover-body" hidden>
     <div class="pf-v6-c-popover__arrow"></div>
     <div class="pf-v6-c-popover__content">
