@@ -21,7 +21,7 @@ The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas
 
 ![Version 0.5 failed resize and active external-IP attachment](screenshots/latest-ux/vm-config-mixed-0.5.png)
 
-![Version 0.5 mixed-operation status popover](screenshots/latest-ux/vm-config-status-popover-concurrent-0.5.png)
+![Version 0.5 mixed-operation status popover](screenshots/latest-ux/vm-config-status-popover-concurrent-0.5-crop.png)
 
 ### Simultaneous changes
 
@@ -37,21 +37,21 @@ For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vm
 
 The [two-failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=ad7b00d&role=admin&vm=debian-cobalt-heron-41) shows resize and external-IP failure as separate bullets in one alert. The IP remains unattached; **Resize again** opens the resize dialog with **large** selected for review.
 
-![Version 0.5 two failed changes in one alert](screenshots/latest-ux/vm-config-two-failures-0.5.png)
+![Version 0.5 two failed changes in one alert](screenshots/latest-ux/vm-config-two-failures-0.5-crop.png)
 
 ![Version 0.5 Resize again dialog with the failed target selected](screenshots/latest-ux/vm-config-resize-again-dialog-0.5.png)
 
 When a resize requires a restart, show a **Restart required** warning above Overview. It is collapsed by default; expanding it explains the required action and shows the current and requested instance type, vCPUs, and memory. Keep the current resource values in Configuration without repeating the warning there. This actionable warning is the exception to failure-only top alerts. In VM lists and cards, show one text-only configuration status on a second line below the icon-and-text power status: subdued gray **Changes pending** or **Changes in progress**, or **Changes need attention** in the failure color. Do not add an icon to the configuration status. The popover names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
 
-![Version 0.5 collapsed top restart warning](screenshots/latest-ux/vm-config-restart-0.5.png)
+![Version 0.5 collapsed top restart warning](screenshots/latest-ux/vm-config-restart-0.5-crop.png)
 
-![Version 0.5 expanded top restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5.png)
+![Version 0.5 expanded top restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5-crop.png)
 
 In card and table views, the VM list shows one configuration status below the power status. Activating it opens a popover that lists every outstanding operation and target.
 
 ![Version 0.5 VM cards with configuration status below power status](screenshots/latest-ux/vm-config-status-cards-0.5.png)
 
-![Version 0.5 VM table with configuration status below power status](screenshots/latest-ux/vm-config-status-table-0.5.png)
+![Version 0.5 VM table with configuration status below power status](screenshots/latest-ux/vm-config-status-table-0.5-crop.png)
 
 For access, networking, storage, utilization, failure states, and permissions, follow the [Google UX handoff](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit).
 
