@@ -9046,7 +9046,7 @@
       if (!vm.resizeProgress && !vmResizeRetryScheduled(vm)) return '';
       const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
       const text = `${vmResizeRetryScheduled(vm) ? 'Retry scheduled: change' : vmResizeRetryRunning(vm) ? 'Trying again: change' : 'Changing'} instance type to <strong>${target}</strong>`;
-      if (!vmResizeHasProgressDetails(vm)) return `<p class="vm-config-inline" role="status">${text}</p>`;
+      if (!vmResizeHasProgressDetails(vm)) return `<p class="vm-config-inline">${text}</p>`;
       return `<button type="button" class="vm-config-inline vm-config-inline--trigger" data-instance-progress data-target="${target}" data-retry="${Number(vm.resizeProgress?.retryAttempt) || 0}" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">${text}</button>`;
     }
 
@@ -15695,6 +15695,11 @@
         clearTimeout(vm._extIpAttachTimer);
         vm._extIpAttachTimer = null;
       }
+      vm.externalIpRetrying = false;
+      vm.externalIpRetryAttempt = 0;
+      vm.externalIpLastFailureReason = '';
+      vm.externalIpRetryPlanned = false;
+      vm.externalIpNextRetryAt = '';
       vm.externalIpStatus = 'attaching';
       vm.externalIpPending = address;
       vm.externalIpError = '';
@@ -15766,7 +15771,7 @@
       const progressLine = status === 'attaching' || retryScheduled
         ? vmExternalIpHasProgressDetails(vm)
           ? `<button type="button" class="vm-config-inline vm-config-inline--trigger" id="vm-external-ip-progress" data-external-ip-progress aria-haspopup="dialog" aria-expanded="false" aria-controls="external-ip-progress-popover">${progressText}</button>`
-          : `<p class="vm-config-inline" id="vm-external-ip-progress" role="status">${progressText}</p>`
+          : `<p class="vm-config-inline" id="vm-external-ip-progress">${progressText}</p>`
         : '';
       const contentHtml = `
         ${progressLine}
