@@ -9071,6 +9071,13 @@
       if (document.body.dataset.vmConfigurationPopoverWired) return;
       document.body.dataset.vmConfigurationPopoverWired = '1';
       document.addEventListener('click', e => {
+        const openDetails = e.target.closest('[data-open-failed-vm]');
+        if (openDetails) {
+          const vmName = openDetails.dataset.openFailedVm;
+          closeVmConfigurationPopover();
+          if (VMS.some(vm => vm.name === vmName)) openVmDetail(vmName, 'overview');
+          return;
+        }
         if (e.target.closest('#vm-configuration-popover-close')) {
           const trigger = vmConfigurationPopoverTrigger;
           closeVmConfigurationPopover();
@@ -9109,7 +9116,7 @@
         }
         const needsAttention = (!!vm.resizeFailure && !vmResizeRetryScheduled(vm)) ||
           (vmExternalIpStatus(vm) === 'failed' && !vmExternalIpRetryScheduled(vm));
-        body.innerHTML = `<ul class="pf-v6-c-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>${needsAttention ? '<p>Open VM details to try again.</p>' : ''}`;
+        body.innerHTML = `<ul class="pf-v6-c-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>${needsAttention ? `<div class="pf-v6-u-mt-md"><button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-open-failed-vm="${escAttr(vm.name)}">Open VM details</button></div>` : ''}`;
         vmConfigurationPopoverTrigger = trigger;
         trigger.setAttribute('aria-expanded', 'true');
         positionDetailPopover(pop, trigger, 'vm-configuration-popover-close');
