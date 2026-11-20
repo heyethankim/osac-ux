@@ -49,13 +49,13 @@ When a resize requires a restart, show a **Restart required** warning above Over
 
 ![Version 0.5 expanded top restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5-crop.png)
 
-The Instance type pencil stays available while a saved resize awaits restart. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** replaces the target. The separate cancel action removes the pending change and keeps the active type; **Cancel** closes without changes. The warning updates to the latest target and omits unchanged values. Backend support for replacing or canceling a pending resize must be confirmed.
+**Proposed interaction; backend support unconfirmed.** If a saved resize can be replaced or canceled before restart, keep the Instance type pencil available. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** replaces the target; the separate cancel action removes the pending change and keeps the active type. The warning updates to the latest target and omits unchanged values. If the backend cannot support either action, keep the pencil disabled until the resize takes effect, with a tooltip explaining why. Confirm the backend operations before implementing the proposed actions.
 
 During an active resize, disable the pencil and explain why on hover and keyboard focus. In the 0.5 mockup, `indigo-quokka-89` completes its demo resize after about 15 seconds; the pencil then becomes available. Apply the same explanatory tooltip pattern to every disabled icon control, including list actions and pagination.
 
 ![Disabled Instance type pencil with explanatory tooltip](screenshots/latest-ux/vm-resize-edit-disabled-tooltip-0.5.png)
 
-![Version 0.5 edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
+![Version 0.5 proposed edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
 
 ![Version 0.5 revised scheduled resize warning](screenshots/latest-ux/vm-revised-scheduled-resize-0.5.png)
 
