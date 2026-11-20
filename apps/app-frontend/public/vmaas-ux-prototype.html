@@ -9157,7 +9157,7 @@
     /** Neutral copy — GPU is not explained here (independent of vCPU/memory; OSAC-4864). */
     function editComputeModalDescription(pendingResize = false) {
       return pendingResize
-        ? 'Change the instance type scheduled for the next restart.'
+        ? 'Choose the instance type this VM will use after its next restart.'
         : 'Select a new instance type for this virtual machine.';
     }
 
@@ -9671,7 +9671,7 @@
         body.innerHTML = `
           ${submitErrorAlert}
           ${resizeAlert}
-          ${m.pendingResize ? `<p class="muted">Current instance type: <strong>${richSelectEsc(m.activeId)}</strong>. Scheduled for next restart: <strong>${richSelectEsc(m.initialId)}</strong>. Choose the current type to cancel the scheduled resize.</p>` : ''}
+          ${m.pendingResize ? `<p class="muted">Using now: <strong>${richSelectEsc(m.activeId)}</strong> · After restart: <strong>${richSelectEsc(m.initialId)}</strong><br>To cancel the change, select <strong>${richSelectEsc(m.activeId)}</strong>.</p>` : ''}
           <p class="muted">${requireGpu ? `GPU configuration: ${richSelectEsc(vmResizeGpuSummary(m.initialId))}. ` : ''}GPU configuration cannot change during resize.</p>
           <div class="form-field">
           <label id="f-edit-compute-resource-label">Instance type <span class="req">*</span></label>
