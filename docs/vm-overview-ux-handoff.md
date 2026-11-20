@@ -49,7 +49,7 @@ When a resize requires a restart, show a **Restart required** warning above Over
 
 ![Version 0.5 expanded top restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5-crop.png)
 
-The Instance type pencil stays available while a saved resize awaits restart. **Edit scheduled resize** identifies the active and scheduled types. A neutral helper below the selector explains that choosing another type replaces the scheduled target, or choosing the active type cancels it. **Save** applies either choice; **Cancel** closes without changes. The warning updates to the latest target and omits unchanged values. Backend support for replacing or canceling a pending resize must be confirmed.
+The Instance type pencil stays available while a saved resize awaits restart. **Edit scheduled resize** identifies the active and scheduled types. A neutral helper below the selector explains that choosing another type replaces the scheduled target; **Save** applies that choice. A separate **Cancel scheduled resize** action removes the pending change and keeps the active type. **Cancel** closes without changes. The warning updates to the latest target and omits unchanged values. Backend support for replacing or canceling a pending resize must be confirmed.
 
 ![Version 0.5 edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
 

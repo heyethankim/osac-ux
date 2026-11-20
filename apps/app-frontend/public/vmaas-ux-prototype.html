@@ -3189,6 +3189,7 @@
     #compute-overlay .pf-v6-c-modal-box__header {
       padding: 24px 24px 0;
       position: relative;
+      gap: 0;
     }
     #compute-overlay .pf-v6-c-modal-box__close {
       position: absolute;
@@ -3207,7 +3208,7 @@
     }
     /* PF6: description sits under the title in the header (static, non-scrolling) */
     #compute-overlay .pf-v6-c-modal-box__description {
-      margin-block-start: 8px;
+      margin-block-start: 4px;
       margin-block-end: 0;
       font-size: 14px;
       line-height: 1.5;
@@ -9665,12 +9666,13 @@
       const saveBtn = document.getElementById('compute-modal-save');
       if (saveBtn) {
         saveBtn.textContent = 'Save';
-        saveBtn.disabled = m.selectedId === m.initialId;
+        saveBtn.disabled = m.selectedId === m.initialId || (m.pendingResize && m.selectedId === m.activeId);
       }
         body.innerHTML = `
           ${submitErrorAlert}
           ${resizeAlert}
-          ${m.pendingResize ? `<p class="muted">Using now: <strong>${richSelectEsc(m.activeId)}</strong> · After restart: <strong>${richSelectEsc(m.initialId)}</strong></p>` : ''}
+          ${m.pendingResize ? `<p class="muted">Using now: <strong>${richSelectEsc(m.activeId)}</strong> · After restart: <strong>${richSelectEsc(m.initialId)}</strong></p>
+          <button type="button" class="pf-v6-c-button pf-m-link" id="compute-modal-cancel-resize">Cancel scheduled resize</button>` : ''}
           <p class="muted">${requireGpu ? `GPU configuration: ${richSelectEsc(vmResizeGpuSummary(m.initialId))}. ` : ''}GPU configuration cannot change during resize.</p>
           <div class="form-field">
           <label id="f-edit-compute-resource-label">Instance type <span class="req">*</span></label>
@@ -9715,7 +9717,7 @@
             </div>
             <input type="hidden" id="f-edit-compute-resource" value="${richSelectEsc(m.selectedId)}" />
           </div>
-          ${m.pendingResize ? `<div class="pf-v6-c-form__helper-text muted"><div class="pf-v6-c-helper-text"><div class="pf-v6-c-helper-text__item"><span class="pf-v6-c-helper-text__item-text">Choose another type to replace the scheduled resize, or choose ${richSelectEsc(m.activeId)} to cancel it.</span></div></div></div>` : ''}
+          ${m.pendingResize ? `<div class="pf-v6-c-form__helper-text muted"><div class="pf-v6-c-helper-text"><div class="pf-v6-c-helper-text__item"><span class="pf-v6-c-helper-text__item-text">Choose another type to replace the scheduled resize.</span></div></div></div>` : ''}
           ${COMPUTE_RESOURCES.find(c => c.id === m.initialId)?.lifecycle === 'Obsolete'
             ? '<p class="muted">The current instance type is obsolete. Select a different type to resize.</p>' : ''}
           </div>
@@ -9815,14 +9817,8 @@
       const path = state.editComputeModal?.resizePath || vmResizePath(vm);
       const changed = !!state.editComputeModal?.initialId && id !== state.editComputeModal.initialId;
       const activeId = vmActiveComputeId(vm);
+      if (state.editComputeModal?.pendingResize && id === activeId) return;
       if (state.editComputeModal?.pendingResize && changed) {
-        if (id === activeId) {
-          cancelVmPendingResize(vm, activeId);
-          closeEditComputeModal();
-          renderVmDetail();
-          toast('Scheduled resize canceled.');
-          return;
-        }
         removeVmPendingResizeChanges(vm);
         vm.activeComputeId = activeId;
         applyComputeResourceToVm(vm, id);
@@ -9867,12 +9863,24 @@
         : `Resize to ${label} is scheduled. Restart the VM to apply it.`, 'info');
     }
 
+    function cancelScheduledResizeFromModal() {
+      const vm = VMS.find(v => v.name === state.selectedVmName);
+      if (!vm || !state.editComputeModal?.pendingResize || !canResizeVmInstanceType(vm)) return;
+      cancelVmPendingResize(vm, vmActiveComputeId(vm));
+      closeEditComputeModal();
+      renderVmDetail();
+      toast('Scheduled resize canceled.');
+    }
+
     function wireEditComputeModal() {
       if (document.body.dataset.computeModalWired) return;
       document.body.dataset.computeModalWired = '1';
       document.getElementById('compute-modal-close')?.addEventListener('click', closeEditComputeModal);
       document.getElementById('compute-modal-cancel')?.addEventListener('click', closeEditComputeModal);
       document.getElementById('compute-modal-save')?.addEventListener('click', saveEditComputeModal);
+      document.getElementById('compute-modal-body')?.addEventListener('click', e => {
+        if (e.target.closest('#compute-modal-cancel-resize')) cancelScheduledResizeFromModal();
+      });
       document.getElementById('compute-overlay')?.addEventListener('click', e => {
         if (e.target.id === 'compute-overlay' || e.target.classList.contains('pf-v6-l-bullseye')) {
           closeEditComputeModal();
