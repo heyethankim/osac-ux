@@ -9325,6 +9325,7 @@
 
     function completeVmResize(vm) {
       if (!vm) return;
+      applyComputeResourceToVm(vm, resolveVmComputeId(vm));
       vm.activeComputeId = null;
       vm.restartRequired = null;
       vm.resizeProgress = null;

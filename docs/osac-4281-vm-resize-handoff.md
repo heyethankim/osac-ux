@@ -1,7 +1,7 @@
 # VM resize via instance type
 
 Contact: Yifat Friman Menchik, UXD  
-Updated: 12 November 2026
+Updated: 20 November 2026
 
 UX Google Doc: https://docs.google.com/document/d/1kgln_LzTA3-VSP0SUM0jLce2Nvw0pix3oTYkwZuX-wE/edit  
 Interactive mockup, 0.4: https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=admin&vm=windows-golden-eider-58
