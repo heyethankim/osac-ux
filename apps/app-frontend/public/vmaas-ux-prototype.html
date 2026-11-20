@@ -3167,8 +3167,10 @@
 
     /* —— Add network / Add disk / Edit compute modals —— */
 
-    #compute-overlay:not(.pf-m-open) { display: none; }
-    #compute-overlay.pf-m-open {
+    #compute-overlay:not(.pf-m-open),
+    #restart-vm-overlay:not(.pf-m-open) { display: none; }
+    #compute-overlay.pf-m-open,
+    #restart-vm-overlay.pf-m-open {
       display: flex; position: fixed; inset: 0; z-index: 600;
       align-items: center; justify-content: center;
       background: rgba(3, 3, 3, 0.5);
@@ -8296,7 +8298,7 @@
 
   <div class="pf-v6-c-backdrop" id="compute-overlay" aria-hidden="true">
     <div class="pf-v6-l-bullseye" style="display:flex;align-items:center;justify-content:center;min-height:100%;padding:1rem;">
-      <div class="pf-v6-c-modal-box pf-m-sm" role="dialog" aria-modal="true" aria-labelledby="compute-modal-title" aria-describedby="compute-modal-desc" id="compute-modal">
+      <div class="pf-v6-c-modal-box pf-m-sm" role="dialog" aria-modal="true" aria-labelledby="compute-modal-title" aria-describedby="compute-modal-desc" id="compute-modal" tabindex="-1">
         <div class="pf-v6-c-modal-box__header">
           <div class="pf-v6-c-modal-box__close">
             <button type="button" class="pf-v6-c-button pf-m-plain" id="compute-modal-close" aria-label="Close">
@@ -8310,7 +8312,7 @@
             Select a new instance type for this virtual machine.
           </div>
         </div>
-        <div class="pf-v6-c-modal-box__body" id="compute-modal-body">
+        <div class="pf-v6-c-modal-box__body" id="compute-modal-body" role="region" aria-label="Instance type settings" tabindex="0">
           <div class="form-field">
             <label for="f-edit-compute-resource">Instance type <span class="req">*</span></label>
             <span class="pf-v6-c-form-control" id="compute-modal-select-wrap"></span>
@@ -8319,6 +8321,29 @@
         <div class="pf-v6-c-modal-box__footer">
           <button type="button" class="pf-v6-c-button pf-m-primary" id="compute-modal-save">Save</button>
           <button type="button" class="pf-v6-c-button pf-m-link" id="compute-modal-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pf-v6-c-backdrop" id="restart-vm-overlay" aria-hidden="true">
+    <div class="pf-v6-l-bullseye pf-v6-u-p-md">
+      <div class="pf-v6-c-modal-box pf-m-sm" role="dialog" aria-modal="true" aria-labelledby="restart-vm-title" aria-describedby="restart-vm-description" id="restart-vm-modal" tabindex="-1">
+        <div class="pf-v6-c-modal-box__header">
+          <div class="pf-v6-c-modal-box__close">
+            <button type="button" class="pf-v6-c-button pf-m-plain" id="restart-vm-close" aria-label="Close restart confirmation">
+              <span class="pf-v6-c-button__icon"><i class="fas fa-times" aria-hidden="true"></i></span>
+            </button>
+          </div>
+          <h1 class="pf-v6-c-modal-box__title" id="restart-vm-title">Restart VM?</h1>
+          <div class="pf-v6-c-modal-box__description" id="restart-vm-description">
+            Restarting interrupts running workloads and disconnects active sessions.
+          </div>
+        </div>
+        <div class="pf-v6-c-modal-box__body" id="restart-vm-body" role="region" aria-label="Scheduled changes to apply" tabindex="0"></div>
+        <div class="pf-v6-c-modal-box__footer">
+          <button type="button" class="pf-v6-c-button pf-m-primary" id="restart-vm-confirm">Restart VM</button>
+          <button type="button" class="pf-v6-c-button pf-m-link" id="restart-vm-cancel">Cancel</button>
         </div>
       </div>
     </div>
@@ -9753,7 +9778,64 @@
       focusRichSelectField(focusId);
     }
 
+    let activeVmDialogFocus = null;
+
+    const canFocusVmElement = element => !!element?.isConnected &&
+      typeof element.focus === 'function' && !element.matches(':disabled') &&
+      !element.closest('[hidden], [inert], [aria-hidden="true"]') &&
+      element.getClientRects().length > 0;
+
+    const releaseVmDialogFocus = overlayId => {
+      const context = activeVmDialogFocus;
+      if (!context || context.overlay.id !== overlayId) return;
+      activeVmDialogFocus = null;
+      context.controller.abort();
+      context.background.forEach(({ element, inert }) => { element.inert = inert; });
+      requestAnimationFrame(() => {
+        if (activeVmDialogFocus) return;
+        const target = canFocusVmElement(context.trigger)
+          ? context.trigger : context.returnTarget();
+        if (canFocusVmElement(target)) target.focus();
+      });
+    };
+
+    const containVmDialogFocus = (overlayId, initialSelector, onEscape, returnTarget) => {
+      const overlay = document.getElementById(overlayId);
+      const dialog = overlay?.querySelector('[role="dialog"]');
+      if (!dialog || activeVmDialogFocus) return;
+      const controller = new AbortController();
+      const background = Array.from(document.body.children)
+        .filter(element => element !== overlay && !['SCRIPT', 'STYLE', 'LINK'].includes(element.tagName))
+        .map(element => ({ element, inert: element.inert }));
+      activeVmDialogFocus = { overlay, controller, background, trigger: document.activeElement, returnTarget };
+      const focusInitial = () => (dialog.querySelector(initialSelector) || dialog).focus();
+      document.addEventListener('focusin', event => {
+        if (!dialog.contains(event.target)) focusInitial();
+      }, { capture: true, signal: controller.signal });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          onEscape();
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        const elements = Array.from(dialog.querySelectorAll('button, a[href], input, select, textarea, [tabindex]'))
+          .filter(element => element.tabIndex >= 0 && canFocusVmElement(element));
+        const first = elements[0];
+        const last = elements[elements.length - 1];
+        const current = document.activeElement;
+        if (!first || !elements.includes(current) || (event.shiftKey ? current === first : current === last)) {
+          event.preventDefault();
+          (event.shiftKey ? last || dialog : first || dialog).focus();
+        }
+      }, { capture: true, signal: controller.signal });
+      background.forEach(({ element }) => { element.inert = true; });
+      focusInitial();
+    };
+
     function openEditComputeModal() {
+      if (activeVmDialogFocus) return;
       const vm = VMS.find(v => v.name === state.selectedVmName);
       if (!vm || !canResizeVmInstanceType(vm)) return;
       const requireGpu = vmRequiresGpu(vm);
@@ -9774,7 +9856,21 @@
       const overlay = document.getElementById('compute-overlay');
       overlay?.classList.add('pf-m-open');
       overlay?.setAttribute('aria-hidden', 'false');
-      setTimeout(() => document.getElementById('edit-compute-toggle')?.focus(), 0);
+      containVmDialogFocus('compute-overlay', '#edit-compute-toggle', () => {
+        if (state.editComputeModal?.menuOpen) {
+          state.editComputeModal.menuOpen = false;
+          state.editComputeModal.filter = '';
+          renderEditComputeModal('edit-compute-toggle');
+        } else {
+          closeEditComputeModal();
+        }
+      }, () => {
+        if (state.selectedVmName !== vm.name) return null;
+        const root = document.getElementById('vm-detail-root');
+        return root?.querySelector('[data-resize-again]') ||
+          root?.querySelector('[data-edit-compute]:not(:disabled)') ||
+          root?.querySelector('#vm-config-title');
+      });
     }
 
     function closeEditComputeModal() {
@@ -9782,6 +9878,7 @@
       const overlay = document.getElementById('compute-overlay');
       overlay?.classList.remove('pf-m-open');
       overlay?.setAttribute('aria-hidden', 'true');
+      releaseVmDialogFocus('compute-overlay');
     }
 
     function setEditComputeSubmitError(message) {
@@ -9884,17 +9981,6 @@
         if (e.target.id === 'compute-overlay' || e.target.classList.contains('pf-v6-l-bullseye')) {
           closeEditComputeModal();
         }
-      });
-      document.addEventListener('keydown', e => {
-        if (e.key !== 'Escape' || !document.getElementById('compute-overlay')?.classList.contains('pf-m-open')) return;
-        if (state.editComputeModal?.menuOpen) {
-          e.stopPropagation();
-          state.editComputeModal.menuOpen = false;
-          state.editComputeModal.filter = '';
-          renderEditComputeModal('edit-compute-toggle');
-          return;
-        }
-        closeEditComputeModal();
       });
     }
 
@@ -13234,6 +13320,10 @@
       document.querySelectorAll('.console__nav [data-nav]').forEach(n => {
         n.classList.toggle('pf-m-current', n.dataset.nav === navId);
       });
+      if (id === 'vms') {
+        closeVmConfigurationPopover();
+        renderVms(state.vmFilter);
+      }
     }
 
     function formatInstanceTypeCreated(date = new Date()) {
@@ -15829,6 +15919,7 @@
       const contentHtml = `
         ${progressLine}
         ${status === 'failed' && !retryScheduled ? `<p class="vm-config-inline" role="status">External IP <strong>${escAttr(vm.externalIpAttempted || 'the selected address')}</strong> is not attached.</p>` : ''}
+        ${status === 'failed' && !retryScheduled && !canEdit && !deleting ? '<p class="vm-access-section__meta">Ask a tenant administrator to attach an external IP.</p>' : ''}
         ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml ? `<span>Current external IP: ${addressHtml}</span>` : ''}${actions}</div>` : ''}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
@@ -16959,6 +17050,78 @@
     }
 
     let vmPowerActionTimer = null;
+    let restartVmConfirmation = null;
+
+    const renderRestartVmModal = (vm, message = '') => {
+      const changes = Array.isArray(vm.restartRequired?.changes) ? vm.restartRequired.changes : [];
+      restartVmConfirmation.changes = JSON.stringify(changes);
+      document.getElementById('restart-vm-title').textContent = `Restart ${vm.name}?`;
+      document.getElementById('restart-vm-body').innerHTML = `
+        ${message ? `<p class="pf-v6-u-mb-md" role="status">${escAttr(message)}</p>` : ''}
+        ${changes.length ? `
+          <p class="pf-v6-u-mb-sm">This restart will apply these scheduled changes:</p>
+          <ul class="pf-v6-c-list">${changes.map(change => `
+            <li>${escAttr(change.section || 'Configuration')} — ${escAttr(change.label)}${change.from != null && change.to != null
+              ? `: ${escAttr(change.from)} → ${escAttr(change.to)}` : ''}</li>`).join('')}
+          </ul>` : '<p>No configuration changes are scheduled for this restart.</p>'}`;
+    };
+
+    const closeRestartVmModal = () => {
+      restartVmConfirmation = null;
+      const overlay = document.getElementById('restart-vm-overlay');
+      overlay?.classList.remove('pf-m-open');
+      overlay?.setAttribute('aria-hidden', 'true');
+      releaseVmDialogFocus('restart-vm-overlay');
+    };
+
+    const openRestartVmModal = vm => {
+      if (activeVmDialogFocus) return;
+      restartVmConfirmation = { name: vm.name, changes: '' };
+      document.getElementById('restart-vm-confirm').disabled = false;
+      renderRestartVmModal(vm);
+      const overlay = document.getElementById('restart-vm-overlay');
+      overlay.classList.add('pf-m-open');
+      overlay.setAttribute('aria-hidden', 'false');
+      containVmDialogFocus('restart-vm-overlay', '#restart-vm-cancel', closeRestartVmModal, () => {
+        const details = document.getElementById('view-vm');
+        if (state.selectedVmName === vm.name && details?.classList.contains('pf-m-active')) {
+          return details.querySelector('[data-vm-action="restart"]:not(:disabled)') ||
+            details.querySelector('.ethan-detail-header__title');
+        }
+        return Array.from(document.querySelectorAll('#view-vms [data-vm-kebab]'))
+          .find(button => button.dataset.vmKebab === vm.name);
+      });
+    };
+
+    const confirmRestartVm = () => {
+      if (!restartVmConfirmation) return;
+      const vm = VMS.find(item => item.name === restartVmConfirmation.name);
+      if (!vm || !getActiveRole().canPower || !['running', 'paused'].includes(vm.status)) {
+        document.getElementById('restart-vm-body').textContent =
+          'Restart is no longer available. Close this dialog and review the VM’s current status and your permissions.';
+        document.getElementById('restart-vm-confirm').disabled = true;
+        document.getElementById('restart-vm-cancel').focus();
+        return;
+      }
+      if (JSON.stringify(vm.restartRequired?.changes || []) !== restartVmConfirmation.changes) {
+        renderRestartVmModal(vm, 'Scheduled changes have changed. Review them before restarting.');
+        document.getElementById('restart-vm-body').focus();
+        return;
+      }
+      closeRestartVmModal();
+      applyVmPowerAction('restart', vm.name, { restartConfirmed: true });
+    };
+
+    const wireRestartVmModal = () => {
+      document.getElementById('restart-vm-close')?.addEventListener('click', closeRestartVmModal);
+      document.getElementById('restart-vm-cancel')?.addEventListener('click', closeRestartVmModal);
+      document.getElementById('restart-vm-confirm')?.addEventListener('click', confirmRestartVm);
+      document.getElementById('restart-vm-overlay')?.addEventListener('click', event => {
+        if (event.target === event.currentTarget || event.target.classList.contains('pf-v6-l-bullseye')) {
+          closeRestartVmModal();
+        }
+      });
+    };
 
     function refreshVmStatusViews() {
       if (document.getElementById('view-vm')?.classList.contains('pf-m-active')) {
@@ -16974,9 +17137,16 @@
       return vm;
     }
 
-    function applyVmPowerAction(action, name = state.selectedVmName) {
+    function applyVmPowerAction(action, name = state.selectedVmName, { restartConfirmed = false } = {}) {
       const vm = VMS.find(v => v.name === name);
       if (!vm || vm.status === 'deleting') return;
+      if (action === 'restart') {
+        if (!getActiveRole().canPower || !['running', 'paused'].includes(vm.status)) return;
+        if (!restartConfirmed) {
+          openRestartVmModal(vm);
+          return;
+        }
+      }
       if (vmPowerActionTimer) {
         clearTimeout(vmPowerActionTimer);
         vmPowerActionTimer = null;
@@ -17530,7 +17700,7 @@
             <div class="ethan-detail-header__title-row">
               <span class="catalog-detail-header__icon" aria-hidden="true"><i class="pf-v6-pficon-virtual-machine"></i></span>
               <div>
-                <h2 class="ethan-detail-header__title pf-v6-c-title pf-m-2xl pf-m-page-title">${v.name}</h2>
+                <h2 class="ethan-detail-header__title pf-v6-c-title pf-m-2xl pf-m-page-title" tabindex="-1">${v.name}</h2>
                 <p class="ethan-detail-header__subtitle">Review configuration, networking, storage, and utilization for this virtual machine.</p>
                   </div>
                 </div>
@@ -17597,7 +17767,7 @@
                   ${itField('Catalog item', catalogItemDisplay)}
                 </section>
                 <section class="ethan-detail-col" aria-labelledby="vm-config-title">
-                  <h3 class="ethan-detail-col__title" id="vm-config-title">Configuration</h3>
+                  <h3 class="ethan-detail-col__title" id="vm-config-title" tabindex="-1">Configuration</h3>
                   ${itField('Guest operating system family', guestOsFamilyDisplay)}
                   ${itField('Disk image', diskImageDisplay)}
                   ${itSubtitleRow}
@@ -17765,9 +17935,9 @@
                 </div>
           <aside class="vm-overview-v2__aside" aria-label="Sidebar">
             <section class="catalog-hw-specs vm-overview-v2__aside-card" aria-labelledby="vm-alerts-title">
-              <h3 class="catalog-hw-specs__title" id="vm-alerts-title">Alerts</h3>
+              <h3 class="catalog-hw-specs__title" id="vm-alerts-title">Other VM alerts</h3>
               ${alerts.length ? `
-                <ul class="vm-alerts-list" aria-label="Alerts">
+                <ul class="vm-alerts-list" aria-label="Other VM alerts">
                   ${alerts.slice(0, 3).map(a => `
                     <li class="vm-alerts-list__item">
                       <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
@@ -17775,7 +17945,7 @@
                     </li>
                   `).join('')}
                 </ul>
-              ` : '<p class="vm-overview-v2__aside-empty muted">No alerts</p>'}
+              ` : '<p class="vm-overview-v2__aside-empty muted">No other alerts</p>'}
             </section>
             <section class="catalog-hw-specs vm-overview-v2__aside-card" aria-labelledby="vm-activity-title">
               <h3 class="catalog-hw-specs__title" id="vm-activity-title">Recent activity</h3>
@@ -26573,6 +26743,7 @@
     wireStatusPopover();
     wireVmConfigurationPopover();
     wireEditComputeModal();
+    wireRestartVmModal();
     wireEditSshModal();
     wireNicDetailPopover();
     wireVmConfigPopovers();
