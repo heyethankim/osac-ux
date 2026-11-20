@@ -9672,7 +9672,7 @@
           ${submitErrorAlert}
           ${resizeAlert}
           ${m.pendingResize ? `<p class="muted">Using now: <strong>${richSelectEsc(m.activeId)}</strong><br>Scheduled after restart: <strong>${richSelectEsc(m.initialId)}</strong> <button type="button" class="pf-v6-c-button pf-m-link pf-m-inline pf-v6-u-ml-sm" id="compute-modal-cancel-resize">Cancel scheduled resize</button></p>` : ''}
-          <p class="muted">${requireGpu ? `GPU configuration: ${richSelectEsc(vmResizeGpuSummary(m.initialId))}. ` : ''}GPU configuration cannot change during resize.</p>
+          <p class="muted pf-v6-u-mb-md">${requireGpu ? `GPU configuration: ${richSelectEsc(vmResizeGpuSummary(m.initialId))}. ` : ''}GPU configuration cannot change during resize.</p>
           <div class="form-field">
           <label id="f-edit-compute-resource-label">Instance type <span class="req">*</span></label>
           <div class="rich-select rich-select--typeahead ${m.menuOpen ? 'pf-m-expanded' : ''}" id="edit-compute-select">
