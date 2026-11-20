@@ -13,7 +13,7 @@ Related work: [OSAC-7576](https://redhat.atlassian.net/browse/OSAC-7576), [OSAC-
 
 ## Entry and availability
 
-On VM Overview, select the pencil beside Instance type. Tenant Admin and Tenant User can resize. The action is available for Running, Paused, and Stopped VMs, and unavailable during transitional states, while a resize is scheduled or applying, or while a failed resize is being resolved.
+On VM Overview, select the pencil beside Instance type. Tenant Admin and Tenant User can resize. The action is available for Running, Paused, and Stopped VMs, including when a saved resize awaits restart. Disable it during transitional states, while a resize is applying, or while an automatic retry is scheduled or running.
 
 ## Select an instance type
 
@@ -26,6 +26,8 @@ Show Deprecated instance types as selectable options with a **Deprecated** label
 ## After Save
 
 A success toast confirms the saved request. For a Running or Paused VM that requires restart, show a **Restart required** warning at the top of VM Overview in version 0.5. It is collapsed by default; expanding it explains that the VM must restart and shows the current → requested instance type, vCPUs, and memory. Do not repeat the restart message beside Instance type. Keep the VM's **active** instance type, vCPUs, and memory as the main configuration values, including the CPU and memory totals in Utilization. The 0.4 screenshots below retain the earlier layout for historical comparison.
+
+While a saved resize awaits restart, keep the pencil available. **Edit scheduled resize** shows the active and scheduled instance types. Selecting another type replaces the scheduled target; selecting the active type offers **Cancel scheduled resize**. Update the warning to show only the latest changed values. This interaction depends on backend support for replacing or canceling a pending resize; confirm that contract before implementation.
 
 On the VM list, retain the normal power status (for example, Running). In 0.5, show one subdued gray, text-only **Changes pending** status on a second line in the Status column while restart is required; its tooltip names the resize target and explains that a restart is needed. Cards use the same placement below the power status. A Stopped VM's new size applies on its next start. The 0.4 screenshots below show the earlier **Resize scheduled** label beside the name.
 
@@ -69,6 +71,14 @@ The API must expose or allow derivation of both active and requested configurati
 **Version 0.5 expanded restart warning.** The requested values are available on demand.
 
 ![Version 0.5 expanded restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5.png)
+
+**Version 0.5 edit scheduled resize.** The dialog distinguishes the active type from the target waiting for restart.
+
+![Edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
+
+**Version 0.5 revised target.** The warning reflects the replacement target and omits unchanged resources.
+
+![Revised scheduled resize warning](screenshots/latest-ux/vm-revised-scheduled-resize-0.5.png)
 
 **Version 0.4 collapsed restart notice.** Earlier design for comparison.
 

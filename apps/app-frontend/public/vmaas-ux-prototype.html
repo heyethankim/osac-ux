@@ -9155,8 +9155,10 @@
     }
 
     /** Neutral copy — GPU is not explained here (independent of vCPU/memory; OSAC-4864). */
-    function editComputeModalDescription() {
-      return 'Select a new instance type for this virtual machine.';
+    function editComputeModalDescription(pendingResize = false) {
+      return pendingResize
+        ? 'Change the instance type scheduled for the next restart.'
+        : 'Select a new instance type for this virtual machine.';
     }
 
     /** OSAC-4281: boot disk access mode (RWX → hot-plug; RWO / unknown → restart). */
@@ -9181,19 +9183,20 @@
       return 'other';
     }
 
-    /** Enabled when RUNNING, PAUSED, or STOPPED; disabled STARTING / STOPPING / DELETING. */
+    function vmHasPendingResize(vm) {
+      return !!vm?.restartRequired?.changes?.some(c => c.section === 'Configuration' && c.label === 'Instance type');
+    }
+
+    /** Enabled when RUNNING, PAUSED, or STOPPED; a pending resize can be revised before restart. */
     function canResizeVmInstanceType(vm) {
       const kind = vmPowerKind(vm?.status);
-      return !vm?.resizeProgress && !vmResizeRetryScheduled(vm) && !vm?.restartRequired?.changes?.some(c => c.label === 'Instance type')
+      return !vm?.resizeProgress && !vmResizeRetryScheduled(vm)
         && (kind === 'running' || kind === 'paused' || kind === 'stopped');
     }
 
     function resizeVmInstanceTypeDisabledReason(vm) {
       if (vm?.resizeProgress) return 'Resize is unavailable while a resize is in progress.';
       if (vmResizeRetryScheduled(vm)) return 'Resize is unavailable while another attempt is scheduled.';
-      if (vm?.restartRequired?.changes?.some(c => c.label === 'Instance type')) {
-        return 'Restart the VM to apply the scheduled resize before choosing another instance type.';
-      }
       const kind = vmPowerKind(vm?.status);
       if (kind === 'starting') {
         return 'Resize is unavailable while the virtual machine is starting.';
@@ -9260,6 +9263,23 @@
       upsertVmRestartRequired(vm, { message, change });
     }
 
+    function removeVmPendingResizeChanges(vm) {
+      const pending = vm.restartRequired;
+      const resizeLabels = new Set(['Instance type', 'vCPUs', 'Memory']);
+      const remaining = (pending?.changes || []).filter(c =>
+        c.section !== 'Configuration' || !resizeLabels.has(c.label));
+      vm.restartRequired = remaining.length ? { ...pending, changes: remaining } : null;
+      if (!remaining.length && Array.isArray(vm.conditions)) {
+        vm.conditions = vm.conditions.filter(c => !/RestartRequired/i.test(c));
+      }
+    }
+
+    function cancelVmPendingResize(vm, activeId) {
+      removeVmPendingResizeChanges(vm);
+      vm.activeComputeId = null;
+      applyComputeResourceToVm(vm, activeId);
+    }
+
     function vmResizeChanges(fromId, toId) {
       const before = computeResourceSpecs(fromId);
       const after = computeResourceSpecs(toId);
@@ -9267,7 +9287,7 @@
         { section: 'Configuration', label: 'Instance type', from: fromId, to: toId },
         { section: 'Configuration', label: 'vCPUs', from: before.cpu, to: after.cpu },
         { section: 'Configuration', label: 'Memory', from: before.mem, to: after.mem },
-      ];
+      ].filter(change => change.from !== change.to);
     }
 
     function beginVmResizeApplying(vm, phase, changes) {
@@ -9639,15 +9659,19 @@
       const resizeAlert = editComputeResizeAlertHtml(m.resizePath, selectionChanged);
       const submitErrorAlert = editComputeSubmitErrorAlertHtml(m.submitError);
       const descEl = document.getElementById('compute-modal-desc');
-      if (descEl) descEl.textContent = editComputeModalDescription();
+      if (descEl) descEl.textContent = editComputeModalDescription(m.pendingResize);
+      const titleEl = document.querySelector('#compute-modal-title .pf-v6-c-modal-box__title-text');
+      if (titleEl) titleEl.textContent = m.pendingResize ? 'Edit scheduled resize' : 'Edit instance type';
       const saveBtn = document.getElementById('compute-modal-save');
       if (saveBtn) {
-        saveBtn.textContent = 'Save';
+        saveBtn.textContent = m.pendingResize && m.selectedId === m.activeId
+          ? 'Cancel scheduled resize' : 'Save';
         saveBtn.disabled = m.selectedId === m.initialId;
       }
         body.innerHTML = `
           ${submitErrorAlert}
           ${resizeAlert}
+          ${m.pendingResize ? `<p class="muted">Current instance type: <strong>${richSelectEsc(m.activeId)}</strong>. Scheduled for next restart: <strong>${richSelectEsc(m.initialId)}</strong>. Choose the current type to cancel the scheduled resize.</p>` : ''}
           <p class="muted">${requireGpu ? `GPU configuration: ${richSelectEsc(vmResizeGpuSummary(m.initialId))}. ` : ''}GPU configuration cannot change during resize.</p>
           <div class="form-field">
           <label id="f-edit-compute-resource-label">Instance type <span class="req">*</span></label>
@@ -9737,6 +9761,8 @@
       state.editComputeModal = {
         selectedId,
         initialId,
+        activeId: vmActiveComputeId(vm),
+        pendingResize: vmHasPendingResize(vm),
         resizePath: vmResizePath(vm),
         menuOpen: false,
         filter: '',
@@ -9789,6 +9815,26 @@
       const path = state.editComputeModal?.resizePath || vmResizePath(vm);
       const changed = !!state.editComputeModal?.initialId && id !== state.editComputeModal.initialId;
       const activeId = vmActiveComputeId(vm);
+      if (state.editComputeModal?.pendingResize && changed) {
+        if (id === activeId) {
+          cancelVmPendingResize(vm, activeId);
+          closeEditComputeModal();
+          renderVmDetail();
+          toast('Scheduled resize canceled.');
+          return;
+        }
+        removeVmPendingResizeChanges(vm);
+        vm.activeComputeId = activeId;
+        applyComputeResourceToVm(vm, id);
+        vmResizeChanges(activeId, id).forEach(change => upsertVmRestartRequired(vm, {
+          message: 'The VM is still using its current configuration. Restart it to apply the resize.',
+          change,
+        }));
+        closeEditComputeModal();
+        renderVmDetail();
+        toast(`Scheduled resize changed to ${id}. Restart the VM to apply it.`, 'info');
+        return;
+      }
       if (changed) vm.resizeFailure = null;
       if (changed && (path === 'running' || path === 'paused')) vm.activeComputeId = activeId;
       applyComputeResourceToVm(vm, id);

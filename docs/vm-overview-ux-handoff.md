@@ -49,6 +49,12 @@ When a resize requires a restart, show a **Restart required** warning above Over
 
 ![Version 0.5 expanded top restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5-crop.png)
 
+The Instance type pencil stays available while a saved resize awaits restart. **Edit scheduled resize** identifies the active and scheduled types. Users can replace the target, or select the active type to cancel the scheduled resize. The warning updates to the latest target and omits unchanged values. Backend support for replacing or canceling a pending resize must be confirmed.
+
+![Version 0.5 edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
+
+![Version 0.5 revised scheduled resize warning](screenshots/latest-ux/vm-revised-scheduled-resize-0.5.png)
+
 In card and table views, the VM list shows one configuration status below the power status. Activating it opens a popover that lists every outstanding operation and target.
 
 ![Version 0.5 VM cards with configuration status below power status](screenshots/latest-ux/vm-config-status-cards-0.5.png)
