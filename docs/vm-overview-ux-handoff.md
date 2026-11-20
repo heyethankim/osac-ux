@@ -51,6 +51,10 @@ When a resize requires a restart, show a **Restart required** warning above Over
 
 The Instance type pencil stays available while a saved resize awaits restart. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** replaces the target. The separate cancel action removes the pending change and keeps the active type; **Cancel** closes without changes. The warning updates to the latest target and omits unchanged values. Backend support for replacing or canceling a pending resize must be confirmed.
 
+During an active resize, disable the pencil and explain why on hover and keyboard focus. In the 0.5 mockup, `indigo-quokka-89` completes its demo resize after about 15 seconds; the pencil then becomes available. Apply the same explanatory tooltip pattern to every disabled icon control, including list actions and pagination.
+
+![Disabled Instance type pencil with explanatory tooltip](screenshots/latest-ux/vm-resize-edit-disabled-tooltip-0.5.png)
+
 ![Version 0.5 edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
 
 ![Version 0.5 revised scheduled resize warning](screenshots/latest-ux/vm-revised-scheduled-resize-0.5.png)

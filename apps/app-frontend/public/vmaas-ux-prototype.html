@@ -9196,7 +9196,7 @@
     }
 
     function resizeVmInstanceTypeDisabledReason(vm) {
-      if (vm?.resizeProgress) return 'Resize is unavailable while a resize is in progress.';
+      if (vm?.resizeProgress) return 'Wait for the current resize to finish before editing the instance type.';
       if (vmResizeRetryScheduled(vm)) return 'Resize is unavailable while another attempt is scheduled.';
       const kind = vmPowerKind(vm?.status);
       if (kind === 'starting') {
@@ -9317,7 +9317,7 @@
       const timer = setTimeout(() => {
         completeVmResize(vm);
         refreshVmStatusViews();
-        toast(`Resize completed for “${vm.name}”.`, 'success');
+        if (state.selectedVmName === vm.name) toast(`Resize completed for “${vm.name}”.`, 'success');
         vmResizeCompletionTimers.delete(vm.name);
       }, 15000);
       vmResizeCompletionTimers.set(vm.name, timer);
@@ -17075,6 +17075,48 @@
       });
     }
 
+    function wireDisabledIconTooltips() {
+      const explain = button => {
+        if (button.dataset.listPage) {
+          return button.dataset.pageAction === 'previous'
+            ? 'You are on the first page.' : 'You are on the last page.';
+        }
+        if (button.dataset.tplView) return 'There are no templates to display in this project.';
+        const title = button.getAttribute('title') || '';
+        if (/unavailable|cannot|disabled|select|publish|no |wait |while |requires/i.test(title)) return title;
+        const action = button.getAttribute('aria-label') || 'This action';
+        return `${action} is unavailable for the current item.`;
+      };
+      const enhance = () => {
+        document.querySelectorAll('[data-disabled-icon-tooltip]').forEach(wrapper => {
+          const button = wrapper.querySelector('button');
+          if (!button?.disabled) {
+            if (pfTooltipTrigger === wrapper) hidePfTooltip();
+            wrapper.replaceWith(button);
+          }
+        });
+        document.querySelectorAll('button:disabled').forEach(button => {
+          if (!button.querySelector('i, svg') || button.textContent.trim()
+            || button.parentElement?.hasAttribute('data-disabled-icon-tooltip')) return;
+          const explanation = explain(button);
+          const wrapper = document.createElement('span');
+          wrapper.setAttribute('data-disabled-icon-tooltip', '');
+          wrapper.setAttribute('data-pf-tooltip', explanation);
+          wrapper.setAttribute('aria-label', explanation);
+          wrapper.tabIndex = 0;
+          button.parentNode.insertBefore(wrapper, button);
+          wrapper.appendChild(button);
+        });
+      };
+      new MutationObserver(enhance).observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['disabled'],
+      });
+      enhance();
+    }
+
     function wirePfTooltips() {
       if (document.body.dataset.pfTooltipWired) return;
       document.body.dataset.pfTooltipWired = '1';
@@ -17108,6 +17150,7 @@
       });
       window.addEventListener('scroll', hidePfTooltip, true);
       window.addEventListener('resize', hidePfTooltip);
+      wireDisabledIconTooltips();
     }
 
     function openDeleteResourceModal(payload) {
@@ -26536,6 +26579,7 @@
     wireUtilHelpPopover();
     wireFormHelpPopover();
     wirePfTooltips();
+    scheduleVmResizeCompletion(VMS.find(vm => vm.name === 'indigo-quokka-89'));
     renderNetworks();
 
     try {

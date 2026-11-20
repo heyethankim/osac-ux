@@ -13,7 +13,7 @@ Related work: [OSAC-7576](https://redhat.atlassian.net/browse/OSAC-7576), [OSAC-
 
 ## Entry and availability
 
-On VM Overview, select the pencil beside Instance type. Tenant Admin and Tenant User can resize. The action is available for Running, Paused, and Stopped VMs, including when a saved resize awaits restart. Disable it during transitional states, while a resize is applying, or while an automatic retry is scheduled or running.
+On VM Overview, select the pencil beside Instance type. Tenant Admin and Tenant User can resize. The action is available for Running, Paused, and Stopped VMs, including when a saved resize awaits restart. Disable it during transitional states, while a resize is applying, or while an automatic retry is scheduled or running. A disabled pencil has a hover and keyboard-focus tooltip explaining why; during an active resize it says, “Wait for the current resize to finish before editing the instance type.”
 
 ## Select an instance type
 
@@ -33,7 +33,7 @@ On the VM list, retain the normal power status (for example, Running). In 0.5, s
 
 ## Resize in progress
 
-When the API reports that a resize is applying without a restart, keep **Running** as the VM power state. In 0.5, show one subdued gray, text-only **Changes in progress** status on a second line below the power status in card and table views; its tooltip names the resize target and any other active configuration operation. On VM Overview, an information icon beside the **Instance type** heading opens a keyboard-accessible popover with the requested type and any known retry attempt. Keep active values until the API confirms completion. The mockup uses `indigo-quokka-89` for this state.
+When the API reports that a resize is applying without a restart, keep **Running** as the VM power state. In 0.5, show one subdued gray, text-only **Changes in progress** status on a second line below the power status in card and table views; its popover names the resize target and any other active configuration operation. On VM Overview, a spinner appears beside **Instance type** during an active attempt. A status line names the requested target; it opens a popover only when retry details are available. Keep active values until the API confirms completion. The mockup uses `indigo-quokka-89` for this state and completes its demo resize after about 15 seconds, enabling the pencil.
 
 After a restart with a scheduled resize, remove **Restart required** and show **Changes in progress** in lists while the resize is applying, even if the power state has returned to **Running**. In version 0.5, details use the Instance type progress popover. The mockup uses `fedora-aqua-barnacle-58` for this state; restarting `azure-baboon-27` also demonstrates the transition.
 
@@ -89,6 +89,8 @@ The API must expose or allow derivation of both active and requested configurati
 ![Restart-required resize with scheduled changes](screenshots/vm-resize/restart-required-current.jpg)
 
 **Resize applying without restart.** A compact label appears beside the VM status.
+
+![Disabled Instance type pencil with explanatory tooltip](screenshots/latest-ux/vm-resize-edit-disabled-tooltip-0.5.png)
 
 ![Resize in progress without restart](screenshots/vm-resize/resize-in-progress-no-restart.jpg)
 
