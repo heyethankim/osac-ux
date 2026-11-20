@@ -3,7 +3,7 @@
 Contact: [Yifat Friman Menchik](mailto:yfrimanm@redhat.com), UXD
 Google Doc: [VM Overview](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit)  
 OSAC-7158 Google Doc: [VM configuration operations](https://docs.google.com/document/d/1KkHVqjNJ4lZl40X8aE1v589jDd7ilAle9NnaV13DIr4/edit)
-Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=3f69cba&role=admin&vm=indigo-quokka-89)
+Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=indigo-quokka-89)
 
 VM Overview shows the active instance type, CPU, and memory. Editing the instance type opens the name-first, two-line picker: each option has the resource name above CPU, memory, GPU count and readable model when present, and rate. Omit PCI hardware IDs from visible labels. The GPU specification still determines which resize targets are compatible. See the [resize handoff](osac-4281-vm-resize-handoff.md).
 
@@ -13,17 +13,23 @@ The Overview **Status** row shows the VM power state only. Keep active instance 
 
 ![Version 0.5 matching Instance type and External IP progress](screenshots/latest-ux/vm-config-aligned-progress-0.5-crop.png)
 
-The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=3f69cba&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
+The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
 
 ![Version 0.5 scheduled retry without active spinners](screenshots/latest-ux/vm-config-retry-scheduled-0.5-crop.png)
 
-The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=3f69cba&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the popover names both operations.
+The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the popover names both operations.
 
 ![Version 0.5 failed resize and active external-IP attachment](screenshots/latest-ux/vm-config-mixed-0.5.png)
 
 ![Version 0.5 mixed-operation status popover](screenshots/latest-ux/vm-config-status-popover-concurrent-0.5-crop.png)
 
 ### Simultaneous changes
+
+Returning from VM Details through the sidebar or breadcrumb refreshes both list and card values from the current VM state. Preserve the selected view, filter, page, and selection where valid. Close any stale configuration popover before rendering the list.
+
+The sidebar card is **Other VM alerts**, with **No other alerts** when empty, so it does not contradict configuration failures shown above Overview. For a Tenant User without external-IP permissions, a final attachment failure says **Ask a tenant administrator to attach an external IP.** Show this guidance only when no automatic retry is scheduled or running. Tenant admins retain the **Attach external IP** recovery action.
+
+![Version 0.5 Tenant User guidance after external-IP attachment fails](screenshots/latest-ux/vm-external-ip-tenant-user-failure-0.5.png)
 
 Each operation keeps its own state on VM Overview: progress appears beside the Instance type or External IP heading, while the status line below names the requested target. The line opens details only when extra retry information is available. Only final failures appear in the top alert. If several operations fail, use one alert with a bullet for each failure. Keep **Resize again** in the alert and offer the external-IP selection action beside External IP when available. Keep current values visible until each change succeeds.
 
@@ -33,9 +39,9 @@ Use three plain-language states for each operation in Details and the list/card 
 
 When the service supplies a safe reason for the preceding failure, show **Previous attempt failed: [reason]** in the operation popover. Show a retry attempt number only while that retry runs and only when supplied. If the service reports a known prerequisite that blocks a change, explain it in plain language in both places. Do not invent a blocker, reason, attempt count, or ETA. Keep **Stopped** as a power state, not a configuration failure. After success, update the active value, remove the outstanding status, and show a brief success toast; do not retain a Completed line.
 
-For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=3f69cba&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the popover names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=3f69cba&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
+For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the popover names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
 
-The [two-failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=3f69cba&role=admin&vm=debian-cobalt-heron-41) shows resize and external-IP failure as separate bullets in one alert. The IP remains unattached; **Resize again** opens the resize dialog with **large** selected for review.
+The [two-failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=debian-cobalt-heron-41) shows resize and external-IP failure as separate bullets in one alert. The IP remains unattached; **Resize again** opens the resize dialog with **large** selected for review.
 
 ![Version 0.5 final-failure popover with Open VM details button](screenshots/latest-ux/vm-config-final-failure-action-0.5-crop.png)
 
@@ -48,6 +54,12 @@ When a resize requires a restart, show a **Restart required** warning above Over
 ![Version 0.5 collapsed top restart warning](screenshots/latest-ux/vm-config-restart-0.5-crop.png)
 
 ![Version 0.5 expanded top restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5-crop.png)
+
+Selecting **Restart** from VM Details or a row action opens a confirmation naming the VM, warning that workloads and sessions will be interrupted, and listing the exact scheduled changes. Focus **Cancel** initially. Cancel, Close, or Escape dismisses the dialog without starting the restart or changing the saved configuration. Before proceeding, recheck permissions, the VM power state, and scheduled changes. If the changes differ, show the latest values for review and require another confirmation; if restart is unavailable, disable confirmation and explain why.
+
+![Version 0.5 restart confirmation with exact scheduled changes](screenshots/latest-ux/vm-restart-confirmation-0.5.png)
+
+The resize and restart dialogs keep Tab and Shift+Tab inside the dialog and prevent background interaction. In the resize dialog, Escape closes an open instance-type picker first; a second Escape dismisses the dialog. On dismissal, return focus to the trigger or its current equivalent after a refresh; if that control becomes unavailable, focus the Configuration or VM heading.
 
 **Proposed interaction; backend support unconfirmed.** If a saved resize can be replaced or canceled before restart, keep the Instance type pencil available. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** replaces the target; the separate cancel action removes the pending change and keeps the active type. The warning updates to the latest target and omits unchanged values. If the backend cannot support either action, keep the pencil disabled until the resize takes effect, with a tooltip explaining why. Confirm the backend operations before implementing the proposed actions.
 

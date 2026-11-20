@@ -6,7 +6,7 @@ Updated: 20 November 2026
 UX Google Doc: https://docs.google.com/document/d/1kgln_LzTA3-VSP0SUM0jLce2Nvw0pix3oTYkwZuX-wE/edit  
 Interactive mockup, 0.4: https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=admin&vm=windows-golden-eider-58
 
-Interactive mockup, 0.5: https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=3f69cba&role=admin&vm=fedora-aqua-barnacle-58
+Interactive mockup, 0.5: https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=fedora-aqua-barnacle-58
 Feature: [OSAC-4277](https://redhat.atlassian.net/browse/OSAC-4277)  
 Resize: [OSAC-4281](https://redhat.atlassian.net/browse/OSAC-4281)  
 Related work: [OSAC-7576](https://redhat.atlassian.net/browse/OSAC-7576), [OSAC-7463](https://redhat.atlassian.net/browse/OSAC-7463), [OSAC-7582](https://redhat.atlassian.net/browse/OSAC-7582), [OSAC-6578](https://redhat.atlassian.net/browse/OSAC-6578)
@@ -16,6 +16,8 @@ Related work: [OSAC-7576](https://redhat.atlassian.net/browse/OSAC-7576), [OSAC-
 On VM Overview, select the pencil beside Instance type. Tenant Admin and Tenant User can resize. The action is available for Running, Paused, and Stopped VMs, including when a saved resize awaits restart. Disable it during transitional states, while a resize is applying, or while an automatic retry is scheduled or running. A disabled pencil has a hover and keyboard-focus tooltip explaining why; during an active resize it says, “Wait for the current resize to finish before editing the instance type.”
 
 ## Select an instance type
+
+Keep keyboard focus inside the resize dialog and prevent background interaction. Escape closes the open instance-type picker first, then dismisses the dialog on a second press. Cancel, Close, and Save return focus to the original trigger or its current equivalent after a refresh; if that control is unavailable, focus the Configuration heading. **Resize again** starts with the failed target selected for review.
 
 The modal has a required typeahead Instance type field and Save/Cancel actions. Each option shows the instance type name on the first line and CPU, memory, GPU count and readable model, and rate in the description below. For example: **small-gpu** followed by `1 vCPU · 2 GiB memory · 1 GPU (NVIDIA A100 40 GB) · $1.90/hr`. Omit PCI IDs from the visible description; use the GPU count, resource name, and PCI selector for compatibility filtering. The VM's GPU configuration cannot change during resize. Do not predict hot-plug or restart from boot-disk access mode before submission. Show submit failures inside the modal.
 
@@ -29,7 +31,11 @@ A success toast confirms the saved request. For a Running or Paused VM that requ
 
 **Proposed interaction; backend support unconfirmed.** If a saved resize can be replaced or canceled before restart, keep the pencil available. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** replaces the scheduled target. The separate cancel action removes the pending change and keeps the active type; **Cancel** closes without changes. Update the warning to show only the latest changed values. If the backend cannot replace or cancel a pending resize, keep the pencil disabled until the resize takes effect and explain why in its tooltip. Confirm the backend operations before implementing the proposed actions.
 
+Selecting **Restart** in Details or a VM row opens a confirmation with the VM name, workload and session interruption warning, and exact scheduled changes. Focus **Cancel** initially and keep keyboard focus inside the dialog. Cancel, Close, or Escape leaves the VM power state and scheduled resize unchanged. Recheck permissions, power state, and scheduled changes before restarting; changed values require review and another confirmation. Restore focus to the invoking control or, if it is no longer available, the VM heading.
+
 On the VM list, retain the normal power status (for example, Running). In 0.5, show one subdued gray, text-only **Changes pending** status on a second line in the Status column while restart is required; its tooltip names the resize target and explains that a restart is needed. Cards use the same placement below the power status. A Stopped VM's new size applies on its next start. The 0.4 screenshots below show the earlier **Resize scheduled** label beside the name.
+
+Returning from Details refreshes card and table values from the current VM state while preserving the selected view, filter, page, and valid selection. Canceling a scheduled resize changes only that resize; other configuration work, such as external-IP attachment, continues independently.
 
 ## Resize in progress
 
@@ -71,6 +77,10 @@ The API must expose or allow derivation of both active and requested configurati
 **Version 0.5 expanded restart warning.** The requested values are available on demand.
 
 ![Version 0.5 expanded restart warning](screenshots/latest-ux/vm-config-restart-expanded-0.5.png)
+
+**Version 0.5 restart confirmation.** Review the VM, interruption warning, and exact changes before restarting; Cancel is initially focused.
+
+![Restart confirmation with scheduled resize changes](screenshots/latest-ux/vm-restart-confirmation-0.5.png)
 
 **Version 0.5 proposed edit scheduled resize.** The dialog distinguishes the active type from the target waiting for restart; replacement and cancellation require backend support.
 
