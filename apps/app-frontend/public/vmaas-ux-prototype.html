@@ -1326,6 +1326,17 @@
       line-height: 1.4;
       color: var(--vmaas-text);
     }
+    .vm-config-inline--trigger {
+      display: block;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: underline dotted;
+      text-underline-offset: 3px;
+    }
     .vm-config-inline__status { display: block; }
     .vm-instance-progress-trigger {
       color: var(--pf-t--global--icon--color--status--info--default, #0066cc);
@@ -2247,6 +2258,7 @@
     #disk-image-popover,
     #it-pci-popover,
     #instance-progress-popover,
+    #external-ip-progress-popover,
     #storage-tier-popover {
       display: none;
       position: fixed;
@@ -2256,6 +2268,7 @@
     #disk-image-popover.pf-m-open,
     #it-pci-popover.pf-m-open,
     #instance-progress-popover.pf-m-open,
+    #external-ip-progress-popover.pf-m-open,
     #storage-tier-popover.pf-m-open { display: block; }
     #disk-image-popover .nic-detail-dl,
     #it-pci-popover .nic-detail-dl,
@@ -8591,6 +8604,7 @@
       { name: 'rhel9-black-gunnysack-58', ns: 'project-a', status: 'running', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-gpu-training-server', conditions: ['DataVolumesReady=True', 'Ready=True'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '10.130.1.224', created: '19 Jan 2026, 7:29', computeResource: 'large-gpu', gpuDevices: [{ name: 'NVIDIA A100 80 GB' }], hostDevices: [{ name: 'host-pci-1' }], sshSecretId: 'ssh-cluster-admin', cloudInitSource: 'inline', cloudInit: '#cloud-config\npackages:\n  - nginx\n', bootDiskAccessMode: 'RWO' },
       { name: 'windows-golden-eider-58', ns: 'project-a', status: 'stopped', os: 'Windows', osFull: 'Microsoft Windows Server 2022', imageLabel: 'Windows Server 2022', catalogItem: 'vm-windows-workstation', conditions: ['Ready=True'], node: 'cnvge-079.lab.eng.thv2.redhat.com', ip: '—', created: '11 Feb 2026, 9:48', sysprepConfigured: true, sysprepSecretId: 'sysprep-corp-std', bootDiskAccessMode: 'RWO' },
       { name: 'fedora-aqua-barnacle-58', ns: 'yifat', status: 'running', os: 'Fedora', osFull: 'Fedora Linux 41', imageLabel: 'Fedora 41', catalogItem: 'vm-dev-workstation', conditions: ['DataVolumesReady=True', 'LiveMigratable=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.231', created: '11 Feb 2026, 8:49', computeResource: 'large', activeComputeId: 'small', resizeProgress: { phase: 'after-restart', startedAtMs: Date.now() - 8 * 60000, startedAt: new Date(Date.now() - 8 * 60000).toLocaleString('en-GB'), lastUpdatedAt: new Date(Date.now() - 5 * 60000).toLocaleString('en-GB'), changes: [{ section: 'Configuration', label: 'Instance type', from: 'small', to: 'large' }, { section: 'Configuration', label: 'vCPUs', from: '1 vCPU', to: '2 vCPUs' }, { section: 'Configuration', label: 'Memory', from: '2 GiB', to: '8 GiB' }] }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.21', externalIpRetryAttempt: 2, externalIpLastFailureReason: 'The address was temporarily unavailable.', hostDevices: [{ name: 'host-usb-1' }], sshSecretId: 'ssh-yifat-dev', cloudInitSource: 'secret', cloudInitSecretId: 'ud-fedora-init' },
+      { name: 'rhel-retry-cedar-29', ns: 'yifat', status: 'running', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 9', imageLabel: 'RHEL 9.4', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.229', created: '18 Nov 2026, 10:35', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The instance type was temporarily unavailable.', retryPlanned: true }, externalIpStatus: 'failed', externalIpAttempted: '198.51.100.29', externalIpError: 'The address was temporarily unavailable.', externalIpRetryPlanned: true, bootDiskAccessMode: 'RWO' },
       { name: 'debian-cobalt-heron-41', ns: 'yifat', status: 'running', os: 'Other', osFull: 'Debian 12', imageLabel: 'Debian 12', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.238', created: '10 Nov 2026, 16:05', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, externalIpStatus: 'failed', externalIpAttempted: '198.51.100.99', externalIpError: 'We couldn’t attach external IP 198.51.100.99 to this VM.', externalIpRetryPlanned: false, bootDiskAccessMode: 'RWO' },
       { name: 'ubuntu-copper-ibis-31', ns: 'project-a', status: 'running', os: 'Other', osFull: 'Ubuntu 24.04 LTS', imageLabel: 'Ubuntu 24.04 LTS', catalogItem: 'vm-dev-workstation', conditions: ['Ready=True'], node: 'cnvge-081.lab.eng.thv2.redhat.com', ip: '10.130.1.239', created: '18 Nov 2026, 11:40', computeResource: 'large', activeComputeId: 'small', resizeFailure: { reason: 'The requested instance type is unavailable. The VM is still using its previous resources.', retryPlanned: false }, externalIpStatus: 'attaching', externalIpPending: '198.51.100.22', externalIpRetryAttempt: 2, bootDiskAccessMode: 'RWO' },
       { name: 'rhel8-mystic-eagle-22', ns: 'vmaas', status: 'ErrorPvcNotFound', os: 'RHEL', osFull: 'Red Hat Enterprise Linux 8', imageLabel: 'RHEL 8.10', catalogItem: 'vm-legacy-app-server', conditions: ['Provisioning=False', 'Ready=False'], node: 'cnvge-080.lab.eng.thv2.redhat.com', ip: '—', created: '22 Jan 2026, 14:42', alerts: [{ severity: 'warning', message: 'Boot disk is unavailable' }, { severity: 'warning', message: 'Virtual machine is not Ready' }], bootDiskAccessMode: 'RWO' },
@@ -9000,23 +9014,33 @@
       return vm?.activeComputeId || resolveVmComputeId(vm);
     }
 
+    function vmResizeRetryScheduled(vm) {
+      return !!vm?.resizeFailure && (vm.resizeFailure.retryPlanned === true || !!vm.resizeFailure.nextRetryAt);
+    }
+
+    function vmExternalIpRetryScheduled(vm) {
+      return vmExternalIpStatus(vm) === 'failed' && (vm.externalIpRetryPlanned === true || !!vm.externalIpNextRetryAt);
+    }
+
     function vmConfigurationLabelHtml(vm) {
       const ipStatus = vmExternalIpStatus(vm);
-      const failed = !!vm.resizeFailure || ipStatus === 'failed';
+      const failed = (!!vm.resizeFailure && !vmResizeRetryScheduled(vm)) || (ipStatus === 'failed' && !vmExternalIpRetryScheduled(vm));
       const applying = !!vm.resizeProgress || ipStatus === 'attaching';
-      const pending = !!vm.restartRequired?.changes?.length;
+      const pending = !!vm.restartRequired?.changes?.length || vmResizeRetryScheduled(vm) || vmExternalIpRetryScheduled(vm);
       if (!failed && !applying && !pending) return '';
       const label = failed ? 'Changes need attention' : (applying ? 'Changes in progress' : 'Changes pending');
       const details = [];
       const resizeTarget = resolveVmComputeId(vm) || 'the requested instance type';
-      if (vm.resizeFailure) details.push(`Resize to ${resizeTarget} failed`);
+      if (vmResizeRetryScheduled(vm)) details.push(`Retry scheduled for resize to ${resizeTarget}`);
+      else if (vm.resizeFailure) details.push(`Resize to ${resizeTarget} failed`);
       else if (vm.resizeProgress) {
         const attempt = Number(vm.resizeProgress.retryAttempt);
         details.push(`Resizing to ${resizeTarget}${attempt > 1 ? ` (retry attempt ${attempt})` : ''}`);
       }
-      else if (pending) details.push(`Resize to ${resizeTarget} is waiting for restart`);
+      else if (vm.restartRequired?.changes?.length) details.push(`Resize to ${resizeTarget} is waiting for restart`);
       const ipTarget = vm.externalIpPending || vm.externalIpAttempted || 'the selected address';
-      if (ipStatus === 'failed') details.push(`External IP attachment for ${ipTarget} failed`);
+      if (vmExternalIpRetryScheduled(vm)) details.push(`Retry scheduled for external IP ${ipTarget}`);
+      else if (ipStatus === 'failed') details.push(`External IP attachment for ${ipTarget} failed`);
       else if (ipStatus === 'attaching') details.push(`Attaching external IP ${ipTarget}`);
       const summary = `${details.join('; ')}.`;
       return `<button type="button" class="vm-configuration-label${failed ? ' vm-configuration-label--failed' : ''}"
@@ -9062,14 +9086,16 @@
         closeVmConfigurationPopover();
         const items = [];
         const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
-        if (vm.resizeFailure) items.push(`Resize to <strong>${target}</strong> failed.`);
+        if (vmResizeRetryScheduled(vm)) items.push(`Retry scheduled for resize to <strong>${target}</strong>.${vm.resizeFailure.reason ? ` Previous attempt failed: ${escAttr(vm.resizeFailure.reason)}` : ''}`);
+        else if (vm.resizeFailure) items.push(`Resize to <strong>${target}</strong> failed.`);
         else if (vm.resizeProgress) {
           const retry = Number(vm.resizeProgress.retryAttempt);
           const reason = vm.resizeProgress.lastFailureReason;
           items.push(`Resizing to <strong>${target}</strong>.${retry > 1 ? ` Retry attempt: ${retry}.${reason ? ` Previous attempt failed: ${escAttr(reason)}` : ''}` : ''}`);
         } else if (vm.restartRequired?.changes?.length) items.push(`Resize to <strong>${target}</strong> is waiting for restart.`);
         const ip = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
-        if (vmExternalIpStatus(vm) === 'failed') items.push(`External IP <strong>${ip}</strong> failed to attach.`);
+        if (vmExternalIpRetryScheduled(vm)) items.push(`Retry scheduled to attach external IP <strong>${ip}</strong>.${vm.externalIpError ? ` Previous attempt failed: ${escAttr(vm.externalIpError)}` : ''}`);
+        else if (vmExternalIpStatus(vm) === 'failed') items.push(`External IP <strong>${ip}</strong> failed to attach.`);
         else if (vmExternalIpStatus(vm) === 'attaching') {
           const retry = Number(vm.externalIpRetryAttempt);
           items.push(`Attaching external IP <strong>${ip}</strong>.${retry > 1 ? ` Retry attempt: ${retry}.${vm.externalIpLastFailureReason ? ` Previous attempt failed: ${escAttr(vm.externalIpLastFailureReason)}` : ''}` : ''}`);
@@ -9122,12 +9148,13 @@
     /** Enabled when RUNNING, PAUSED, or STOPPED; disabled STARTING / STOPPING / DELETING. */
     function canResizeVmInstanceType(vm) {
       const kind = vmPowerKind(vm?.status);
-      return !vm?.resizeProgress && !vm?.restartRequired?.changes?.some(c => c.label === 'Instance type')
+      return !vm?.resizeProgress && !vmResizeRetryScheduled(vm) && !vm?.restartRequired?.changes?.some(c => c.label === 'Instance type')
         && (kind === 'running' || kind === 'paused' || kind === 'stopped');
     }
 
     function resizeVmInstanceTypeDisabledReason(vm) {
       if (vm?.resizeProgress) return 'Resize is unavailable while a resize is in progress.';
+      if (vmResizeRetryScheduled(vm)) return 'Resize is unavailable while another attempt is scheduled.';
       if (vm?.restartRequired?.changes?.some(c => c.label === 'Instance type')) {
         return 'Restart the VM to apply the scheduled resize before choosing another instance type.';
       }
@@ -9297,7 +9324,7 @@
     /** OSAC-7158: only failed configuration operations need a top alert. */
     function vmConfigurationOperationAlertsHtml(vm, canResize) {
       const alerts = [];
-      if (vm.resizeFailure) {
+      if (vm.resizeFailure && !vmResizeRetryScheduled(vm)) {
         const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
         const reason = escAttr(vm.resizeFailure.reason || 'The requested instance type could not be applied.');
         const retry = vm.resizeFailure.nextRetryAt
@@ -9306,7 +9333,7 @@
         alerts.push({ title: 'Resize failed', description: `Could not apply instance type <strong>${target}</strong>. ${reason}${retry}` });
       }
       const ipStatus = vmExternalIpStatus(vm);
-      if (ipStatus === 'failed') {
+      if (ipStatus === 'failed' && !vmExternalIpRetryScheduled(vm)) {
         const target = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
         const reason = escAttr(vm.externalIpError || `We couldn’t attach external IP ${target} to this VM.`);
         const retry = vm.externalIpNextRetryAt
@@ -9321,7 +9348,7 @@
       const description = alerts.length === 1
         ? alerts[0].description
         : `<ul class="pf-v6-c-list">${alerts.map(alert => `<li><strong>${alert.title}:</strong> ${alert.description}</li>`).join('')}</ul>`;
-      const resizeAction = vm.resizeFailure && canResize
+      const resizeAction = vm.resizeFailure && !vmResizeRetryScheduled(vm) && canResize
         ? '<div class="vm-config-alert__action"><button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-resize-again>Resize again</button></div>'
         : '';
       return `
@@ -14918,11 +14945,42 @@
       const target = escAttr(trigger.dataset.target || 'the requested instance type');
       const retry = Number(trigger.dataset.retry);
       const vm = VMS.find(v => v.name === state.selectedVmName);
-      const previousReason = vm?.resizeProgress?.lastFailureReason;
-      body.innerHTML = `<p>Changing instance type to <strong>${target}</strong>.</p>${retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}${previousReason ? `. Previous attempt failed: ${escAttr(previousReason)}` : ''}</p>` : ''}`;
+      const scheduled = vmResizeRetryScheduled(vm);
+      const previousReason = scheduled ? vm.resizeFailure.reason : vm?.resizeProgress?.lastFailureReason;
+      body.innerHTML = `<p>${scheduled ? 'Retry scheduled to change' : 'Changing'} instance type to <strong>${target}</strong>.</p>${retry > 1 && !scheduled ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}${previousReason ? `<p class="vm-config-operation__retry">Previous attempt failed: ${escAttr(previousReason)}</p>` : ''}`;
       instanceProgressPopoverTrigger = trigger;
       trigger.setAttribute('aria-expanded', 'true');
       positionDetailPopover(pop, trigger, 'instance-progress-popover-close');
+    }
+
+    let externalIpProgressPopoverTrigger = null;
+    function closeExternalIpProgressPopover() {
+      const pop = document.getElementById('external-ip-progress-popover');
+      if (!pop) return;
+      pop.classList.remove('pf-m-open');
+      pop.hidden = true;
+      externalIpProgressPopoverTrigger?.setAttribute('aria-expanded', 'false');
+      externalIpProgressPopoverTrigger = null;
+    }
+
+    function openExternalIpProgressPopover(trigger) {
+      const pop = document.getElementById('external-ip-progress-popover');
+      const body = document.getElementById('external-ip-progress-popover-body');
+      const vm = VMS.find(v => v.name === state.selectedVmName);
+      if (!pop || !body || !vm) return;
+      if (externalIpProgressPopoverTrigger === trigger && pop.classList.contains('pf-m-open')) {
+        closeExternalIpProgressPopover();
+        return;
+      }
+      closeInstanceProgressPopover();
+      const scheduled = vmExternalIpRetryScheduled(vm);
+      const target = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
+      const retry = Number(vm.externalIpRetryAttempt);
+      const previousReason = scheduled ? vm.externalIpError : vm.externalIpLastFailureReason;
+      body.innerHTML = `<p>${scheduled ? 'Retry scheduled to attach' : 'Attaching'} external IP <strong>${target}</strong>.</p>${retry > 1 && !scheduled ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}${previousReason ? `<p class="vm-config-operation__retry">Previous attempt failed: ${escAttr(previousReason)}</p>` : ''}`;
+      externalIpProgressPopoverTrigger = trigger;
+      trigger.setAttribute('aria-expanded', 'true');
+      positionDetailPopover(pop, trigger, 'external-ip-progress-popover-close');
     }
 
     let storageTierPopoverTrigger = null;
@@ -14996,6 +15054,14 @@
           trigger?.focus();
           return;
         }
+        if (e.target.closest('#external-ip-progress-popover-close')) {
+          e.preventDefault();
+          e.stopPropagation();
+          const trigger = externalIpProgressPopoverTrigger;
+          closeExternalIpProgressPopover();
+          trigger?.focus();
+          return;
+        }
         if (e.target.closest('#storage-tier-popover-close')) {
           e.preventDefault();
           e.stopPropagation();
@@ -15023,6 +15089,13 @@
           openInstanceProgressPopover(progressTrigger);
           return;
         }
+        const ipProgressTrigger = e.target.closest('[data-external-ip-progress]');
+        if (ipProgressTrigger) {
+          e.preventDefault();
+          e.stopPropagation();
+          openExternalIpProgressPopover(ipProgressTrigger);
+          return;
+        }
         const tierTrigger = e.target.closest('[data-storage-tier-detail]');
         if (tierTrigger) {
           e.preventDefault();
@@ -15034,20 +15107,23 @@
           e.target.closest('#disk-image-popover')
           || e.target.closest('#it-pci-popover')
           || e.target.closest('#instance-progress-popover')
+          || e.target.closest('#external-ip-progress-popover')
           || e.target.closest('#storage-tier-popover')
         ) return;
         closeDiskImagePopover();
         closeItPciPopover();
         closeInstanceProgressPopover();
+        closeExternalIpProgressPopover();
         closeStorageTierPopover();
       });
       document.addEventListener('keydown', e => {
         if (e.key !== 'Escape') return;
-        const trigger = instanceProgressPopoverTrigger;
-        const returnFocus = !!trigger && document.getElementById('instance-progress-popover')?.contains(document.activeElement);
+        const trigger = instanceProgressPopoverTrigger || externalIpProgressPopoverTrigger;
+        const returnFocus = !!trigger && (document.getElementById('instance-progress-popover')?.contains(document.activeElement) || document.getElementById('external-ip-progress-popover')?.contains(document.activeElement));
         closeDiskImagePopover();
         closeItPciPopover();
         closeInstanceProgressPopover();
+        closeExternalIpProgressPopover();
         closeStorageTierPopover();
         if (returnFocus) trigger.focus();
       });
@@ -15055,12 +15131,14 @@
         closeDiskImagePopover();
         closeItPciPopover();
         closeInstanceProgressPopover();
+        closeExternalIpProgressPopover();
         closeStorageTierPopover();
       });
       window.addEventListener('scroll', () => {
         closeDiskImagePopover();
         closeItPciPopover();
         closeInstanceProgressPopover();
+        closeExternalIpProgressPopover();
         closeStorageTierPopover();
       }, true);
     }
@@ -15624,6 +15702,7 @@
 
     function vmExternalIpPanelHtml(vm, { canEdit = true } = {}) {
       const status = vmExternalIpStatus(vm);
+      const retryScheduled = vmExternalIpRetryScheduled(vm);
       const deleting = vm.status === 'deleting';
       const autoAttached = status === 'attached' && !!vm.autoAttachExternalIp;
       const attachedIp = status === 'attached' && vm.externalIp ? String(vm.externalIp) : '';
@@ -15637,7 +15716,7 @@
       let actions = '';
       if (!canEdit || autoAttached) {
         actions = '';
-      } else if (status === 'attaching') {
+      } else if (status === 'attaching' || retryScheduled) {
         actions = '<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" disabled aria-describedby="vm-external-ip-progress">Attach external IP</button>';
       } else if (status === 'attached') {
         actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Detach external IP</button>`;
@@ -15648,14 +15727,14 @@
       }
 
       const contentHtml = `
-        ${status === 'attaching' ? `<p class="vm-config-inline" id="vm-external-ip-progress" role="status"><span class="vm-access-section__spinner" aria-hidden="true"></span>Attaching requested external IP <strong>${escAttr(vm.externalIpPending || 'the selected address')}</strong>.${Number(vm.externalIpRetryAttempt) > 1 ? `<span class="vm-config-operation__retry">Retry attempt: ${Number(vm.externalIpRetryAttempt)}${vm.externalIpLastFailureReason ? `. Previous attempt failed: ${escAttr(vm.externalIpLastFailureReason)}` : ''}</span>` : ''}</p>` : ''}
-        ${status === 'failed' ? `<p class="vm-config-inline" role="status">External IP <strong>${escAttr(vm.externalIpAttempted || 'the selected address')}</strong> is not attached.</p>` : ''}
+        ${status === 'attaching' || retryScheduled ? `<button type="button" class="vm-config-inline vm-config-inline--trigger" id="vm-external-ip-progress" data-external-ip-progress aria-haspopup="dialog" aria-expanded="false" aria-controls="external-ip-progress-popover">${retryScheduled ? 'Retry scheduled to attach' : 'Attaching'} requested external IP <strong>${escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address')}</strong>.</button>` : ''}
+        ${status === 'failed' && !retryScheduled ? `<p class="vm-config-inline" role="status">External IP <strong>${escAttr(vm.externalIpAttempted || 'the selected address')}</strong> is not attached.</p>` : ''}
         ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml ? `<span>Current external IP: ${addressHtml}</span>` : ''}${actions}</div>` : ''}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
       return `
         <section class="vm-access-section" aria-labelledby="vm-access-eip-title">
-          <h4 class="ethan-detail-col__subtitle vm-access-section__title" id="vm-access-eip-title">External IP${autoAttached ? ' <span class="pf-v6-c-label pf-m-outline pf-m-grey pf-m-compact"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Auto attached</span></span></span>' : ''}</h4>
+          <h4 class="ethan-detail-col__subtitle vm-access-section__title" id="vm-access-eip-title">External IP${status === 'attaching' ? ' <span class="vm-access-section__spinner" role="status" aria-label="External IP attachment in progress"></span>' : ''}${autoAttached ? ' <span class="pf-v6-c-label pf-m-outline pf-m-grey pf-m-compact"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Auto attached</span></span></span>' : ''}</h4>
           ${contentHtml}
         </section>`;
     }
@@ -17283,12 +17362,7 @@
       const itSubtitleRow = `
         <div class="ethan-detail-col__subtitle-row">
           <h4 class="ethan-detail-col__subtitle">Instance type</h4>
-          ${v.resizeProgress ? `<span class="vm-access-section__spinner" role="status" aria-label="Instance type change in progress"></span><button type="button" class="pf-v6-c-button pf-m-plain vm-instance-progress-trigger" data-instance-progress
-            data-target="${escAttr(resolveVmComputeId(v) || 'the requested instance type')}"
-            data-retry="${Number(v.resizeProgress.retryAttempt) || 0}"
-            aria-label="Instance type change in progress" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">
-            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-          </button>` : ''}
+          ${v.resizeProgress ? '<span class="vm-access-section__spinner" role="status" aria-label="Instance type change in progress"></span>' : ''}
           <button type="button" class="vm-edit-inline" data-edit-compute aria-label="Edit instance type"${editComputeTitleAttr}${editComputeDisabledAttr}>
             <i class="fa-solid fa-pen" aria-hidden="true"></i>
           </button>
@@ -17385,6 +17459,7 @@
                   ${itField('Disk image', diskImageDisplay)}
                   ${itSubtitleRow}
                   ${itField('Name', `${itNameSafe} ${instanceTypeLifecycleLabel(COMPUTE_RESOURCES.find(c => c.id === vmActiveComputeId(v))?.lifecycle)}`)}
+                  ${v.resizeProgress || vmResizeRetryScheduled(v) ? `<button type="button" class="vm-config-inline vm-config-inline--trigger" data-instance-progress data-target="${escAttr(resolveVmComputeId(v) || 'the requested instance type')}" data-retry="${Number(v.resizeProgress?.retryAttempt) || 0}" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">${v.resizeProgress ? 'Changing' : 'Retry scheduled to change'} instance type to <strong>${escAttr(resolveVmComputeId(v) || 'the requested type')}</strong>.</button>` : ''}
                   ${itField('vCPUs', String(computeFields.vcpu).replace(/</g, '&lt;'))}
                   ${itField('Memory', String(computeFields.memory).replace(/</g, '&lt;'))}
                   ${gpuFieldsHtml}
@@ -26452,13 +26527,23 @@
     </div>
   </div>
 
-  <div class="pf-v6-c-popover pf-m-left" id="instance-progress-popover" role="dialog" aria-label="Instance type change in progress" hidden>
+  <div class="pf-v6-c-popover pf-m-left" id="instance-progress-popover" role="dialog" aria-label="Instance type change details" hidden>
     <div class="pf-v6-c-popover__arrow"></div>
     <div class="pf-v6-c-popover__content">
       <button type="button" class="pf-v6-c-button pf-m-plain pf-v6-c-popover__close" id="instance-progress-popover-close" aria-label="Close instance type progress">
         <span class="pf-v6-c-button__icon"><i class="fas fa-times" aria-hidden="true"></i></span>
       </button>
       <div class="pf-v6-c-popover__body" id="instance-progress-popover-body"></div>
+    </div>
+  </div>
+
+  <div class="pf-v6-c-popover pf-m-left" id="external-ip-progress-popover" role="dialog" aria-label="External IP change details" hidden>
+    <div class="pf-v6-c-popover__arrow"></div>
+    <div class="pf-v6-c-popover__content">
+      <button type="button" class="pf-v6-c-button pf-m-plain pf-v6-c-popover__close" id="external-ip-progress-popover-close" aria-label="Close external IP change details">
+        <span class="pf-v6-c-button__icon"><i class="fas fa-times" aria-hidden="true"></i></span>
+      </button>
+      <div class="pf-v6-c-popover__body" id="external-ip-progress-popover-body"></div>
     </div>
   </div>
 
