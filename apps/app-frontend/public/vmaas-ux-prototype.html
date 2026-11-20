@@ -9030,6 +9030,26 @@
       return vmExternalIpStatus(vm) === 'attaching' && vm.externalIpRetrying === true;
     }
 
+    function vmResizeHasProgressDetails(vm) {
+      if (vmResizeRetryScheduled(vm)) return !!vm.resizeFailure?.reason;
+      return vmResizeRetryRunning(vm) &&
+        (Number(vm.resizeProgress?.retryAttempt) > 1 || !!vm.resizeProgress?.lastFailureReason);
+    }
+
+    function vmExternalIpHasProgressDetails(vm) {
+      if (vmExternalIpRetryScheduled(vm)) return !!vm.externalIpError;
+      return vmExternalIpRetryRunning(vm) &&
+        (Number(vm.externalIpRetryAttempt) > 1 || !!vm.externalIpLastFailureReason);
+    }
+
+    function vmResizeStatusLineHtml(vm) {
+      if (!vm.resizeProgress && !vmResizeRetryScheduled(vm)) return '';
+      const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
+      const text = `${vmResizeRetryScheduled(vm) ? 'Retry scheduled: change' : vmResizeRetryRunning(vm) ? 'Trying again: change' : 'Changing'} instance type to <strong>${target}</strong>`;
+      if (!vmResizeHasProgressDetails(vm)) return `<p class="vm-config-inline" role="status">${text}</p>`;
+      return `<button type="button" class="vm-config-inline vm-config-inline--trigger" data-instance-progress data-target="${target}" data-retry="${Number(vm.resizeProgress?.retryAttempt) || 0}" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">${text}</button>`;
+    }
+
     function vmConfigurationLabelHtml(vm) {
       const ipStatus = vmExternalIpStatus(vm);
       const failed = (!!vm.resizeFailure && !vmResizeRetryScheduled(vm)) || (ipStatus === 'failed' && !vmExternalIpRetryScheduled(vm));
@@ -15742,8 +15762,14 @@
         actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Attach external IP</button>`;
       }
 
+      const progressText = `${retryScheduled ? 'Retry scheduled: attach' : vmExternalIpRetryRunning(vm) ? 'Trying again: attach' : 'Attaching'} requested external IP <strong>${escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address')}</strong>`;
+      const progressLine = status === 'attaching' || retryScheduled
+        ? vmExternalIpHasProgressDetails(vm)
+          ? `<button type="button" class="vm-config-inline vm-config-inline--trigger" id="vm-external-ip-progress" data-external-ip-progress aria-haspopup="dialog" aria-expanded="false" aria-controls="external-ip-progress-popover">${progressText}</button>`
+          : `<p class="vm-config-inline" id="vm-external-ip-progress" role="status">${progressText}</p>`
+        : '';
       const contentHtml = `
-        ${status === 'attaching' || retryScheduled ? `<button type="button" class="vm-config-inline vm-config-inline--trigger" id="vm-external-ip-progress" data-external-ip-progress aria-haspopup="dialog" aria-expanded="false" aria-controls="external-ip-progress-popover">${retryScheduled ? 'Retry scheduled: attach' : vmExternalIpRetryRunning(vm) ? 'Trying again: attach' : 'Attaching'} requested external IP <strong>${escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address')}</strong>.</button>` : ''}
+        ${progressLine}
         ${status === 'failed' && !retryScheduled ? `<p class="vm-config-inline" role="status">External IP <strong>${escAttr(vm.externalIpAttempted || 'the selected address')}</strong> is not attached.</p>` : ''}
         ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml ? `<span>Current external IP: ${addressHtml}</span>` : ''}${actions}</div>` : ''}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
@@ -17475,7 +17501,7 @@
                   ${itField('Disk image', diskImageDisplay)}
                   ${itSubtitleRow}
                   ${itField('Name', `${itNameSafe} ${instanceTypeLifecycleLabel(COMPUTE_RESOURCES.find(c => c.id === vmActiveComputeId(v))?.lifecycle)}`)}
-                  ${v.resizeProgress || vmResizeRetryScheduled(v) ? `<button type="button" class="vm-config-inline vm-config-inline--trigger" data-instance-progress data-target="${escAttr(resolveVmComputeId(v) || 'the requested instance type')}" data-retry="${Number(v.resizeProgress?.retryAttempt) || 0}" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">${vmResizeRetryScheduled(v) ? 'Retry scheduled: change' : vmResizeRetryRunning(v) ? 'Trying again: change' : 'Changing'} instance type to <strong>${escAttr(resolveVmComputeId(v) || 'the requested type')}</strong>.</button>` : ''}
+                  ${vmResizeStatusLineHtml(v)}
                   ${itField('vCPUs', String(computeFields.vcpu).replace(/</g, '&lt;'))}
                   ${itField('Memory', String(computeFields.memory).replace(/</g, '&lt;'))}
                   ${gpuFieldsHtml}
