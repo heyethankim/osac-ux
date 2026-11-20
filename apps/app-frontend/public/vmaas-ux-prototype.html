@@ -9100,7 +9100,9 @@
           const retry = Number(vm.externalIpRetryAttempt);
           items.push(`Attaching external IP <strong>${ip}</strong>.${retry > 1 ? ` Retry attempt: ${retry}.${vm.externalIpLastFailureReason ? ` Previous attempt failed: ${escAttr(vm.externalIpLastFailureReason)}` : ''}` : ''}`);
         }
-        body.innerHTML = `<ul class="pf-v6-c-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+        const needsAttention = (!!vm.resizeFailure && !vmResizeRetryScheduled(vm)) ||
+          (vmExternalIpStatus(vm) === 'failed' && !vmExternalIpRetryScheduled(vm));
+        body.innerHTML = `<ul class="pf-v6-c-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>${needsAttention ? '<p>Open VM details to try again.</p>' : ''}`;
         vmConfigurationPopoverTrigger = trigger;
         trigger.setAttribute('aria-expanded', 'true');
         positionDetailPopover(pop, trigger, 'vm-configuration-popover-close');
