@@ -88,27 +88,25 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![Restart-required resize with scheduled changes](screenshots/vm-resize/restart-required-current.jpg)
 
-**Resize applying without restart.** A compact label appears beside the VM status.
+**Resize applying without restart.** The 0.5 Overview keeps the active values, shows a spinner beside Instance type, and names the target in a status line. The older 0.4 image below used a compact label beside the VM status.
 
 ![Disabled Instance type pencil with explanatory tooltip](screenshots/latest-ux/vm-resize-edit-disabled-tooltip-0.5.png)
 
 ![Resize in progress without restart](screenshots/vm-resize/resize-in-progress-no-restart.jpg)
 
-![Version 0.5 Instance type progress icon without restart](screenshots/latest-ux/vm-config-inline-hot-resize-0.5.png)
+![Version 0.5 Instance type status line without restart](screenshots/latest-ux/vm-config-inline-hot-resize-0.5.png)
 
-![Version 0.5 Instance type progress popover without restart](screenshots/latest-ux/vm-config-inline-hot-resize-0.5-popover.png)
+![Version 0.5 retry details opened from the Instance type status line](screenshots/latest-ux/vm-config-inline-hot-resize-0.5-popover.png)
 
-**Progress tooltip.** The requested instance type and phase are visible on focus or hover.
+**Version 0.4 progress tooltip.** Earlier design for comparison.
 
 ![Resize progress tooltip](screenshots/vm-resize/resize-progress-tooltip.png)
 
-**Resize still applying after restart.** The same label has a phase-specific tooltip.
+**Resize still applying after restart.** In 0.5, the first attempt shows a plain Instance type status line. It becomes a popover trigger only when retry details are available. The older 0.4 image below used a resize label.
 
 ![Resize in progress after restart](screenshots/vm-resize/resize-in-progress-after-restart.jpg)
 
-![Version 0.5 Instance type progress icon after restart](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
-
-![Version 0.5 Instance type progress popover after restart](screenshots/latest-ux/vm-config-inline-progress-0.5-popover.png)
+![Version 0.5 plain Instance type status line after restart](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
 **VM table.** This 0.4 screenshot shows the older resize-specific labels. In 0.5, the Status column uses one text-only configuration status below the power status per VM.
 
