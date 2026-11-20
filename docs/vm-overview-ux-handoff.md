@@ -1,6 +1,6 @@
 # VM Overview — UX handoff
 
-Contact: Yifat Friman Menchik, UXD  
+Contact: [Yifat Friman Menchik](mailto:yfrimanm@redhat.com), UXD
 Google Doc: [VM Overview](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit)  
 OSAC-7158 Google Doc: [VM configuration operations](https://docs.google.com/document/d/1KkHVqjNJ4lZl40X8aE1v589jDd7ilAle9NnaV13DIr4/edit)
 Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=ad7b00d&role=admin&vm=indigo-quokka-89)
@@ -16,10 +16,6 @@ The Overview **Status** row shows the VM power state only. Keep active instance 
 The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=ad7b00d&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
 
 ![Version 0.5 scheduled retry without active spinners](screenshots/latest-ux/vm-config-retry-scheduled-0.5-crop.png)
-
-![Version 0.5 matching Instance type and External IP progress](screenshots/latest-ux/vm-config-aligned-progress-0.5-crop.png)
-
-![Version 0.5 failure alert and Resize again action](screenshots/latest-ux/vm-config-failure-0.5.png)
 
 The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=ad7b00d&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the popover names both operations.
 
@@ -39,11 +35,11 @@ When the service supplies a safe reason for the preceding failure, show **Previo
 
 For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=ad7b00d&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the popover names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=ad7b00d&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
 
-![Version 0.5 simultaneous changes in the list popover](screenshots/latest-ux/vm-config-status-popover-concurrent-0.5.png)
-
 The [two-failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=ad7b00d&role=admin&vm=debian-cobalt-heron-41) shows resize and external-IP failure as separate bullets in one alert. The IP remains unattached; **Resize again** opens the resize dialog with **large** selected for review.
 
 ![Version 0.5 two failed changes in one alert](screenshots/latest-ux/vm-config-two-failures-0.5.png)
+
+![Version 0.5 Resize again dialog with the failed target selected](screenshots/latest-ux/vm-config-resize-again-dialog-0.5.png)
 
 When a resize requires a restart, show a **Restart required** warning above Overview. It is collapsed by default; expanding it explains the required action and shows the current and requested instance type, vCPUs, and memory. Keep the current resource values in Configuration without repeating the warning there. This actionable warning is the exception to failure-only top alerts. In VM lists and cards, show one text-only configuration status on a second line below the icon-and-text power status: subdued gray **Changes pending** or **Changes in progress**, or **Changes need attention** in the failure color. Do not add an icon to the configuration status. The popover names each relevant operation and target, including external-IP attachment. Remove it once no work is outstanding.
 
@@ -56,8 +52,6 @@ In card and table views, the VM list shows one configuration status below the po
 ![Version 0.5 VM cards with configuration status below power status](screenshots/latest-ux/vm-config-status-cards-0.5.png)
 
 ![Version 0.5 VM table with configuration status below power status](screenshots/latest-ux/vm-config-status-table-0.5.png)
-
-![Version 0.5 configuration status popover](screenshots/latest-ux/vm-config-status-popover-concurrent-0.5.png)
 
 For access, networking, storage, utilization, failure states, and permissions, follow the [Google UX handoff](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit).
 

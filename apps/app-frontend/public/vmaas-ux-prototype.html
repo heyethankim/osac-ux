@@ -9098,14 +9098,14 @@
         else if (vm.resizeProgress) {
           const retry = Number(vm.resizeProgress.retryAttempt);
           const reason = vm.resizeProgress.lastFailureReason;
-          items.push(`${vmResizeRetryRunning(vm) ? 'Trying again: change' : 'Changing'} instance type to <strong>${target}</strong>.${vmResizeRetryRunning(vm) && retry > 1 ? ` Retry attempt: ${retry}.${reason ? ` Previous attempt failed: ${escAttr(reason)}` : ''}` : ''}`);
+          items.push(`${vmResizeRetryRunning(vm) ? 'Trying again: change' : 'Changing'} instance type to <strong>${target}</strong>.${vmResizeRetryRunning(vm) && retry > 1 ? ` Retry attempt: ${retry}.` : ''}${vmResizeRetryRunning(vm) && reason ? ` Previous attempt failed: ${escAttr(reason)}` : ''}`);
         } else if (vm.restartRequired?.changes?.length) items.push(`Resize to <strong>${target}</strong> is waiting for restart.`);
         const ip = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
         if (vmExternalIpRetryScheduled(vm)) items.push(`Retry scheduled: attach external IP <strong>${ip}</strong>.${vm.externalIpError ? ` Previous attempt failed: ${escAttr(vm.externalIpError)}` : ''}`);
         else if (vmExternalIpStatus(vm) === 'failed') items.push(`Couldn't apply change to external IP <strong>${ip}</strong>.`);
         else if (vmExternalIpStatus(vm) === 'attaching') {
           const retry = Number(vm.externalIpRetryAttempt);
-          items.push(`${vmExternalIpRetryRunning(vm) ? 'Trying again: attach' : 'Attaching'} external IP <strong>${ip}</strong>.${vmExternalIpRetryRunning(vm) && retry > 1 ? ` Retry attempt: ${retry}.${vm.externalIpLastFailureReason ? ` Previous attempt failed: ${escAttr(vm.externalIpLastFailureReason)}` : ''}` : ''}`);
+          items.push(`${vmExternalIpRetryRunning(vm) ? 'Trying again: attach' : 'Attaching'} external IP <strong>${ip}</strong>.${vmExternalIpRetryRunning(vm) && retry > 1 ? ` Retry attempt: ${retry}.` : ''}${vmExternalIpRetryRunning(vm) && vm.externalIpLastFailureReason ? ` Previous attempt failed: ${escAttr(vm.externalIpLastFailureReason)}` : ''}`);
         }
         const needsAttention = (!!vm.resizeFailure && !vmResizeRetryScheduled(vm)) ||
           (vmExternalIpStatus(vm) === 'failed' && !vmExternalIpRetryScheduled(vm));
@@ -14955,7 +14955,7 @@
       const retry = Number(trigger.dataset.retry);
       const vm = VMS.find(v => v.name === state.selectedVmName);
       const scheduled = vmResizeRetryScheduled(vm);
-      const previousReason = scheduled ? vm.resizeFailure.reason : vm?.resizeProgress?.lastFailureReason;
+      const previousReason = scheduled ? vm.resizeFailure.reason : vmResizeRetryRunning(vm) ? vm.resizeProgress.lastFailureReason : '';
       body.innerHTML = `<p>${scheduled ? 'Retry scheduled: change' : vmResizeRetryRunning(vm) ? 'Trying again: change' : 'Changing'} instance type to <strong>${target}</strong>.</p>${vmResizeRetryRunning(vm) && retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}${previousReason ? `<p class="vm-config-operation__retry">Previous attempt failed: ${escAttr(previousReason)}</p>` : ''}`;
       instanceProgressPopoverTrigger = trigger;
       trigger.setAttribute('aria-expanded', 'true');
@@ -14985,7 +14985,7 @@
       const scheduled = vmExternalIpRetryScheduled(vm);
       const target = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
       const retry = Number(vm.externalIpRetryAttempt);
-      const previousReason = scheduled ? vm.externalIpError : vm.externalIpLastFailureReason;
+      const previousReason = scheduled ? vm.externalIpError : vmExternalIpRetryRunning(vm) ? vm.externalIpLastFailureReason : '';
       body.innerHTML = `<p>${scheduled ? 'Retry scheduled: attach' : vmExternalIpRetryRunning(vm) ? 'Trying again: attach' : 'Attaching'} external IP <strong>${target}</strong>.</p>${vmExternalIpRetryRunning(vm) && retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}${previousReason ? `<p class="vm-config-operation__retry">Previous attempt failed: ${escAttr(previousReason)}</p>` : ''}`;
       externalIpProgressPopoverTrigger = trigger;
       trigger.setAttribute('aria-expanded', 'true');
