@@ -15937,6 +15937,7 @@
         : '';
       const contentHtml = `
         <div class="vm-access-section__host-row"><span>Current external IP: ${addressHtml || 'Not attached'}</span>${actions}</div>
+        ${canEdit && status === 'attaching' ? '<button type="button" class="pf-v6-c-button pf-m-link pf-m-small" data-ip-cancel-attach>Cancel attachment</button>' : ''}
         ${captureAvailable ? '<p class="vm-access-section__meta">Screenshot mode is on. Attaching and detaching stay visible until you select Finish demo step.</p>' : ''}
         ${EXTERNAL_IP_CAPTURE_MODE && vm._extIpCompleteDemoStep ? '<button type="button" class="pf-v6-c-button pf-m-link pf-m-small" data-ip-demo-complete>Finish demo step (screenshot mode)</button>' : ''}
         ${status === 'failed' && !retryScheduled && !canEdit && !deleting ? '<p class="vm-access-section__meta">Ask a tenant administrator to attach an external IP.</p>' : ''}
@@ -18019,6 +18020,24 @@
           toggleVmIpAttachment(e.currentTarget.dataset.ipToggle);
               });
             });
+      root.querySelector('[data-ip-cancel-attach]')?.addEventListener('click', () => {
+        const vm = VMS.find(item => item.name === state.selectedVmName);
+        if (!canEditConfig || !vm || vmExternalIpStatus(vm) !== 'attaching') return;
+        clearTimeout(vm._extIpAttachTimer);
+        vm._extIpAttachTimer = null;
+        vm._extIpCompleteDemoStep = null;
+        vm.externalIpStatus = 'none';
+        vm.externalIpPending = '';
+        vm.externalIpRetrying = false;
+        vm.externalIpRetryAttempt = 0;
+        vm.externalIpLastFailureReason = '';
+        vm.externalIpRetryPlanned = false;
+        vm.externalIpNextRetryAt = '';
+        vm.externalIpError = '';
+        vm.externalIpAttempted = '';
+        renderVmDetail();
+        toast('External IP attachment canceled.');
+      });
       root.querySelector('[data-ip-demo-complete]')?.addEventListener('click', () => {
         if (!EXTERNAL_IP_CAPTURE_MODE || !v._extIpCompleteDemoStep) return;
         clearTimeout(v._extIpAttachTimer);

@@ -9,7 +9,7 @@ VM Overview shows the active instance type, CPU, and memory. Editing the instanc
 
 ## Version 0.5 — configuration operations (OSAC-7158)
 
-The Overview **Status** row shows VM power state only. Keep active instance type, CPU, memory, and **Current external IP** as the main values; show **Not attached** when there is no attached IP, including after an attachment failure. During an operation, put a spinner and an action-specific, link-styled popover button beside **Instance type** or **External IP**: **Resizing**, **Attaching**, or **Detaching**. The spinner is not interactive. The popover names the requested instance type, vCPUs, and memory, or the exact external IP; it shows retry attempt and previous failure reason only when supplied. Keep the current external IP visible until detachment succeeds. A scheduled retry shows **Retry scheduled** without a spinner and disables competing actions. Final failures appear only in one top danger alert; if two operations fail, list both. Keep **Resize again** in that alert and offer **Attach external IP** for a final attachment failure. Do not show an attempted IP as attached or repeat failure text beside the setting.
+The Overview **Status** row shows VM power state only. Keep active instance type, CPU, memory, and **Current external IP** as the main values; show **Not attached** when there is no attached IP, including after an attachment failure. During an operation, put a spinner and an action-specific, link-styled popover button beside **Instance type** or **External IP**: **Resizing**, **Attaching**, or **Detaching**. The spinner is not interactive. The popover names the requested instance type, vCPUs, and memory, or the exact external IP; it shows retry attempt and previous failure reason only when supplied. Keep the current external IP visible until detachment succeeds. While an attachment is running, keep **Attach external IP** disabled and offer **Cancel attachment**. On confirmed cancellation, clear the pending target, keep **Current external IP: Not attached**, and re-enable Attach without showing a failure alert. A scheduled retry shows **Retry scheduled** without a spinner and disables competing actions. Final failures appear only in one top danger alert; if two operations fail, list both. Keep **Resize again** in that alert and offer **Attach external IP** for a final attachment failure. Do not show an attempted IP as attached or repeat failure text beside the setting.
 
 ![Resizing operation popover showing the requested instance type, vCPUs, and memory](screenshots/latest-ux/vm-operation-resizing-popover-0.5.png)
 
@@ -23,7 +23,7 @@ The Overview **Status** row shows VM power state only. Keep active instance type
 
 ![Current external IP shown as Not attached before a manual attachment](screenshots/latest-ux/vm-operation-not-attached-0.5.png)
 
-![First external-IP attachment in progress, with Current external IP still Not attached and Attach disabled](screenshots/latest-ux/vm-operation-ip-attaching-0.5.png)
+A refreshed Attaching screenshot showing **Cancel attachment** is pending.
 
 ![Final attachment failure shown in the top alert while current values remain visible](screenshots/latest-ux/vm-operation-failed-attachment-overview-0.5.png)
 
@@ -97,7 +97,7 @@ The UI needs the operation type, phase (waiting for restart, retry scheduled, ap
 
 ## Access and initial run examples
 
-These 0.5 captures show Cloud-init and Windows Sysprep. The first-time Attaching state, retry, and failure captures above reflect the latest External IP design. A current Detaching screenshot is still pending.
+These 0.5 captures show Cloud-init and Windows Sysprep. The retry and failure captures above reflect the latest External IP design. Updated Attaching and Detaching screenshots are still pending after the new cancel action.
 
 ![Inline Cloud-init value](screenshots/latest-ux/vm-overview-inline-0.5.png)
 
