@@ -3,7 +3,7 @@
 Contact: [Yifat Friman Menchik](mailto:yfrimanm@redhat.com), UXD
 Google Doc: [VM Overview](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit)  
 OSAC-7158 Google Doc: [VM configuration operations](https://docs.google.com/document/d/1KkHVqjNJ4lZl40X8aE1v589jDd7ilAle9NnaV13DIr4/edit)
-Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=indigo-quokka-89)
+Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=05f5cf4&role=admin&vm=indigo-quokka-89)
 
 VM Overview shows the active instance type, CPU, and memory. Editing the instance type opens the name-first, two-line picker: each option has the resource name above CPU, memory, GPU count and readable model when present, and rate. Omit PCI hardware IDs from visible labels. The GPU specification still determines which resize targets are compatible. See the [resize handoff](osac-4281-vm-resize-handoff.md).
 
@@ -11,11 +11,11 @@ VM Overview shows the active instance type, CPU, and memory. Editing the instanc
 
 The Overview **Status** row shows VM power state only. Keep active instance type, CPU, memory, and **Current external IP** as the main values; show **Not attached** when there is no attached IP, including after an attachment failure. During an operation, put a spinner and an action-specific, link-styled popover button beside **Instance type** or **External IP**: **Resizing**, **Attaching**, or **Detaching**. The spinner is not interactive. The popover names the requested instance type, vCPUs, and memory, or the exact external IP; it shows retry attempt and previous failure reason only when supplied. Keep the current external IP visible until detachment succeeds. A scheduled retry shows **Retry scheduled** without a spinner and disables competing actions. Final failures appear only in one top danger alert; if two operations fail, list both. Keep **Resize again** in that alert and offer **Attach external IP** for a final attachment failure. Do not show an attempted IP as attached or repeat failure text beside the setting.
 
-The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
+The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=05f5cf4&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
 
 ![Version 0.5 scheduled retry without active spinners](screenshots/latest-ux/vm-config-retry-scheduled-0.5-crop.png)
 
-The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the popover names both operations.
+The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=05f5cf4&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the popover names both operations.
 
 ![Version 0.5 mixed-operation status popover](screenshots/latest-ux/vm-config-status-popover-concurrent-0.5-crop.png)
 
@@ -33,9 +33,9 @@ Use three plain-language states for each operation in Details and the list/card 
 
 When the service supplies a safe reason for the preceding failure, show **Previous attempt failed: [reason]** in the operation popover. Show a retry attempt number only while that retry runs and only when supplied. If the service reports a known prerequisite that blocks a change, explain it in plain language in both places. Do not invent a blocker, reason, attempt count, or ETA. Keep **Stopped** as a power state, not a configuration failure. After success, update the active value, remove the outstanding status, and show a brief success toast; do not retain a Completed line.
 
-For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the popover names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
+For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=05f5cf4&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the popover names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=05f5cf4&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
 
-The [two-failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=debian-cobalt-heron-41) shows resize and external-IP failure as separate bullets in one alert. The IP remains unattached; **Resize again** opens the resize dialog with **large** selected for review.
+The [two-failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=05f5cf4&role=admin&vm=debian-cobalt-heron-41) shows resize and external-IP failure as separate bullets in one alert. The IP remains unattached; **Resize again** opens the resize dialog with **large** selected for review.
 
 ![Version 0.5 final-failure popover with Open VM details button](screenshots/latest-ux/vm-config-final-failure-action-0.5-crop.png)
 
