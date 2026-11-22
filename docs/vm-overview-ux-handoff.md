@@ -23,7 +23,7 @@ The Overview **Status** row shows VM power state only. Keep active instance type
 
 ![Current external IP shown as Not attached before a manual attachment](screenshots/latest-ux/vm-operation-not-attached-0.5.png)
 
-A refreshed Attaching screenshot showing **Cancel attachment** is pending.
+![First external-IP attachment in progress, with Attach disabled and Cancel attachment available](screenshots/latest-ux/vm-operation-ip-attaching-0.5.png)
 
 ![Final attachment failure shown in the top alert while current values remain visible](screenshots/latest-ux/vm-operation-failed-attachment-overview-0.5.png)
 
@@ -97,7 +97,7 @@ The UI needs the operation type, phase (waiting for restart, retry scheduled, ap
 
 ## Access and initial run examples
 
-These 0.5 captures show Cloud-init and Windows Sysprep. The retry and failure captures above reflect the latest External IP design. Updated Attaching and Detaching screenshots are still pending after the new cancel action.
+These 0.5 captures show Cloud-init and Windows Sysprep. The retry and failure captures above reflect the latest External IP design. The updated Attaching capture above shows Cancel attachment. A current Detaching screenshot is still pending.
 
 ![Inline Cloud-init value](screenshots/latest-ux/vm-overview-inline-0.5.png)
 
