@@ -8550,9 +8550,8 @@
       { address: '203.0.113.44', pool: 'edge-public-b', status: 'available', vm: '' },
     ];
     // Screenshot mode keeps the mock operation visible without changing normal demo timing.
-    const EXTERNAL_IP_ATTACH_DEMO_MS = new URLSearchParams(window.location.search).get('capture') === '1'
-      ? 20000
-      : 1400;
+    const EXTERNAL_IP_CAPTURE_MODE = new URLSearchParams(window.location.search).get('capture') === '1';
+    const EXTERNAL_IP_ATTACH_DEMO_MS = EXTERNAL_IP_CAPTURE_MODE ? 60000 : 1400;
 
     function availableExternalIps() {
       return EXTERNAL_IP_POOL.filter(ip => ip.status === 'available');
@@ -15802,8 +15801,9 @@
         if (vmExternalIpStatus(vm) === 'attached' || vm.externalIpAttached) {
           vm.externalIpStatus = 'detaching';
           renderVmDetail();
-          vm._extIpDetachTimer = setTimeout(() => {
+          const completeDetach = () => {
             vm._extIpDetachTimer = null;
+            vm._extIpCompleteDemoStep = null;
             releaseExternalIp(vm.externalIp);
             vm.externalIpAttached = false;
             vm.externalIp = '';
@@ -15813,7 +15813,10 @@
             vm.autoAttachExternalIp = false;
             renderVmDetail();
             toast('External IP detached.');
-          }, EXTERNAL_IP_ATTACH_DEMO_MS);
+          };
+          if (EXTERNAL_IP_CAPTURE_MODE) vm._extIpCompleteDemoStep = completeDetach;
+          vm._extIpDetachTimer = setTimeout(completeDetach, EXTERNAL_IP_ATTACH_DEMO_MS);
+          if (EXTERNAL_IP_CAPTURE_MODE) renderVmDetail();
         } else {
           openAttachExternalIpModal();
         }
@@ -15851,6 +15854,7 @@
         clearTimeout(vm._extIpAttachTimer);
         vm._extIpAttachTimer = null;
       }
+      vm._extIpCompleteDemoStep = null;
       vm.externalIpRetrying = false;
       vm.externalIpRetryAttempt = 0;
       vm.externalIpLastFailureReason = '';
@@ -15862,8 +15866,9 @@
       vm.externalIpAttached = false;
       closeAttachExternalIpModal();
       renderVmDetail();
-      vm._extIpAttachTimer = setTimeout(() => {
+      const completeAttach = () => {
         vm._extIpAttachTimer = null;
+        vm._extIpCompleteDemoStep = null;
         if (simulateFail) {
           vm.externalIpStatus = 'failed';
           vm.externalIpAttempted = address;
@@ -15894,7 +15899,10 @@
         vm.externalIpError = '';
         renderVmDetail();
         toast(`External IP ${allocated} attached.`, 'success');
-      }, EXTERNAL_IP_ATTACH_DEMO_MS);
+      };
+      if (EXTERNAL_IP_CAPTURE_MODE) vm._extIpCompleteDemoStep = completeAttach;
+      vm._extIpAttachTimer = setTimeout(completeAttach, EXTERNAL_IP_ATTACH_DEMO_MS);
+      if (EXTERNAL_IP_CAPTURE_MODE) renderVmDetail();
     }
 
     function vmExternalIpPanelHtml(vm, { canEdit = true } = {}) {
@@ -15929,6 +15937,7 @@
         : '';
       const contentHtml = `
         <div class="vm-access-section__host-row"><span>Current external IP: ${addressHtml || 'Not attached'}</span>${actions}</div>
+        ${EXTERNAL_IP_CAPTURE_MODE && vm._extIpCompleteDemoStep ? '<button type="button" class="pf-v6-c-button pf-m-link pf-m-small" data-ip-demo-complete>Finish demo step (screenshot mode)</button>' : ''}
         ${status === 'failed' && !retryScheduled && !canEdit && !deleting ? '<p class="vm-access-section__meta">Ask a tenant administrator to attach an external IP.</p>' : ''}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
@@ -18009,6 +18018,12 @@
           toggleVmIpAttachment(e.currentTarget.dataset.ipToggle);
               });
             });
+      root.querySelector('[data-ip-demo-complete]')?.addEventListener('click', () => {
+        if (!EXTERNAL_IP_CAPTURE_MODE || !v._extIpCompleteDemoStep) return;
+        clearTimeout(v._extIpAttachTimer);
+        clearTimeout(v._extIpDetachTimer);
+        v._extIpCompleteDemoStep();
+      });
       root.querySelectorAll('[data-vm-action]').forEach(b => {
         b.addEventListener('click', () => {
           hidePfTooltip();
