@@ -3,7 +3,7 @@
 Contact: [Yifat Friman Menchik](mailto:yfrimanm@redhat.com), UXD
 Google Doc: [VM Overview](https://docs.google.com/document/d/1Y8hjgE924owve0VXA3rkKqTYuB4sXKif8KhXyFL3hyQ/edit)  
 OSAC-7158 Google Doc: [VM configuration operations](https://docs.google.com/document/d/1KkHVqjNJ4lZl40X8aE1v589jDd7ilAle9NnaV13DIr4/edit)
-Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7190d65&role=admin&vm=indigo-quokka-89)
+Interactive mocks: [0.4](https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=c6c0274&role=admin&vm=indigo-quokka-89) · [0.5](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=35578a8&role=admin&vm=indigo-quokka-89)
 
 VM Overview shows the active instance type, CPU, and memory. Editing the instance type opens the name-first, two-line picker: each option has the resource name above CPU, memory, GPU count and readable model when present, and rate. Omit PCI hardware IDs from visible labels. The GPU specification still determines which resize targets are compatible. See the [resize handoff](osac-4281-vm-resize-handoff.md).
 
@@ -15,7 +15,7 @@ The Overview **Status** row shows VM power state only. Keep active instance type
 
 ![Scheduled retry popover showing the requested resources and previous failure reason](screenshots/latest-ux/vm-operation-retry-scheduled-popover-0.5.png)
 
-**Automatic external-IP retry.** The disabled Attach action prevents a competing request while the second attempt runs. Its heading popover names the target IP and previous failure. This seeded example remains in progress for review; use the [capture-mode VM](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=6668440&role=admin&vm=rhel9-black-gunnysack-58&capture=1) to capture a successful attach and detach. Screenshot mode keeps each operation visible for up to 60 seconds and offers **Finish demo step** to advance early.
+**Automatic external-IP retry.** The disabled Attach action prevents a competing request while the second attempt runs. Its heading popover names the target IP and previous failure. This seeded example remains in progress for review; use the [capture-mode VM](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=35578a8&role=admin&vm=rhel9-black-gunnysack-58&capture=1) to capture a successful attach and detach. Screenshot mode keeps each operation visible for up to 60 seconds and offers **Finish demo step** to advance early.
 
 ![Trying again beside External IP with Attach disabled](screenshots/latest-ux/vm-operation-ip-retry-control-0.5.png)
 
@@ -25,11 +25,11 @@ The Overview **Status** row shows VM power state only. Keep active instance type
 
 ![Final attachment failure shown in the top alert while current values remain visible](screenshots/latest-ux/vm-operation-failed-attachment-overview-0.5.png)
 
-The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7190d65&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
+The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=35578a8&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
 
 ![Version 0.5 scheduled retry without active spinners](screenshots/latest-ux/vm-config-retry-scheduled-0.5-crop.png)
 
-The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7190d65&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the popover names both operations.
+The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=35578a8&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the popover names both operations.
 
 ![Version 0.5 mixed-operation status popover](screenshots/latest-ux/vm-config-status-popover-concurrent-0.5-crop.png)
 
@@ -47,9 +47,9 @@ Use three plain-language states for each operation. **Retry scheduled: [target a
 
 When the service supplies a safe reason for the preceding failure, show **Previous attempt failed: [reason]** in the operation popover. Show a retry attempt number only while that retry runs and only when supplied. If the service reports a known prerequisite that blocks a change, explain it in plain language in both places. Do not invent a blocker, reason, attempt count, or ETA. Keep **Stopped** as a power state, not a configuration failure. After success, update the active value, remove the outstanding status, and show a brief success toast; do not retain a Completed line.
 
-For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7190d65&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the popover names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7190d65&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
+For example, [fedora-aqua-barnacle-58](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=35578a8&role=admin&vm=fedora-aqua-barnacle-58) is resizing to **large** while attaching **198.51.100.21**. Its list status is **Changes in progress**, and the popover names both operations. In the [mixed failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=35578a8&role=admin&vm=ubuntu-copper-ibis-31), resize has failed while attachment continues, so **Changes need attention** takes priority.
 
-The [two-failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7190d65&role=admin&vm=debian-cobalt-heron-41) shows resize and external-IP failure as separate bullets in one alert. The IP remains unattached; **Resize again** opens the resize dialog with **large** selected for review.
+The [two-failure example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=35578a8&role=admin&vm=debian-cobalt-heron-41) shows resize and external-IP failure as separate bullets in one alert. The IP remains unattached; **Resize again** opens the resize dialog with **large** selected for review.
 
 ![Version 0.5 final-failure popover with Open VM details button](screenshots/latest-ux/vm-config-final-failure-action-0.5-crop.png)
 
@@ -91,11 +91,11 @@ For access, networking, storage, utilization, failure states, and permissions, f
 
 The UI needs the operation type, phase (waiting for restart, retry scheduled, applying, finally failed, or complete), safe explanation, target value, and timestamps from the API or from documented derivation of its existing conditions. The UI must know whether another retry is planned before offering a manual action; an attempt count alone is insufficient. The list and Details must describe the same state after refresh or reconnect. API list/get and CLI table/json/yaml/describe need equivalent status semantics; the HTML mockup cannot verify those contracts. Never surface provider job IDs, raw logs, or raw error strings.
 
-**Still to validate against OSAC-7158:** The mockup does not demonstrate a prerequisite blocker or elapsed time in the VM list. Both require reliable service data, including timestamps that survive reconnects. Confirm which existing conditions expose these values and the retry phase; if the UI must derive a summary, document the derivation for API and CLI parity. Do not present an unsupported phase, blocker, or elapsed time as confirmed UX coverage.
+**Still to validate against OSAC-7158:** The mockup does not demonstrate a prerequisite blocker or elapsed time in the VM list. Both require reliable service data, including timestamps that survive reconnects. Confirm which existing conditions expose these values and the retry phase; if the UI must derive a summary, document the derivation for API and CLI parity. Do not present an unsupported phase, blocker, or elapsed time as confirmed UX coverage. Confirm backend support before offering replacement or cancellation of a resize waiting for restart. Whether users can stop repeated automatic retries remains a separate product and backend decision; this handoff shows their status.
 
 ## Access and initial run examples
 
-These 0.5 captures show Cloud-init and Windows Sysprep. The External IP examples need new captures after the current-value and heading-control updates.
+These 0.5 captures show Cloud-init and Windows Sysprep. Current first-time Attaching and Detaching screenshots are still pending; the retry and failure captures above reflect the latest External IP design.
 
 ![Inline Cloud-init value](screenshots/latest-ux/vm-overview-inline-0.5.png)
 
