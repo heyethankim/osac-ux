@@ -8549,9 +8549,9 @@
       { address: '203.0.113.18', pool: 'edge-public-b', status: 'available', vm: '' },
       { address: '203.0.113.44', pool: 'edge-public-b', status: 'available', vm: '' },
     ];
-    // Screenshot mode keeps the mock operation visible without changing normal demo timing.
+    // Screenshot mode holds the mock operation until the viewer advances it.
     const EXTERNAL_IP_CAPTURE_MODE = new URLSearchParams(window.location.search).get('capture') === '1';
-    const EXTERNAL_IP_ATTACH_DEMO_MS = EXTERNAL_IP_CAPTURE_MODE ? 60000 : 1400;
+    const EXTERNAL_IP_ATTACH_DEMO_MS = 1400;
 
     function availableExternalIps() {
       return EXTERNAL_IP_POOL.filter(ip => ip.status === 'available');
@@ -15800,7 +15800,6 @@
         if (vmExternalIpStatus(vm) === 'attaching' || vmExternalIpStatus(vm) === 'detaching') return;
         if (vmExternalIpStatus(vm) === 'attached' || vm.externalIpAttached) {
           vm.externalIpStatus = 'detaching';
-          renderVmDetail();
           const completeDetach = () => {
             vm._extIpDetachTimer = null;
             vm._extIpCompleteDemoStep = null;
@@ -15815,8 +15814,8 @@
             toast('External IP detached.');
           };
           if (EXTERNAL_IP_CAPTURE_MODE) vm._extIpCompleteDemoStep = completeDetach;
-          vm._extIpDetachTimer = setTimeout(completeDetach, EXTERNAL_IP_ATTACH_DEMO_MS);
-          if (EXTERNAL_IP_CAPTURE_MODE) renderVmDetail();
+          else vm._extIpDetachTimer = setTimeout(completeDetach, EXTERNAL_IP_ATTACH_DEMO_MS);
+          renderVmDetail();
         } else {
           openAttachExternalIpModal();
         }
@@ -15865,7 +15864,6 @@
       vm.externalIpError = '';
       vm.externalIpAttached = false;
       closeAttachExternalIpModal();
-      renderVmDetail();
       const completeAttach = () => {
         vm._extIpAttachTimer = null;
         vm._extIpCompleteDemoStep = null;
@@ -15901,8 +15899,8 @@
         toast(`External IP ${allocated} attached.`, 'success');
       };
       if (EXTERNAL_IP_CAPTURE_MODE) vm._extIpCompleteDemoStep = completeAttach;
-      vm._extIpAttachTimer = setTimeout(completeAttach, EXTERNAL_IP_ATTACH_DEMO_MS);
-      if (EXTERNAL_IP_CAPTURE_MODE) renderVmDetail();
+      else vm._extIpAttachTimer = setTimeout(completeAttach, EXTERNAL_IP_ATTACH_DEMO_MS);
+      renderVmDetail();
     }
 
     function vmExternalIpPanelHtml(vm, { canEdit = true } = {}) {
@@ -15910,6 +15908,8 @@
       const retryScheduled = vmExternalIpRetryScheduled(vm);
       const deleting = vm.status === 'deleting';
       const autoAttached = status === 'attached' && !!vm.autoAttachExternalIp;
+      const captureAvailable = EXTERNAL_IP_CAPTURE_MODE && (vm._extIpCompleteDemoStep ||
+        (canEdit && !autoAttached && !retryScheduled && status !== 'attaching' && status !== 'detaching'));
       const attachedIp = vm.externalIpAttached && vm.externalIp ? String(vm.externalIp) : '';
       const safeIp = attachedIp.replace(/</g, '&lt;');
 
@@ -15937,6 +15937,7 @@
         : '';
       const contentHtml = `
         <div class="vm-access-section__host-row"><span>Current external IP: ${addressHtml || 'Not attached'}</span>${actions}</div>
+        ${captureAvailable ? '<p class="vm-access-section__meta">Screenshot mode is on. Attaching and detaching stay visible until you select Finish demo step.</p>' : ''}
         ${EXTERNAL_IP_CAPTURE_MODE && vm._extIpCompleteDemoStep ? '<button type="button" class="pf-v6-c-button pf-m-link pf-m-small" data-ip-demo-complete>Finish demo step (screenshot mode)</button>' : ''}
         ${status === 'failed' && !retryScheduled && !canEdit && !deleting ? '<p class="vm-access-section__meta">Ask a tenant administrator to attach an external IP.</p>' : ''}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
