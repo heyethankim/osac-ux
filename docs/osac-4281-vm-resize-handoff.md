@@ -6,7 +6,7 @@ Updated: 20 November 2026
 UX Google Doc: https://docs.google.com/document/d/1kgln_LzTA3-VSP0SUM0jLce2Nvw0pix3oTYkwZuX-wE/edit  
 Interactive mockup, 0.4: https://osac-project.github.io/osac-ux/vmaas-ux-prototype-v0.4.html?v=0.4&role=admin&vm=windows-golden-eider-58
 
-Interactive mockup, 0.5: https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=cc25f56&role=admin&vm=fedora-aqua-barnacle-58
+Interactive mockup, 0.5: https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=040892d&role=admin&vm=fedora-aqua-barnacle-58
 Feature: [OSAC-4277](https://redhat.atlassian.net/browse/OSAC-4277)  
 Resize: [OSAC-4281](https://redhat.atlassian.net/browse/OSAC-4281)  
 Related work: [OSAC-7576](https://redhat.atlassian.net/browse/OSAC-7576), [OSAC-7463](https://redhat.atlassian.net/browse/OSAC-7463), [OSAC-7582](https://redhat.atlassian.net/browse/OSAC-7582), [OSAC-6578](https://redhat.atlassian.net/browse/OSAC-6578)
@@ -118,7 +118,7 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![VM table with resize status labels and compact pagination](screenshots/latest-ux/vm-table.png)
 
-![Version 0.5 VM table with icon-and-text configuration status](screenshots/latest-ux/vm-config-status-table-0.5.png)
+![Version 0.5 VM table with configuration status below the power status](screenshots/latest-ux/vm-operation-status-table-0.5.png)
 
 **Resize failure.** Current resources stay visible; the reason appears in a danger notification.
 
