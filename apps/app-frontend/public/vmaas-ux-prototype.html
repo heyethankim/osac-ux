@@ -7654,7 +7654,6 @@
               </div>
               <div class="vm-cards" id="vm-cards-gallery" hidden role="list" aria-label="Virtual machines"></div>
             </div>
-            <div class="list-pagination list-pagination--bottom" id="vm-pagination-bottom"></div>
           </section>
 
           <section class="view" id="view-vm">
@@ -7730,7 +7729,6 @@
               </div>
               <div class="vm-cards" id="net-cards-gallery" hidden role="list" aria-label="Virtual networks"></div>
             </div>
-            <div class="list-pagination list-pagination--bottom" id="net-pagination-bottom"></div>
           </section>
 
           <section class="view" id="view-network">
@@ -7799,7 +7797,6 @@
             <p class="catalog-summary" id="catalog-summary" hidden></p>
             <div class="list-pagination list-pagination--top" id="catalog-pagination-top"></div>
             <div id="catalog-content"></div>
-            <div class="list-pagination list-pagination--bottom" id="catalog-pagination-bottom"></div>
           </section>
 
           <section class="view" id="view-catalog-item">
@@ -7831,7 +7828,6 @@
                 <tbody class="pf-v6-c-table__tbody" id="instance-types-tbody"></tbody>
               </table>
             </div>
-            <div class="list-pagination list-pagination--bottom" id="it-pagination-bottom"></div>
           </section>
 
           <section class="view" id="view-instance-type">
@@ -7871,7 +7867,6 @@
               </table>
               </div>
             </div>
-            <div class="list-pagination list-pagination--bottom" id="di-pagination-bottom"></div>
           </section>
 
           <section class="view" id="view-disk-image">
@@ -13214,12 +13209,8 @@
       const pages = Math.max(1, Math.ceil(rows.length / current.perPage));
       current.page = Math.min(Math.max(1, current.page), pages);
       state.listPagination[key] = current;
-      for (const position of ['top', 'bottom']) {
-        const host = document.getElementById(`${key}-pagination-${position}`);
-        if (host) host.innerHTML = key === 'catalog' && position === 'bottom' && pages === 1
-          ? ''
-          : listPaginationHtml(key, rows.length, position, current.page, current.perPage);
-      }
+      const host = document.getElementById(`${key}-pagination-top`);
+      if (host) host.innerHTML = listPaginationHtml(key, rows.length, 'top', current.page, current.perPage);
       return rows.slice((current.page - 1) * current.perPage, current.page * current.perPage);
     }
 
