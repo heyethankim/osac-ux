@@ -15,6 +15,12 @@ The Overview **Status** row shows VM power state only. Keep active instance type
 
 ![Scheduled retry popover showing the requested resources and previous failure reason](screenshots/latest-ux/vm-operation-retry-scheduled-popover-0.5.png)
 
+**Automatic external-IP retry.** The disabled Attach action prevents a competing request while the second attempt runs. Its heading popover names the target IP and previous failure. This seeded example remains in progress for review; use the [capture-mode VM](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=2102186&role=admin&vm=rhel9-black-gunnysack-58&capture=1) to capture a successful attach and detach.
+
+![Trying again beside External IP with Attach disabled](screenshots/latest-ux/vm-operation-ip-retry-control-0.5.png)
+
+![External-IP retry popover showing target, attempt, and previous failure](screenshots/latest-ux/vm-operation-ip-retry-popover-0.5.png)
+
 ![Current external IP shown as Not attached before a manual attachment](screenshots/latest-ux/vm-operation-not-attached-0.5.png)
 
 ![Final attachment failure shown in the top alert while current values remain visible](screenshots/latest-ux/vm-operation-failed-attachment-overview-0.5.png)
