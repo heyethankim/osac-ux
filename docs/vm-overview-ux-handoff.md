@@ -11,6 +11,14 @@ VM Overview shows the active instance type, CPU, and memory. Editing the instanc
 
 The Overview **Status** row shows VM power state only. Keep active instance type, CPU, memory, and **Current external IP** as the main values; show **Not attached** when there is no attached IP, including after an attachment failure. During an operation, put a spinner and an action-specific, link-styled popover button beside **Instance type** or **External IP**: **Resizing**, **Attaching**, or **Detaching**. The spinner is not interactive. The popover names the requested instance type, vCPUs, and memory, or the exact external IP; it shows retry attempt and previous failure reason only when supplied. Keep the current external IP visible until detachment succeeds. A scheduled retry shows **Retry scheduled** without a spinner and disables competing actions. Final failures appear only in one top danger alert; if two operations fail, list both. Keep **Resize again** in that alert and offer **Attach external IP** for a final attachment failure. Do not show an attempted IP as attached or repeat failure text beside the setting.
 
+![Resizing operation popover showing the requested instance type, vCPUs, and memory](screenshots/latest-ux/vm-operation-resizing-popover-0.5.png)
+
+![Scheduled retry popover showing the requested resources and previous failure reason](screenshots/latest-ux/vm-operation-retry-scheduled-popover-0.5.png)
+
+![Current external IP shown as Not attached before a manual attachment](screenshots/latest-ux/vm-operation-not-attached-0.5.png)
+
+![Final attachment failure shown in the top alert while current values remain visible](screenshots/latest-ux/vm-operation-failed-attachment-overview-0.5.png)
+
 The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=cc25f56&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
 
 ![Version 0.5 scheduled retry without active spinners](screenshots/latest-ux/vm-config-retry-scheduled-0.5-crop.png)

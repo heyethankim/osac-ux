@@ -8554,7 +8554,10 @@
       { address: '203.0.113.18', pool: 'edge-public-b', status: 'available', vm: '' },
       { address: '203.0.113.44', pool: 'edge-public-b', status: 'available', vm: '' },
     ];
-    const EXTERNAL_IP_ATTACH_DEMO_MS = 1400;
+    // Screenshot mode keeps the mock operation visible without changing normal demo timing.
+    const EXTERNAL_IP_ATTACH_DEMO_MS = new URLSearchParams(window.location.search).get('capture') === '1'
+      ? 20000
+      : 1400;
 
     function availableExternalIps() {
       return EXTERNAL_IP_POOL.filter(ip => ip.status === 'available');

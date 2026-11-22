@@ -41,6 +41,8 @@ Returning from Details refreshes card and table values from the current VM state
 
 When a resize applies without a restart, keep **Running** as the VM power state. In 0.5, cards and tables show subdued gray **Changes in progress** below it; the popover lists all outstanding operations. On VM Overview, place a spinner and a link-styled **Resizing** popover button beside **Instance type**. The popover names the target instance type, vCPUs, and memory, adding a retry attempt or safe previous failure reason only when supplied. Keep active values until completion. The `indigo-quokka-89` demo completes after about 15 seconds and enables the pencil.
 
+![Version 0.5 Resizing popover with requested instance type, vCPUs, and memory](screenshots/latest-ux/vm-operation-resizing-popover-0.5.png)
+
 After restart, remove **Restart required** and show **Changes in progress** in lists while resize applies, even if the VM is **Running** again. In 0.5, the **Resizing** control opens operation details. `fedora-aqua-barnacle-58` demonstrates this state; restarting `azure-baboon-27` also shows the transition.
 
 When resize and another configuration change run together, keep their details beside the affected settings. The VM list and cards show one configuration status below the power status; its tooltip names both operations and targets. A failure takes priority over work in progress, which takes priority over a change waiting for restart. See [simultaneous changes in VM Overview](vm-overview-ux-handoff.md#simultaneous-changes).
