@@ -9,17 +9,13 @@ VM Overview shows the active instance type, CPU, and memory. Editing the instanc
 
 ## Version 0.5 — configuration operations (OSAC-7158)
 
-The Overview **Status** row shows the VM power state only. Keep active instance type, CPU, memory, and attached external IP as the main values. Keep the instance type name, CPU, memory, and GPU together. **Instance type** and **External IP** share one pattern: a spinner beside the heading only while an attempt runs, the current value, and a short status line naming the requested target from the first attempt onward. On the first attempt, the line is plain text. Make it clickable only when a retry has extra details to show, such as a supplied attempt number or safe previous failure reason; then it opens a keyboard-accessible popover. The spinner itself is not interactive; no purple information icon is needed. Name an attached address **Current external IP** and an address being attached **requested external IP**. Keep Attach external IP visible but disabled while attachment runs or an automatic retry is scheduled. A scheduled retry has no spinner and no top danger alert. Use one top danger alert for final failures; when two operations fail, list both in one alert. Put the failure reason and **Resize again** action in that alert, without repeating the failure below Instance type. **Resize again** opens the resize dialog with the failed target selected for review; it never silently resubmits. Manual actions remain unavailable while an automatic retry is scheduled. After attachment finally fails, keep the attempted address out of the attached-IP value and offer **Attach external IP** to start another selection.
-
-![Version 0.5 matching Instance type and External IP progress](screenshots/latest-ux/vm-config-aligned-progress-0.5-crop.png)
+The Overview **Status** row shows VM power state only. Keep active instance type, CPU, memory, and **Current external IP** as the main values; show **Not attached** when there is no attached IP, including after an attachment failure. During an operation, put a spinner and an action-specific, link-styled popover button beside **Instance type** or **External IP**: **Resizing**, **Attaching**, or **Detaching**. The spinner is not interactive. The popover names the requested instance type, vCPUs, and memory, or the exact external IP; it shows retry attempt and previous failure reason only when supplied. Keep the current external IP visible until detachment succeeds. A scheduled retry shows **Retry scheduled** without a spinner and disables competing actions. Final failures appear only in one top danger alert; if two operations fail, list both. Keep **Resize again** in that alert and offer **Attach external IP** for a final attachment failure. Do not show an attempted IP as attached or repeat failure text beside the setting.
 
 The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
 
 ![Version 0.5 scheduled retry without active spinners](screenshots/latest-ux/vm-config-retry-scheduled-0.5-crop.png)
 
 The [ubuntu-copper-ibis-31 example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=f1d5135&role=admin&vm=ubuntu-copper-ibis-31) combines a failed resize with external-IP attachment still running. The top alert covers the resize failure and offers **Resize again**; IP progress and its disabled Attach button stay beside External IP. In lists and cards, **Changes need attention** takes precedence, while the popover names both operations.
-
-![Version 0.5 failed resize and active external-IP attachment](screenshots/latest-ux/vm-config-mixed-0.5.png)
 
 ![Version 0.5 mixed-operation status popover](screenshots/latest-ux/vm-config-status-popover-concurrent-0.5-crop.png)
 
@@ -29,9 +25,7 @@ Returning from VM Details through the sidebar or breadcrumb refreshes both list 
 
 The sidebar card is **Other VM alerts**, with **No other alerts** when empty, so it does not contradict configuration failures shown above Overview. For a Tenant User without external-IP permissions, a final attachment failure says **Ask a tenant administrator to attach an external IP.** Show this guidance only when no automatic retry is scheduled or running. Tenant admins retain the **Attach external IP** recovery action.
 
-![Version 0.5 Tenant User guidance after external-IP attachment fails](screenshots/latest-ux/vm-external-ip-tenant-user-failure-0.5.png)
-
-Each operation keeps its own state on VM Overview: progress appears beside the Instance type or External IP heading, while the status line below names the requested target. The line opens details only when extra retry information is available. Only final failures appear in the top alert. If several operations fail, use one alert with a bullet for each failure. Keep **Resize again** in the alert and offer the external-IP selection action beside External IP when available. Keep current values visible until each change succeeds.
+Each operation keeps its own state on VM Overview. The heading control opens its details, while the current value stays below. Only final failures appear in the top alert. Keep **Resize again** in that alert and offer a new external-IP selection when available. Current values change only after success.
 
 The VM list and cards still show one configuration line below the power status. Choose its text by priority: **Changes need attention** if any operation has finally failed with no automatic retry planned; otherwise **Changes in progress** if any attempt is running; otherwise **Changes pending** if a retry is scheduled or a change waits for restart. A scheduled retry is pending, not in progress. Activating the line opens a keyboard-accessible popover with a separate bullet for each outstanding operation and target, so the summary does not hide concurrent work. If any operation has finally failed, add an **Open VM details** button below the list. Do not suggest another manual attempt while an automatic retry is scheduled or running. Remove each operation from the popover when it completes, and remove the configuration line when none remain.
 
@@ -87,11 +81,7 @@ The UI needs the operation type, phase (waiting for restart, retry scheduled, ap
 
 ## Access and initial run examples
 
-These 0.5 captures show the auto-attached, manually attached, inline Cloud-init, and Windows Sysprep states.
-
-![Auto-attached external IP and Cloud-init secret](screenshots/latest-ux/vm-overview-auto-0.5.png)
-
-![Manually attached external IP](screenshots/latest-ux/vm-overview-manual-0.5.png)
+These 0.5 captures show Cloud-init and Windows Sysprep. The External IP examples need new captures after the current-value and heading-control updates.
 
 ![Inline Cloud-init value](screenshots/latest-ux/vm-overview-inline-0.5.png)
 

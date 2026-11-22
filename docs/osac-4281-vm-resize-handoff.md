@@ -39,13 +39,13 @@ Returning from Details refreshes card and table values from the current VM state
 
 ## Resize in progress
 
-When the API reports that a resize is applying without a restart, keep **Running** as the VM power state. In 0.5, show one subdued gray, text-only **Changes in progress** status on a second line below the power status in card and table views; its popover names the resize target and any other active configuration operation. On VM Overview, a spinner appears beside **Instance type** during an active attempt. A status line names the requested target; it opens a popover only when retry details are available. Keep active values until the API confirms completion. The mockup uses `indigo-quokka-89` for this state and completes its demo resize after about 15 seconds, enabling the pencil.
+When a resize applies without a restart, keep **Running** as the VM power state. In 0.5, cards and tables show subdued gray **Changes in progress** below it; the popover lists all outstanding operations. On VM Overview, place a spinner and a link-styled **Resizing** popover button beside **Instance type**. The popover names the target instance type, vCPUs, and memory, adding a retry attempt or safe previous failure reason only when supplied. Keep active values until completion. The `indigo-quokka-89` demo completes after about 15 seconds and enables the pencil.
 
-After a restart with a scheduled resize, remove **Restart required** and show **Changes in progress** in lists while the resize is applying, even if the power state has returned to **Running**. In version 0.5, details use the Instance type progress popover. The mockup uses `fedora-aqua-barnacle-58` for this state; restarting `azure-baboon-27` also demonstrates the transition.
+After restart, remove **Restart required** and show **Changes in progress** in lists while resize applies, even if the VM is **Running** again. In 0.5, the **Resizing** control opens operation details. `fedora-aqua-barnacle-58` demonstrates this state; restarting `azure-baboon-27` also shows the transition.
 
 When resize and another configuration change run together, keep their details beside the affected settings. The VM list and cards show one configuration status below the power status; its tooltip names both operations and targets. A failure takes priority over work in progress, which takes priority over a change waiting for restart. See [simultaneous changes in VM Overview](vm-overview-ux-handoff.md#simultaneous-changes).
 
-Do not show a persistent top progress notification, timing details, or a Recent activity entry for this brief operation. Keep the instance type name, CPU, memory, and GPU together; put progress details in the heading popover. Remove the configuration status only when the API confirms completion, then show the new instance type, CPU, and memory as active values and a brief success toast. Keep configuration progress separate from the VM power state, as required by OSAC-6578. These states require operation phase and active versus requested values from the API; the mockup timer only demonstrates completion and must not be used as production logic. If resize fails, keep current resources visible, show **Changes need attention** in the 0.5 list, and put the reason and **Resize again** button in the top danger alert. Do not repeat the failure beside Instance type. If known, say **No automatic retry is scheduled** in the alert; the user can still submit a new resize. `ubuntu-copper-ibis-31` demonstrates a failed resize while external-IP attachment continues.
+Do not show a persistent top progress notification, timing details, or a Recent activity entry for this brief operation. Keep the active instance type, CPU, memory, and GPU visible; put the target in the heading popover. After API-confirmed completion, show the new active resources and a brief success toast. Keep configuration progress separate from VM power state (OSAC-6578). The mockup timer is illustrative, not production logic. On final failure, keep current resources visible, show **Changes need attention** in the list, and put the reason and **Resize again** in the top danger alert. Do not repeat the failure beside Instance type. `ubuntu-copper-ibis-31` demonstrates failed resize alongside an active IP attachment.
 
 The API must expose or allow derivation of both active and requested configuration values, the restart-required condition, the resize operation phase, and a failure reason. Backend acceptance of the update depends on OSAC-5328.
 
@@ -98,25 +98,19 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![Restart-required resize with scheduled changes](screenshots/vm-resize/restart-required-current.jpg)
 
-**Resize applying without restart.** The 0.5 Overview keeps the active values, shows a spinner beside Instance type, and names the target in a status line. The older 0.4 image below used a compact label beside the VM status.
+**Resize applying without restart.** The 0.5 Overview keeps active values and puts the spinner and **Resizing** popover control beside Instance type. The 0.4 image below shows the earlier label design.
 
 ![Disabled Instance type pencil with explanatory tooltip](screenshots/latest-ux/vm-resize-edit-disabled-tooltip-0.5.png)
 
 ![Resize in progress without restart](screenshots/vm-resize/resize-in-progress-no-restart.jpg)
 
-![Version 0.5 Instance type status line without restart](screenshots/latest-ux/vm-config-inline-hot-resize-0.5.png)
-
-![Version 0.5 retry details opened from the Instance type status line](screenshots/latest-ux/vm-config-inline-hot-resize-0.5-popover.png)
-
 **Version 0.4 progress tooltip.** Earlier design for comparison.
 
 ![Resize progress tooltip](screenshots/vm-resize/resize-progress-tooltip.png)
 
-**Resize still applying after restart.** In 0.5, the first attempt shows a plain Instance type status line. It becomes a popover trigger only when retry details are available. The older 0.4 image below used a resize label.
+**Resize still applying after restart.** In 0.5, **Resizing** opens the target details from the heading, including on the first attempt. The 0.4 image below used a resize label.
 
 ![Resize in progress after restart](screenshots/vm-resize/resize-in-progress-after-restart.jpg)
-
-![Version 0.5 plain Instance type status line after restart](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
 **VM table.** This 0.4 screenshot shows the older resize-specific labels. In 0.5, the Status column uses one text-only configuration status below the power status per VM.
 

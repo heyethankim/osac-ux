@@ -1337,6 +1337,22 @@
       text-decoration: underline dotted;
       text-underline-offset: 3px;
     }
+    .vm-operation-trigger {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--pf-t--global--text--color--link--default, #0066cc);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: underline dotted;
+      text-underline-offset: 3px;
+    }
+    .vm-operation-trigger:focus-visible {
+      outline: 2px solid var(--pf-t--global--border--color--focus, #0066cc);
+      outline-offset: 2px;
+    }
+    .vm-operation-detail-list { margin: 0; padding-left: 20px; }
     .vm-config-inline__status { display: block; }
     .vm-instance-progress-trigger {
       color: var(--pf-t--global--icon--color--status--info--default, #0066cc);
@@ -4046,6 +4062,10 @@
       color: var(--vmaas-text);
       text-decoration: none;
       text-underline-offset: 2px;
+    }
+    .vm-table .status-link__label,
+    .vm-list-card .status-link__label {
+      color: var(--pf-t--global--text--color--link--default, #0066cc);
     }
     .status-link:hover .status-link__label { text-decoration: underline; }
     .status-link .pf-v6-c-icon,
@@ -9056,30 +9076,16 @@
       return vmExternalIpStatus(vm) === 'attaching' && vm.externalIpRetrying === true;
     }
 
-    function vmResizeHasProgressDetails(vm) {
-      if (vmResizeRetryScheduled(vm)) return !!vm.resizeFailure?.reason;
-      return vmResizeRetryRunning(vm) &&
-        (Number(vm.resizeProgress?.retryAttempt) > 1 || !!vm.resizeProgress?.lastFailureReason);
-    }
-
-    function vmExternalIpHasProgressDetails(vm) {
-      if (vmExternalIpRetryScheduled(vm)) return !!vm.externalIpError;
-      return vmExternalIpRetryRunning(vm) &&
-        (Number(vm.externalIpRetryAttempt) > 1 || !!vm.externalIpLastFailureReason);
-    }
-
     function vmResizeStatusLineHtml(vm) {
       if (!vm.resizeProgress && !vmResizeRetryScheduled(vm)) return '';
-      const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
-      const text = `${vmResizeRetryScheduled(vm) ? 'Retry scheduled: change' : vmResizeRetryRunning(vm) ? 'Trying again: change' : 'Changing'} instance type to <strong>${target}</strong>`;
-      if (!vmResizeHasProgressDetails(vm)) return `<p class="vm-config-inline">${text}</p>`;
-      return `<button type="button" class="vm-config-inline vm-config-inline--trigger" data-instance-progress data-target="${target}" data-retry="${Number(vm.resizeProgress?.retryAttempt) || 0}" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">${text}</button>`;
+      const label = vmResizeRetryScheduled(vm) ? 'Retry scheduled' : vmResizeRetryRunning(vm) ? 'Trying again' : 'Resizing';
+      return `${vm.resizeProgress ? '<span class="vm-access-section__spinner" aria-hidden="true"></span>' : ''}<button type="button" class="vm-operation-trigger" data-instance-progress aria-label="${label} instance type. Show operation details" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">${label}</button>`;
     }
 
     function vmConfigurationLabelHtml(vm) {
       const ipStatus = vmExternalIpStatus(vm);
       const failed = (!!vm.resizeFailure && !vmResizeRetryScheduled(vm)) || (ipStatus === 'failed' && !vmExternalIpRetryScheduled(vm));
-      const applying = !!vm.resizeProgress || ipStatus === 'attaching';
+      const applying = !!vm.resizeProgress || ipStatus === 'attaching' || ipStatus === 'detaching';
       const pending = !!vm.restartRequired?.changes?.length || vmResizeRetryScheduled(vm) || vmExternalIpRetryScheduled(vm);
       if (!failed && !applying && !pending) return '';
       const label = failed ? 'Changes need attention' : (applying ? 'Changes in progress' : 'Changes pending');
@@ -9095,6 +9101,7 @@
       if (vmExternalIpRetryScheduled(vm)) details.push(`Retry scheduled: attach external IP ${ipTarget}`);
       else if (ipStatus === 'failed') details.push(`Couldn't apply change to external IP ${ipTarget}`);
       else if (ipStatus === 'attaching') details.push(vmExternalIpRetryRunning(vm) ? `Trying again: attach external IP ${ipTarget}` : `Attaching external IP ${ipTarget}`);
+      else if (ipStatus === 'detaching') details.push(`Detaching external IP ${vm.externalIp}`);
       const summary = `${details.join('; ')}.`;
       return `<button type="button" class="vm-configuration-label${failed ? ' vm-configuration-label--failed' : ''}"
         data-vm-configuration="${escAttr(vm.name)}" aria-label="${escAttr(`${label}. ${summary}`)}"
@@ -9160,6 +9167,7 @@
           const retry = Number(vm.externalIpRetryAttempt);
           items.push(`${vmExternalIpRetryRunning(vm) ? 'Trying again: attach' : 'Attaching'} external IP <strong>${ip}</strong>.${vmExternalIpRetryRunning(vm) && retry > 1 ? ` Retry attempt: ${retry}.` : ''}${vmExternalIpRetryRunning(vm) && vm.externalIpLastFailureReason ? ` Previous attempt failed: ${escAttr(vm.externalIpLastFailureReason)}` : ''}`);
         }
+        else if (vmExternalIpStatus(vm) === 'detaching') items.push(`Detaching external IP <strong>${escAttr(vm.externalIp)}</strong>.`);
         const needsAttention = (!!vm.resizeFailure && !vmResizeRetryScheduled(vm)) ||
           (vmExternalIpStatus(vm) === 'failed' && !vmExternalIpRetryScheduled(vm));
         body.innerHTML = `<ul class="pf-v6-c-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>${needsAttention ? `<div class="pf-v6-u-mt-md"><button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-open-failed-vm="${escAttr(vm.name)}">Open VM details</button></div>` : ''}`;
@@ -15121,12 +15129,14 @@
       closeDiskImagePopover();
       closeItPciPopover();
       closeStorageTierPopover();
-      const target = escAttr(trigger.dataset.target || 'the requested instance type');
-      const retry = Number(trigger.dataset.retry);
       const vm = VMS.find(v => v.name === state.selectedVmName);
+      if (!vm) return;
+      const target = escAttr(resolveVmComputeId(vm) || 'the requested instance type');
+      const specs = computeResourceSpecs(resolveVmComputeId(vm));
+      const retry = Number(vm.resizeProgress?.retryAttempt);
       const scheduled = vmResizeRetryScheduled(vm);
       const previousReason = scheduled ? vm.resizeFailure.reason : vmResizeRetryRunning(vm) ? vm.resizeProgress.lastFailureReason : '';
-      body.innerHTML = `<p>${scheduled ? 'Retry scheduled: change' : vmResizeRetryRunning(vm) ? 'Trying again: change' : 'Changing'} instance type to <strong>${target}</strong>.</p>${vmResizeRetryRunning(vm) && retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}${previousReason ? `<p class="vm-config-operation__retry">Previous attempt failed: ${escAttr(previousReason)}</p>` : ''}`;
+      body.innerHTML = `<p><strong>${scheduled ? 'Retry scheduled' : vmResizeRetryRunning(vm) ? 'Trying again' : 'Resizing'}</strong></p><p>Requested configuration:</p><ul class="vm-operation-detail-list"><li>Instance type: <strong>${target}</strong></li><li>vCPUs: ${escAttr(specs.cpu)}</li><li>Memory: ${escAttr(specs.mem)}</li></ul>${vmResizeRetryRunning(vm) && retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}${previousReason ? `<p class="vm-config-operation__retry">Previous attempt failed: ${escAttr(previousReason)}</p>` : ''}`;
       instanceProgressPopoverTrigger = trigger;
       trigger.setAttribute('aria-expanded', 'true');
       positionDetailPopover(pop, trigger, 'instance-progress-popover-close');
@@ -15153,10 +15163,11 @@
       }
       closeInstanceProgressPopover();
       const scheduled = vmExternalIpRetryScheduled(vm);
-      const target = escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
+      const detaching = vmExternalIpStatus(vm) === 'detaching';
+      const target = escAttr(detaching ? vm.externalIp : vm.externalIpPending || vm.externalIpAttempted || 'the selected address');
       const retry = Number(vm.externalIpRetryAttempt);
       const previousReason = scheduled ? vm.externalIpError : vmExternalIpRetryRunning(vm) ? vm.externalIpLastFailureReason : '';
-      body.innerHTML = `<p>${scheduled ? 'Retry scheduled: attach' : vmExternalIpRetryRunning(vm) ? 'Trying again: attach' : 'Attaching'} external IP <strong>${target}</strong>.</p>${vmExternalIpRetryRunning(vm) && retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}${previousReason ? `<p class="vm-config-operation__retry">Previous attempt failed: ${escAttr(previousReason)}</p>` : ''}`;
+      body.innerHTML = `<p><strong>${detaching ? 'Detaching' : scheduled ? 'Retry scheduled' : vmExternalIpRetryRunning(vm) ? 'Trying again' : 'Attaching'}</strong></p><p>${detaching ? 'Current external IP' : 'Requested external IP'}: <strong>${target}</strong></p>${vmExternalIpRetryRunning(vm) && retry > 1 ? `<p class="vm-config-operation__retry">Retry attempt: ${retry}</p>` : ''}${previousReason ? `<p class="vm-config-operation__retry">Previous attempt failed: ${escAttr(previousReason)}</p>` : ''}`;
       externalIpProgressPopoverTrigger = trigger;
       trigger.setAttribute('aria-expanded', 'true');
       positionDetailPopover(pop, trigger, 'external-ip-progress-popover-close');
@@ -15790,17 +15801,22 @@
       if (!vm) return;
       if (kind === 'external') {
         if (vm.autoAttachExternalIp && vmExternalIpStatus(vm) === 'attached') return;
-        if (vmExternalIpStatus(vm) === 'attaching') return;
+        if (vmExternalIpStatus(vm) === 'attaching' || vmExternalIpStatus(vm) === 'detaching') return;
         if (vmExternalIpStatus(vm) === 'attached' || vm.externalIpAttached) {
-          releaseExternalIp(vm.externalIp);
-          vm.externalIpAttached = false;
-          vm.externalIp = '';
-          vm.externalIpStatus = 'none';
-          vm.externalIpPending = '';
-          vm.externalIpError = '';
-          vm.autoAttachExternalIp = false;
-          toast('External IP detached.');
+          vm.externalIpStatus = 'detaching';
           renderVmDetail();
+          vm._extIpDetachTimer = setTimeout(() => {
+            vm._extIpDetachTimer = null;
+            releaseExternalIp(vm.externalIp);
+            vm.externalIpAttached = false;
+            vm.externalIp = '';
+            vm.externalIpStatus = 'none';
+            vm.externalIpPending = '';
+            vm.externalIpError = '';
+            vm.autoAttachExternalIp = false;
+            renderVmDetail();
+            toast('External IP detached.');
+          }, EXTERNAL_IP_ATTACH_DEMO_MS);
         } else {
           openAttachExternalIpModal();
         }
@@ -15825,7 +15841,7 @@
 
     function vmExternalIpStatus(vm) {
       if (!vm) return 'none';
-      if (vm.externalIpStatus === 'attaching' || vm.externalIpStatus === 'failed' || vm.externalIpStatus === 'attached') {
+      if (vm.externalIpStatus === 'attaching' || vm.externalIpStatus === 'detaching' || vm.externalIpStatus === 'failed' || vm.externalIpStatus === 'attached') {
         return vm.externalIpStatus;
       }
       if (vm.externalIpAttached && vm.externalIp) return 'attached';
@@ -15889,19 +15905,19 @@
       const retryScheduled = vmExternalIpRetryScheduled(vm);
       const deleting = vm.status === 'deleting';
       const autoAttached = status === 'attached' && !!vm.autoAttachExternalIp;
-      const attachedIp = status === 'attached' && vm.externalIp ? String(vm.externalIp) : '';
+      const attachedIp = (status === 'attached' || status === 'detaching') && vm.externalIp ? String(vm.externalIp) : '';
       const safeIp = attachedIp.replace(/</g, '&lt;');
 
       let addressHtml = '';
-      if (status === 'attached' && attachedIp) {
+      if (attachedIp) {
         addressHtml = `${deleting ? '<span class="muted">Last known: </span>' : ''}<code>${safeIp}</code>`;
       }
 
       let actions = '';
       if (!canEdit || autoAttached) {
         actions = '';
-      } else if (status === 'attaching' || retryScheduled) {
-        actions = '<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" disabled aria-describedby="vm-external-ip-progress">Attach external IP</button>';
+      } else if (status === 'attaching' || status === 'detaching' || retryScheduled) {
+        actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" disabled aria-describedby="vm-external-ip-progress">${status === 'detaching' ? 'Detach external IP' : 'Attach external IP'}</button>`;
       } else if (status === 'attached') {
         actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Detach external IP</button>`;
       } else if (status === 'failed') {
@@ -15910,22 +15926,18 @@
         actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Attach external IP</button>`;
       }
 
-      const progressText = `${retryScheduled ? 'Retry scheduled: attach' : vmExternalIpRetryRunning(vm) ? 'Trying again: attach' : 'Attaching'} requested external IP <strong>${escAttr(vm.externalIpPending || vm.externalIpAttempted || 'the selected address')}</strong>`;
-      const progressLine = status === 'attaching' || retryScheduled
-        ? vmExternalIpHasProgressDetails(vm)
-          ? `<button type="button" class="vm-config-inline vm-config-inline--trigger" id="vm-external-ip-progress" data-external-ip-progress aria-haspopup="dialog" aria-expanded="false" aria-controls="external-ip-progress-popover">${progressText}</button>`
-          : `<p class="vm-config-inline" id="vm-external-ip-progress">${progressText}</p>`
+      const operationLabel = status === 'detaching' ? 'Detaching' : retryScheduled ? 'Retry scheduled' : vmExternalIpRetryRunning(vm) ? 'Trying again' : 'Attaching';
+      const progressControl = status === 'attaching' || status === 'detaching' || retryScheduled
+        ? `${status === 'attaching' || status === 'detaching' ? '<span class="vm-access-section__spinner" aria-hidden="true"></span>' : ''}<button type="button" class="vm-operation-trigger" id="vm-external-ip-progress" data-external-ip-progress aria-label="${operationLabel} external IP. Show operation details" aria-haspopup="dialog" aria-expanded="false" aria-controls="external-ip-progress-popover">${operationLabel}</button>`
         : '';
       const contentHtml = `
-        ${progressLine}
-        ${status === 'failed' && !retryScheduled ? `<p class="vm-config-inline" role="status">External IP <strong>${escAttr(vm.externalIpAttempted || 'the selected address')}</strong> is not attached.</p>` : ''}
         ${status === 'failed' && !retryScheduled && !canEdit && !deleting ? '<p class="vm-access-section__meta">Ask a tenant administrator to attach an external IP.</p>' : ''}
-        ${addressHtml || actions ? `<div class="vm-access-section__host-row">${addressHtml ? `<span>Current external IP: ${addressHtml}</span>` : ''}${actions}</div>` : ''}
+        <div class="vm-access-section__host-row"><span>Current external IP: ${addressHtml || 'Not attached'}</span>${actions}</div>
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
       return `
         <section class="vm-access-section" aria-labelledby="vm-access-eip-title">
-          <h4 class="ethan-detail-col__subtitle vm-access-section__title" id="vm-access-eip-title">External IP${status === 'attaching' ? ' <span class="vm-access-section__spinner" role="status" aria-label="External IP attachment in progress"></span>' : ''}${autoAttached ? ' <span class="pf-v6-c-label pf-m-outline pf-m-grey pf-m-compact"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Auto attached</span></span></span>' : ''}</h4>
+          <h4 class="ethan-detail-col__subtitle vm-access-section__title" id="vm-access-eip-title">External IP${progressControl ? ` <span class="vm-operation-heading">${progressControl}</span>` : ''}${autoAttached ? ' <span class="pf-v6-c-label pf-m-outline pf-m-grey pf-m-compact"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Auto attached</span></span></span>' : ''}</h4>
           ${contentHtml}
         </section>`;
     }
@@ -17675,7 +17687,7 @@
       const itSubtitleRow = `
         <div class="ethan-detail-col__subtitle-row">
           <h4 class="ethan-detail-col__subtitle">Instance type</h4>
-          ${v.resizeProgress ? '<span class="vm-access-section__spinner" role="status" aria-label="Instance type change in progress"></span>' : ''}
+          ${vmResizeStatusLineHtml(v)}
           <button type="button" class="vm-edit-inline" data-edit-compute aria-label="Edit instance type"${editComputeTitleAttr}${editComputeDisabledAttr}>
             <i class="fa-solid fa-pen" aria-hidden="true"></i>
           </button>
@@ -17772,7 +17784,6 @@
                   ${itField('Disk image', diskImageDisplay)}
                   ${itSubtitleRow}
                   ${itField('Name', `${itNameSafe} ${instanceTypeLifecycleLabel(COMPUTE_RESOURCES.find(c => c.id === vmActiveComputeId(v))?.lifecycle)}`)}
-                  ${vmResizeStatusLineHtml(v)}
                   ${itField('vCPUs', String(computeFields.vcpu).replace(/</g, '&lt;'))}
                   ${itField('Memory', String(computeFields.memory).replace(/</g, '&lt;'))}
                   ${gpuFieldsHtml}
