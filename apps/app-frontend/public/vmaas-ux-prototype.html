@@ -6455,6 +6455,9 @@
       background: none;
       color: var(--vmaas-text);
     }
+    .vm-list-card__status-pill.status-link {
+      color: var(--pf-t--global--text--color--link--default, #0066cc);
+    }
     .vm-list-card__title-block {
       display: flex;
       flex-direction: column;
@@ -15905,7 +15908,7 @@
       const retryScheduled = vmExternalIpRetryScheduled(vm);
       const deleting = vm.status === 'deleting';
       const autoAttached = status === 'attached' && !!vm.autoAttachExternalIp;
-      const attachedIp = (status === 'attached' || status === 'detaching') && vm.externalIp ? String(vm.externalIp) : '';
+      const attachedIp = vm.externalIpAttached && vm.externalIp ? String(vm.externalIp) : '';
       const safeIp = attachedIp.replace(/</g, '&lt;');
 
       let addressHtml = '';
@@ -15931,8 +15934,8 @@
         ? `${status === 'attaching' || status === 'detaching' ? '<span class="vm-access-section__spinner" aria-hidden="true"></span>' : ''}<button type="button" class="vm-operation-trigger" id="vm-external-ip-progress" data-external-ip-progress aria-label="${operationLabel} external IP. Show operation details" aria-haspopup="dialog" aria-expanded="false" aria-controls="external-ip-progress-popover">${operationLabel}</button>`
         : '';
       const contentHtml = `
-        ${status === 'failed' && !retryScheduled && !canEdit && !deleting ? '<p class="vm-access-section__meta">Ask a tenant administrator to attach an external IP.</p>' : ''}
         <div class="vm-access-section__host-row"><span>Current external IP: ${addressHtml || 'Not attached'}</span>${actions}</div>
+        ${status === 'failed' && !retryScheduled && !canEdit && !deleting ? '<p class="vm-access-section__meta">Ask a tenant administrator to attach an external IP.</p>' : ''}
         ${autoAttached ? '<p class="vm-access-section__meta">This IP is managed with the VM and is detached only when the VM is deleted.</p>' : ''}`;
 
       return `
