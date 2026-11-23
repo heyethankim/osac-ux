@@ -13,7 +13,7 @@ Related work: [OSAC-7576](https://redhat.atlassian.net/browse/OSAC-7576), [OSAC-
 
 ## Entry and availability
 
-On VM Overview, select the pencil beside Instance type. Tenant Admin and Tenant User can resize. The action is available for Running, Paused, and Stopped VMs, including when a saved resize awaits restart. Disable it during transitional states, while a resize is applying, or while an automatic retry is scheduled or running. A disabled pencil has a hover and keyboard-focus tooltip explaining why; during an active resize it says, “Wait for the current resize to finish before editing the instance type.”
+On VM Overview, select the pencil beside Instance type. Tenant Admin and Tenant User can resize. The action is available for Running, Paused, and Stopped VMs, including when a saved resize awaits restart. Disable it during transitional states, while a resize is applying, or while an automatic retry is scheduled or running. Automatic retries cannot be stopped; offer a new attempt only after a final failure with no retry planned. A disabled pencil has a hover and keyboard-focus tooltip explaining why; during an active resize it says, “Wait for the current resize to finish before editing the instance type.”
 
 ## Select an instance type
 
@@ -29,7 +29,7 @@ Show Deprecated instance types as selectable options with a **Deprecated** label
 
 A success toast confirms the saved request. For a Running or Paused VM that requires restart, show a **Restart required** warning at the top of VM Overview in version 0.5. It is collapsed by default; expanding it explains that the VM must restart and shows the current → requested instance type, vCPUs, and memory. Do not repeat the restart message beside Instance type. Keep the VM's **active** instance type, vCPUs, and memory as the main configuration values, including the CPU and memory totals in Utilization. The 0.4 screenshots below retain the earlier layout for historical comparison.
 
-**Proposed interaction; backend support unconfirmed.** If a saved resize can be replaced or canceled before restart, keep the pencil available. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** replaces the scheduled target. The separate cancel action removes the pending change and keeps the active type; **Cancel** closes without changes. Update the warning to show only the latest changed values. If the backend cannot replace or cancel a pending resize, keep the pencil disabled until the resize takes effect and explain why in its tooltip. Confirm the backend operations before implementing the proposed actions.
+**Confirmed backend behavior.** A saved resize waiting for restart can be replaced or canceled, so keep the pencil available. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** requests a new spec, replacing the scheduled target after backend confirmation. **Cancel scheduled resize** requests the previous, currently active spec and removes the pending change after backend confirmation; **Cancel** closes the dialog without changes. If either request fails, retain the existing scheduled target and show an error. Update the warning to show only the latest confirmed changes.
 
 Selecting **Restart** in Details or a VM row opens a confirmation with the VM name, workload and session interruption warning, and exact scheduled changes. Focus **Cancel** initially and keep keyboard focus inside the dialog. Cancel, Close, or Escape leaves the VM power state and scheduled resize unchanged. Recheck permissions, power state, and scheduled changes before restarting; changed values require review and another confirmation. Restore focus to the invoking control or, if it is no longer available, the VM heading.
 
@@ -84,7 +84,7 @@ The API must expose or allow derivation of both active and requested configurati
 
 ![Restart confirmation with scheduled resize changes](screenshots/latest-ux/vm-restart-confirmation-0.5.png)
 
-**Version 0.5 proposed edit scheduled resize.** The dialog distinguishes the active type from the target waiting for restart; replacement and cancellation require backend support.
+**Version 0.5 edit scheduled resize.** The dialog distinguishes the active type from the target waiting for restart; Save requests a replacement spec and Cancel scheduled resize requests the previous spec.
 
 ![Edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
 

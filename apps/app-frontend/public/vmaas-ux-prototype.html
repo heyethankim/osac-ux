@@ -9923,6 +9923,7 @@
       const activeId = vmActiveComputeId(vm);
       if (state.editComputeModal?.pendingResize && id === activeId) return;
       if (state.editComputeModal?.pendingResize && changed) {
+        // Mock a successful backend request for the newly selected spec.
         removeVmPendingResizeChanges(vm);
         vm.activeComputeId = activeId;
         applyComputeResourceToVm(vm, id);
@@ -9970,6 +9971,7 @@
     function cancelScheduledResizeFromModal() {
       const vm = VMS.find(v => v.name === state.selectedVmName);
       if (!vm || !state.editComputeModal?.pendingResize || !canResizeVmInstanceType(vm)) return;
+      // Mock a successful backend request restoring the previous, currently active spec.
       cancelVmPendingResize(vm, vmActiveComputeId(vm));
       closeEditComputeModal();
       renderVmDetail();

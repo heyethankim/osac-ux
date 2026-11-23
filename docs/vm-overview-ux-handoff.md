@@ -73,13 +73,13 @@ Selecting **Restart** from VM Details or a row action opens a confirmation namin
 
 The resize and restart dialogs keep Tab and Shift+Tab inside the dialog and prevent background interaction. In the resize dialog, Escape closes an open instance-type picker first; a second Escape dismisses the dialog. On dismissal, return focus to the trigger or its current equivalent after a refresh; if that control becomes unavailable, focus the Configuration or VM heading.
 
-**Proposed interaction; backend support unconfirmed.** If a saved resize can be replaced or canceled before restart, keep the Instance type pencil available. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** replaces the target; the separate cancel action removes the pending change and keeps the active type. The warning updates to the latest target and omits unchanged values. If the backend cannot support either action, keep the pencil disabled until the resize takes effect, with a tooltip explaining why. Confirm the backend operations before implementing the proposed actions.
+**Confirmed backend behavior.** A saved resize waiting for restart can be replaced or canceled, so keep the Instance type pencil available. **Edit scheduled resize** shows **Using now** and **Scheduled after restart**, with **Cancel scheduled resize** beside the scheduled value. Choosing another type and selecting **Save** requests the new spec and replaces the scheduled target. **Cancel scheduled resize** requests the previous, currently active spec; after the backend confirms it, remove the pending resize and keep the active type. The warning updates to the latest target and omits unchanged values. If either request fails, keep the existing scheduled target and show an error without implying the change was applied.
 
 During an active resize, disable the pencil and explain why on hover and keyboard focus. In the 0.5 mockup, `indigo-quokka-89` completes its demo resize after about 15 seconds; the pencil then becomes available. Apply the same explanatory tooltip pattern to every disabled icon control, including list actions and pagination.
 
 ![Disabled Instance type pencil with explanatory tooltip](screenshots/latest-ux/vm-resize-edit-disabled-tooltip-0.5.png)
 
-![Version 0.5 proposed edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
+![Version 0.5 edit scheduled resize dialog](screenshots/latest-ux/vm-edit-scheduled-resize-0.5.png)
 
 ![Version 0.5 revised scheduled resize warning](screenshots/latest-ux/vm-revised-scheduled-resize-0.5.png)
 
@@ -95,7 +95,7 @@ For access, networking, storage, utilization, failure states, and permissions, f
 
 The UI needs the operation type, phase (waiting for restart, retry scheduled, applying, finally failed, or complete), safe explanation, target value, and timestamps from the API or from documented derivation of its existing conditions. The UI must know whether another retry is planned before offering a manual action; an attempt count alone is insufficient. The list and Details must describe the same state after refresh or reconnect. API list/get and CLI table/json/yaml/describe need equivalent status semantics; the HTML mockup cannot verify those contracts. Never surface provider job IDs, raw logs, or raw error strings. AAP-backed changes need at least the changed field name so the UI can name the operation. Full operation history is outside OSAC-7158.
 
-**Still to validate against OSAC-7158:** The mockup does not demonstrate a prerequisite blocker or elapsed time in the VM list. Both require reliable service data, including timestamps that survive reconnects. Confirm which existing conditions expose these values and the retry phase; if the UI must derive a summary, document the derivation for API and CLI parity. Do not present an unsupported phase, blocker, or elapsed time as confirmed UX coverage. Confirm backend support before offering replacement or cancellation of a resize waiting for restart. Whether users can stop repeated automatic retries remains a separate product and backend decision; this handoff shows their status.
+**Still to validate against OSAC-7158:** The mockup does not demonstrate a prerequisite blocker or elapsed time in the VM list. Both require reliable service data, including timestamps that survive reconnects. Confirm which existing conditions expose these values and the retry phase; if the UI must derive a summary, document the derivation for API and CLI parity. Do not present an unsupported phase, blocker, or elapsed time as confirmed UX coverage. Automatic retries cannot be stopped: while one is scheduled or running, show its status and disable competing actions; offer a new attempt only after a final failure with no retry planned.
 
 ## Access and initial run examples
 
