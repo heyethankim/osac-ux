@@ -25,6 +25,8 @@ The Overview **Status** row shows VM power state only. Keep active instance type
 
 ![First external-IP attachment in progress, with Attach disabled and Cancel attachment available](screenshots/latest-ux/vm-operation-ip-attaching-0.5.png)
 
+![External-IP detachment in progress, with the current address visible and Detach disabled](screenshots/latest-ux/vm-operation-ip-detaching-0.5.png)
+
 ![Final attachment failure shown in the top alert while current values remain visible](screenshots/latest-ux/vm-operation-failed-attachment-overview-0.5.png)
 
 The [scheduled-retry example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=deef415&role=admin&vm=rhel-retry-cedar-29) keeps both targets in context, disables competing actions, and omits spinners until the next attempt begins.
@@ -97,7 +99,7 @@ The UI needs the operation type, phase (waiting for restart, retry scheduled, ap
 
 ## Access and initial run examples
 
-These 0.5 captures show Cloud-init and Windows Sysprep. The retry and failure captures above reflect the latest External IP design. The updated Attaching capture above shows Cancel attachment. A current Detaching screenshot is still pending.
+These 0.5 captures show Cloud-init and Windows Sysprep. The retry, attachment, detachment, and failure captures above reflect the latest External IP design.
 
 ![Inline Cloud-init value](screenshots/latest-ux/vm-overview-inline-0.5.png)
 
