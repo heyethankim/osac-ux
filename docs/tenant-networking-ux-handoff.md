@@ -14,11 +14,11 @@ On VM Overview, an auto-attached external IP shows **Auto attached** beside the 
 
 The **External IP** heading is sufficient; do not add a Host label or empty placeholder below it. Show the address directly below the heading only after attachment succeeds. Detach is available only when an IP is confirmed attached.
 
-In version **0.5** (OSAC-7158), show attachment progress beside External IP and keep **Attach external IP** visible but disabled while it runs. Name the selected address and show a known later attempt on a separate subdued line. Reserve the top-of-page danger alert for failure. Say **No automatic retry is scheduled** only when that is known; it does not prevent the user from starting a new attachment. The failed address must not appear as an attached IP. After failure, offer **Attach external IP** so the user can select an address again; do not offer Detach because no address was attached.
+In version **0.5** (OSAC-7158), show only the attachment status beside External IP. The status opens a popover that names the selected address, shows retry details when available, and contains **Cancel attachment** while attaching or **Retry attachment** after a final failure. Do not keep a disabled Attach button on the page. Reserve the top-of-page danger alert for failure. The failed address must not appear as an attached IP. After failure, the popover lets the user start another attachment; do not offer Detach because no address was attached.
 
 In the VM list and cards, external-IP work contributes to one configuration status on a second line below the power status. Use subdued gray **Changes in progress** while attaching, or **Changes need attention** if attachment failed. Do not add an icon to the configuration status. The tooltip names the operation and selected address.
 
-If resize has failed while attachment continues, the top alert describes the resize failure and offers **Resize again**, attachment progress stays beside External IP, and the list tooltip names both. See the [mixed-operation example](https://osac-project.github.io/osac-ux/vmaas-ux-prototype.html?v=7b7f0be&role=admin&vm=ubuntu-copper-ibis-31).
+If resize has failed while attachment continues, the top alert describes only the resize failure, with no action buttons. The enabled Instance type edit control provides recovery, attachment progress stays beside External IP, and the list popover names both operations. See the [current configuration operations handoff and screenshots](osac-7158-configuration-operations.md). During retries use **Retrying attachment** or **Retrying detachment**, with a static PatternFly In progress icon. Show **Not attached** without a field-name prefix when no IP is attached.
 
 ## Version 0.5 screenshots
 
@@ -28,7 +28,7 @@ If resize has failed while attachment continues, the top alert describes the res
 
 ![Version 0.5 External IP attachment beside its setting](screenshots/latest-ux/vm-config-inline-progress-0.5.png)
 
-![Version 0.5 external IP attachment in progress with Attach disabled](screenshots/latest-ux/vm-external-ip-loading-0.5.png)
+![Version 0.5 external IP attachment in progress with the action in the status popover](screenshots/latest-ux/vm-external-ip-loading-0.5.png)
 
 ![Version 0.5 failed external IP attachment with a new Attach action](screenshots/latest-ux/vm-external-ip-failed-0.5.png)
 
