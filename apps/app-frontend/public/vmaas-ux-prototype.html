@@ -9078,7 +9078,7 @@
 
     function vmResizeStatusLineHtml(vm) {
       if (!vm.resizeProgress && !vmResizeRetryScheduled(vm)) return '';
-      const label = vmResizeRetryScheduled(vm) ? 'Changes pending' : 'Resizing';
+      const label = vmResizeRetryScheduled(vm) ? 'Retry pending' : 'Resizing';
       return `${vm.resizeProgress ? '<span class="vm-access-section__spinner" aria-hidden="true"></span>' : ''}<button type="button" class="vm-operation-trigger" data-instance-progress aria-label="${label} instance type. Show operation details" aria-haspopup="dialog" aria-expanded="false" aria-controls="instance-progress-popover">${label}</button>`;
     }
 
@@ -9088,7 +9088,13 @@
       const applying = !!vm.resizeProgress || ipStatus === 'attaching' || ipStatus === 'detaching';
       const pending = !!vm.restartRequired?.changes?.length || vmResizeRetryScheduled(vm) || vmExternalIpRetryScheduled(vm);
       if (!failed && !applying && !pending) return '';
-      const label = failed ? 'Changes need attention' : (applying ? 'Changes in progress' : 'Changes pending');
+      const retrying = vmResizeRetryRunning(vm) || vmExternalIpRetryRunning(vm);
+      const retryPending = vmResizeRetryScheduled(vm) || vmExternalIpRetryScheduled(vm);
+      const label = failed ? 'Changes need attention'
+        : retrying ? 'Retrying changes'
+        : applying ? 'Changes in progress'
+        : retryPending ? 'Retry pending'
+        : 'Restart required';
       const details = [];
       const resizeTarget = resolveVmComputeId(vm) || 'the requested instance type';
       if (vmResizeRetryScheduled(vm)) details.push(`Resize to ${resizeTarget} is pending`);
@@ -15988,7 +15994,7 @@
         actions = `<button type="button" class="pf-v6-c-button pf-m-secondary pf-m-small" data-ip-toggle="external">Attach external IP</button>`;
       }
 
-      const operationLabel = retryScheduled ? 'Changes pending' : status === 'failed' ? 'Changes need attention' : status === 'detaching' ? (vmExternalIpRetryRunning(vm) ? 'Retrying detachment' : 'Detaching') : (vmExternalIpRetryRunning(vm) ? 'Retrying attachment' : 'Attaching');
+      const operationLabel = retryScheduled ? 'Retry pending' : status === 'failed' ? 'Changes need attention' : status === 'detaching' ? (vmExternalIpRetryRunning(vm) ? 'Retrying detachment' : 'Detaching') : (vmExternalIpRetryRunning(vm) ? 'Retrying attachment' : 'Attaching');
       const progressControl = status === 'attaching' || status === 'detaching' || retryScheduled || status === 'failed'
         ? `${status === 'attaching' || status === 'detaching' ? '<span class="vm-access-section__spinner" aria-hidden="true"></span>' : ''}<button type="button" class="vm-operation-trigger" id="vm-external-ip-progress" data-external-ip-progress aria-label="${operationLabel} external IP. Show operation details" aria-haspopup="dialog" aria-expanded="false" aria-controls="external-ip-progress-popover">${operationLabel}</button>`
         : '';

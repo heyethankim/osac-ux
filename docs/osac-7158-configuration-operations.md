@@ -20,17 +20,20 @@ This handoff covers visibility and recovery for VM configuration operations. Cur
 
 Use clickable PatternFly power statuses, including **Failed** rather than Error. Align the configuration subtext beneath the status text, not its icon. Use the same treatment in table and card views.
 
-- **Changes pending**, gray: waiting for restart or a backend-confirmed automatic retry.
-- **Changes in progress**, gray: an attempt is running, including an automatic retry.
+- **Retry pending**, gray: a previous attempt failed and a backend-confirmed automatic retry is waiting.
+- **Retrying changes**, gray: an automatic retry is running after a previous failure.
+- **Restart required**, gray: saved changes are waiting for restart.
+- **Changes in progress**, gray: a first attempt is running.
 - **Changes need attention**, red: a final failure requires user recovery.
 
-When multiple operations coexist, final failure takes precedence over in-progress work, which takes precedence over pending work. The popover lists every outstanding operation separately, with its target, state, and any supplied retry details. For example, a failed resize and a running attachment show **Changes need attention**, but the IP operation continues independently. An earlier failed attempt does not make an active retry red.
+When multiple operations coexist, use this summary priority: **Changes need attention**, **Retrying changes**, **Changes in progress**, **Retry pending**, then **Restart required**. The popover lists every outstanding operation separately, with its target, state, and any supplied retry details. For example, a failed resize and a running attachment show **Changes need attention**, but the IP operation continues independently. An earlier failed attempt does not make an active retry red.
+**Example: resize failed while external IP attachment is in progress.** In the table and cards, keep **Running** as the VM power status and show one red **Changes need attention** line below it. Its popover lists both operations separately: **Resize failed — target instance type large** and **Attaching external IP 198.51.100.22** (or **Retrying attachment** during a retry). On VM Details, the top alert describes only the failed resize and contains no action buttons. Keep the active instance type visible with its enabled edit control; beside External IP, retain the static In progress icon and attachment status with its own popover. Attachment continues independently. When attachment succeeds, update the IP and remove that operation from the popover; retain the resize failure until resolved. If resize recovery begins while attachment continues, use gray **Retrying changes** while an automatic retry is running; otherwise use gray **Changes in progress**. If both operations fail, show both failures as bullets in the same alert and keep one red summary line.
 
 ### VM details and actions
 
 Keep the active instance type, vCPUs, memory, and attached IP visible. Show **Not attached** without the prefix “Current external IP” when no address is attached. During detachment, retain the address until success.
 
-Use PatternFly’s static **In progress** icon beside the heading with a link-styled popover trigger: **Resizing**, **Attaching**, or **Detaching**. During external-IP retries use **Retrying attachment** or **Retrying detachment**. Waiting for an automatic retry uses **Changes pending** without an active icon. Remove the disabled resize pencil while work is running. Do not leave disabled Attach/Detach buttons beside the setting.
+Use PatternFly’s static **In progress** icon beside the heading with a link-styled popover trigger: **Resizing**, **Attaching**, or **Detaching**. During external-IP retries use **Retrying attachment** or **Retrying detachment**. On Details, waiting for an automatic retry uses **Retry pending** without an active icon. Remove the disabled resize pencil while work is running. Do not leave disabled Attach/Detach buttons beside the setting.
 
 The popover shows the requested instance type, vCPUs, and memory, or the exact external IP. Include **Retry attempt: [number]** and **Previous attempt failed: [reason]** only when supplied. Do not infer a retry schedule from an attempt count or invent an ETA.
 
@@ -42,7 +45,7 @@ Only final failures appear in one top danger alert, with a bullet per failed ope
 
 Keep a collapsed **Restart required** warning above Overview. Expanding it shows the changed instance type, CPU, and memory values. This actionable restart warning is separate from automatic retries.
 
-For a resize waiting for restart, replace the pencil with **Changes pending**. Its popover contains **Edit scheduled resize** and **Cancel scheduled resize**. The edit dialog shows **Using now** and **Scheduled after restart**; **Save** replaces the scheduled target. Cancel scheduled resize requests the currently active spec. Keep the existing target until the service confirms success; preserve it and show an error on failure.
+For a resize waiting for restart, replace the pencil with **Restart required**. Its popover contains **Edit scheduled resize** and **Cancel scheduled resize**. The edit dialog shows **Using now** and **Scheduled after restart**; **Save** replaces the scheduled target. Cancel scheduled resize requests the currently active spec. Keep the existing target until the service confirms success; preserve it and show an error on failure.
 
 Restart opens a confirmation naming the VM, workload interruption, and exact changes. Focus Cancel initially. Recheck permissions, power state, and changes before submitting. Keep progress visible after restart until the requested resources are active. Success updates current values, clears completed operations, and shows a success toast; no persistent Completed line.
 
@@ -74,7 +77,7 @@ A failed resize and a continuing IP attachment retain independent states.
 
 ![Mixed states](screenshots/latest-ux/audit-mixed-0.5.png)
 
-Scheduled resize actions are in the Changes pending popover.
+Scheduled resize actions are in the Restart required popover.
 
 ![Scheduled resize actions](screenshots/latest-ux/audit-scheduled-popover-0.5.png)
 
