@@ -31,7 +31,7 @@ When multiple operations coexist, use this summary priority: **Changes need atte
 
 ### VM details and actions
 
-Keep the active instance type, vCPUs, memory, and attached IP visible. Show **Not attached** without the prefix “Current external IP” when no address is attached. During detachment, retain the address until success.
+Keep the active instance type, vCPUs, memory, and attached IP visible. Show **Not attached** without the prefix “Current external IP” when no address is attached. During detachment, retain the address until success. VM Details uses the same configuration subtext below **Running** as tables and cards, including red **Changes need attention** after final failure. Operation triggers sit to the right of the Instance type and External IP headings; current values remain below. Remove the Other VM alerts and Recent activity sidebar cards and use the available width for the main content.
 
 Use PatternFly’s static **In progress** icon beside the heading with a link-styled popover trigger: **Resizing**, **Attaching**, or **Detaching**. During external-IP retries use **Retrying attachment** or **Retrying detachment**. On Details, waiting for an automatic retry uses **Retry pending** without an active icon. Remove the disabled resize pencil while work is running. Do not leave disabled Attach/Detach buttons beside the setting.
 
@@ -49,7 +49,7 @@ For a resize waiting for restart, replace the pencil with **Restart required**. 
 
 Restart opens a confirmation naming the VM, workload interruption, and exact changes. Focus Cancel initially. Recheck permissions, power state, and changes before submitting. Keep progress visible after restart until the requested resources are active. Success updates current values, clears completed operations, and shows a success toast; no persistent Completed line.
 
-Dialogs contain keyboard focus. Escape closes the picker before the dialog. Popovers support keyboard activation, Escape, and focus restoration. Returning to the list refreshes VM state while preserving view, filters, page, and valid selections. Close stale popovers. The sidebar uses **Other VM alerts** and **No other alerts** to avoid contradicting configuration failures.
+Dialogs contain keyboard focus. Escape closes the picker before the dialog. Popovers support keyboard activation, Escape, and focus restoration. Returning to the list refreshes VM state while preserving view, filters, page, and valid selections. Close stale popovers.
 
 ## Screenshots
 

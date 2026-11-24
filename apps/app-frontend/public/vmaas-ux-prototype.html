@@ -1524,6 +1524,7 @@
     }
     @media (max-width: 1100px) { .vm-overview-v2 { grid-template-columns: 1fr; } }
     .vm-overview-v2__main { min-width: 0; }
+    .vm-overview-v2--full-width { grid-template-columns: minmax(0, 1fr); }
     .vm-overview-v2__aside { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
     .vm-overview-v2__details { padding-top: 0; }
     .vm-overview-v2__detail-cols {
@@ -1673,6 +1674,11 @@
     .vm-access-section__title .pf-v6-c-label {
       font-size: 11px;
       line-height: 1.2;
+    }
+    .vm-operation-heading {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
     }
     .vm-access-section__host-row {
       display: flex;
@@ -16007,7 +16013,11 @@
 
       return `
         <section class="vm-access-section" aria-labelledby="vm-access-eip-title">
-          <h4 class="ethan-detail-col__subtitle vm-access-section__title" id="vm-access-eip-title">External IP${progressControl ? ` <span class="vm-operation-heading">${progressControl}</span>` : ''}${autoAttached ? ' <span class="pf-v6-c-label pf-m-outline pf-m-grey pf-m-compact"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Auto attached</span></span></span>' : ''}</h4>
+          <div class="ethan-detail-col__subtitle-row">
+            <h4 class="ethan-detail-col__subtitle" id="vm-access-eip-title">External IP</h4>
+            ${progressControl ? `<span class="vm-operation-heading">${progressControl}</span>` : ''}
+            ${autoAttached ? '<span class="pf-v6-c-label pf-m-outline pf-m-grey pf-m-compact"><span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">Auto attached</span></span></span>' : ''}
+          </div>
           ${contentHtml}
         </section>`;
     }
@@ -17834,7 +17844,7 @@
           <div class="pf-v6-c-alert__description">${String(v.provisioningFailureReason || 'ProvisioningFailed').replace(/</g, '&lt;')}: ${String(v.provisioningFailureMessage || 'The VM could not be provisioned.').replace(/</g, '&lt;')}</div>
         </div>` : '';
       const body = `
-        <div class="vm-overview-v2">
+        <div class="vm-overview-v2 vm-overview-v2--full-width">
           <div class="vm-overview-v2__main">
             ${deletingAlertHtml}
             ${operationAlertsHtml}
@@ -17845,7 +17855,7 @@
                 <section class="ethan-detail-col" aria-labelledby="vm-overview-title">
                   <h3 class="ethan-detail-col__title" id="vm-overview-title">Overview</h3>
                   ${itField('Project', projectDisplay)}
-                  ${itField('Status', deleting ? '<span class="status-static">Deleting</span>' : statusCell(v.status, v.name))}
+                  ${itField('Status', deleting ? '<span class="status-static">Deleting</span>' : `<span class="vm-status-with-configuration">${statusCell(v.status, v.name)}${vmConfigurationLabelHtml(v)}</span>`)}
                   ${itField('Created', v.created || '—')}
                   ${itField('Catalog item', catalogItemDisplay)}
                 </section>
@@ -18015,25 +18025,6 @@
               ${renderVmUtilizationTiles(v, u)}
             </section>
                 </div>
-          <aside class="vm-overview-v2__aside" aria-label="Sidebar">
-            <section class="catalog-hw-specs vm-overview-v2__aside-card" aria-labelledby="vm-alerts-title">
-              <h3 class="catalog-hw-specs__title" id="vm-alerts-title">Other VM alerts</h3>
-              ${alerts.length ? `
-                <ul class="vm-alerts-list" aria-label="Other VM alerts">
-                  ${alerts.slice(0, 3).map(a => `
-                    <li class="vm-alerts-list__item">
-                      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                      <span>${a.message || a}</span>
-                    </li>
-                  `).join('')}
-                </ul>
-              ` : '<p class="vm-overview-v2__aside-empty muted">No other alerts</p>'}
-            </section>
-            <section class="catalog-hw-specs vm-overview-v2__aside-card" aria-labelledby="vm-activity-title">
-              <h3 class="catalog-hw-specs__title" id="vm-activity-title">Recent activity</h3>
-              <p class="vm-overview-v2__aside-empty muted">No recent activity</p>
-            </section>
-          </aside>
           </div>
         `;
 
