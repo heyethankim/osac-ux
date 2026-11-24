@@ -338,7 +338,7 @@ export function BmaasLandingPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Delivery overview
+                  Delivery Overview
                 </Button>
               </ListItem>
               <ListItem>
@@ -348,7 +348,7 @@ export function BmaasLandingPage() {
                   isInline
                   href={`${import.meta.env.BASE_URL}vmaas-ux-prototype.html`}
                 >
-                  Virtual machine experience
+                  Virtual Machine Experience
                 </Button>
               </ListItem>
               <ListItem>
