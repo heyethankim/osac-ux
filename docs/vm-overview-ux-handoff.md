@@ -9,7 +9,7 @@ VM Overview shows the active instance type, CPU, and memory. Editing the instanc
 
 ## Version 0.5 — configuration operations (OSAC-7158)
 
-The current behavior, screenshots, retry wording, mixed-state precedence, and scheduled-resize actions are maintained in the [dedicated configuration operations handoff](osac-7158-configuration-operations.md). That handoff supersedes earlier operation screenshots and descriptions.
+The current behavior, screenshots, retry wording, mixed-state precedence, and scheduled-resize actions are maintained in the [configuration operations Google Doc](https://docs.google.com/document/d/1KkHVqjNJ4lZl40X8aE1v589jDd7ilAle9NnaV13DIr4/edit). That handoff supersedes earlier operation screenshots and descriptions.
 
 ## Access and initial run examples
 

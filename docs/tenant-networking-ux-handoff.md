@@ -18,7 +18,7 @@ In version **0.5** (OSAC-7158), show only the attachment status beside External 
 
 In the VM list and cards, external-IP work contributes to one configuration status on a second line below the power status. Use subdued gray **Changes in progress** while attaching, or **Changes need attention** if attachment failed. Do not add an icon to the configuration status. The tooltip names the operation and selected address.
 
-If resize has failed while attachment continues, the top alert describes only the resize failure, with no action buttons. The enabled Instance type edit control provides recovery, attachment progress stays beside External IP, and the list popover names both operations. See the [current configuration operations handoff and screenshots](osac-7158-configuration-operations.md). During retries use **Retrying attachment** or **Retrying detachment**, with a static PatternFly In progress icon. Show **Not attached** without a field-name prefix when no IP is attached.
+If resize has failed while attachment continues, the top alert describes only the resize failure, with no action buttons. The enabled Instance type edit control provides recovery, attachment progress stays beside External IP, and the list popover names both operations. See the [current configuration operations handoff and screenshots](https://docs.google.com/document/d/1KkHVqjNJ4lZl40X8aE1v589jDd7ilAle9NnaV13DIr4/edit). During retries use **Retrying attachment** or **Retrying detachment**, with a static PatternFly In progress icon. Show **Not attached** without a field-name prefix when no IP is attached.
 
 ## Version 0.5 screenshots
 
